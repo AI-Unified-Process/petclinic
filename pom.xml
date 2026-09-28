@@ -29,11 +29,11 @@
     </scm>
     <properties>
         <java.version>25</java.version>
-        <vaadin.version>25.2.7</vaadin.version>
-        <jooq.version>3.21.8</jooq.version>
+        <vaadin.version>25.3.0</vaadin.version>
+        <jooq.version>3.21.9</jooq.version>
         <testcontainers-jooq-codegen-maven-plugin.version>1.0.0</testcontainers-jooq-codegen-maven-plugin.version>
-        <archunit.version>1.5.0</archunit.version>
-        <dramafinder.version>1.1.6</dramafinder.version>
+        <archunit.version>1.5.1</archunit.version>
+        <dramafinder.version>1.2.0</dramafinder.version>
         <jacoco.version>0.8.15</jacoco.version>
         <!-- The sensors profile below flips this: the traceability sensors and
              the ArchUnit rules read files and class files, not a database. -->
@@ -336,7 +336,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>3.6.1</version>
+                        <version>3.6.2</version>
                         <executions>
                             <execution>
                                 <id>add-generated-jooq-sources</id>
