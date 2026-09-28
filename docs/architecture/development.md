@@ -109,6 +109,12 @@ way.
   mapper.** Never `fetchInto(Type.class)`, never a manual
   `map(r -> new Type(...))`. Constructor references give compile-time checking
   of column order against record components.
+- **Queries are built from the generated tables, never from SQL strings.** No
+  `dsl.execute("DELETE ...")`, `DSL.field("...")` or `DSL.condition("...")` —
+  anything jOOQ marks `@PlainSQL` — in `src/main` or in test setup and cleanup.
+  A string compiles against any schema; `OWNERS.LAST_NAME` does not.
+  `ArchitectureTest.noPlainSql` checks it, and `TestLayerConventionsTest` reuses
+  the rule for the test tree.
 - **Nested records load via `row(...).mapping(Nested::new)`** inside the select
   list:
   ```java

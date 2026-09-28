@@ -74,10 +74,10 @@ Every `TC<NNN><Name>IT` class must carry `ai.unifiedprocess.petclinic.TestCase` 
 the annotation is `@Target(TYPE)`), because a test case has exactly one coverage unit: the journey.
 
 ```java
-@TestCase(id = "TC-001", useCases = {"UC-003", "UC-004", "UC-005", "UC-007", "UC-009"})
+@TestCase(id = "TC-003", useCases = {"UC-003", "UC-004", "UC-007", "UC-009"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfiguration.class)
-class TC001NewOwnerFirstVisitIT extends AbstractBasePlaywrightIT { ... }
+class TC003VisitBookedForNewCustomerIT extends AbstractBasePlaywrightIT { ... }
 ```
 
 - `id` — required, matches a `docs/test_cases/TC-NNN-*.md` file, and must agree with the `NNN` in the class name.
@@ -299,7 +299,7 @@ yourself. `TestPetclinicApplication` reuses it for `./mvnw spring-boot:test-run`
 Browser tests are the second layer, not a replacement for browserless tests. Rules that differ from the above:
 
 - Class name `UC<NNN><UseCaseName>IT` for a use case, `TC<NNN><TestCaseName>IT` for a test case document under
-  `docs/test_cases/` (e.g. `TC001NewOwnerFirstVisitIT`). Same package as the view under test; journey tests go in
+  `docs/test_cases/` (e.g. `TC003VisitBookedForNewCustomerIT`). Same package as the view under test; journey tests go in
   `ai.unifiedprocess.petclinic.e2e`. `UseCaseTraceabilityTest` accepts `@UseCase` on either suffix, so a use case
   test that needs a browser carries the same annotations as a browserless one.
 - Extend `org.vaadin.addons.dramafinder.AbstractBasePlaywrightIT`, annotate
@@ -311,5 +311,5 @@ Browser tests are the second layer, not a replacement for browserless tests. Rul
 - No `@Transactional` rollback across a real HTTP round-trip: data a test creates is cleaned up in `@AfterEach`
   (through the UI or targeted deletes, idempotent). A test case's **Postconditions** section is the cleanup contract.
 - `@UseCase` on every test method applies here too.
-- Run with `./mvnw verify` (all) or `./mvnw verify -Dit.test=TC001NewOwnerFirstVisitIT`;
+- Run with `./mvnw verify` (all) or `./mvnw verify -Dit.test=TC003VisitBookedForNewCustomerIT`;
   add `-Dheadless=false` to watch the browser.

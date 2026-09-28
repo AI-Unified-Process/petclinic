@@ -10,8 +10,7 @@
       "Bash(git branch:*)"
     ],
     "deny": [
-      "Edit(target/**)",
-      "Write(target/**)"
+      "Edit(target/**)"
     ]
   },
   "hooks": {

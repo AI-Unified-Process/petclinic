@@ -85,7 +85,7 @@ class TestCaseTraceabilityTest {
     /** A Flow row's Use Case column: a markdown link such as {@code [UC-003](../use_cases/UC-003-x.md)}. */
     private static final Pattern USE_CASE_LINK =
             Pattern.compile("\\[(UC-\\d{3})]\\(([^)]+)\\)");
-    /** {@code TC001NewOwnerFirstVisitIT} — the journey test naming rule from the testing guidelines. */
+    /** {@code TC003VisitBookedForNewCustomerIT} — the journey test naming rule from the testing guidelines. */
     private static final Pattern JOURNEY_CLASS = Pattern.compile("^TC(\\d{3})\\w*IT$");
 
     private static List<TestCaseSpec> testCases;

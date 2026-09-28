@@ -22,6 +22,9 @@ something, read the relevant spec first:
   follow the link before implementing that rule. A rule only one use case
   needs stays in that use case; **no business rule belongs in
   `docs/architecture/`**.
+- `docs/processes/*.bpmn` — BPMN 2.0 business process models (editable in
+  AIUP Studio). Each activity is named `UC-NNN <Use Case Name>`, each lane is
+  an actor; `aiup-core:test-case` derives one test case per path.
 - `docs/test_cases/TC-NNN-*.md` — end-to-end journeys spanning several use
   cases; each is verified by a Playwright `TC<NNN><Name>IT`.
 - `docs/architecture/` — the 4+1 views (logical, process, development,
@@ -84,8 +87,8 @@ The full table, with the decisions behind each choice, is in
 ./mvnw verify
 
 # Run a single *IT class
-./mvnw verify -Dit.test=TC001NewOwnerFirstVisitIT
-./mvnw verify -Dit.test=TC001NewOwnerFirstVisitIT -Dheadless=false   # watch the browser
+./mvnw verify -Dit.test=TC003VisitBookedForNewCustomerIT
+./mvnw verify -Dit.test=TC003VisitBookedForNewCustomerIT -Dheadless=false   # watch the browser
 ```
 
 Test class suffix decides the phase: `*Test` → `test` (Surefire),

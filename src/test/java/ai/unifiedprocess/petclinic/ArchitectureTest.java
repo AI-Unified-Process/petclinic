@@ -19,6 +19,7 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.router.Route;
+import org.jooq.PlainSQL;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,6 +118,19 @@ class ArchitectureTest {
                     .should().callMethodWhere(
                             JavaCall.Predicates.target(HasName.Predicates.name("fetchInto")))
                     .because("development.md: use Records.mapping(Type::new) for compile-time column checking");
+
+    // jOOQ marks every string-SQL entry point (dsl.execute("..."), DSL.field("..."),
+    // DSL.condition("..."), ...) with @PlainSQL, so the annotation is the whole rule.
+    // TestLayerConventionsTest reuses it for the test tree, which this class excludes.
+    @ArchTest
+    static final ArchRule noPlainSql =
+            noClasses()
+                    .should().callMethodWhere(describe("a jOOQ @PlainSQL method",
+                            (JavaCall<?> call) -> call.getTarget().resolveMember()
+                                    .map(method -> method.isAnnotatedWith(PlainSQL.class))
+                                    .orElse(false)))
+                    .because("development.md: queries are built from the generated tables, "
+                            + "never from SQL strings, so a schema change breaks them at compile time");
 
     @ArchTest
     static final ArchRule domainRecordsAreSerializable =
