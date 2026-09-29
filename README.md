@@ -104,3 +104,7 @@ docs/       — specifications (the source of truth)
 src/main/   — implementation derived from the specs
 src/test/   — tests verifying the implementation against the specs
 ```
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE).
