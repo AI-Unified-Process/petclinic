@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-                  id="Definitions_VeterinarianLookup"
-                  targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_VeterinarianLookup" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:collaboration id="Collaboration_VeterinarianLookup">
-    <bpmn:participant id="Participant_PetClinic" name="Spring PetClinic" processRef="Process_VeterinarianLookup"/>
+    <bpmn:participant id="Participant_PetClinic" name="Spring PetClinic" processRef="Process_VeterinarianLookup" />
   </bpmn:collaboration>
   <bpmn:process id="Process_VeterinarianLookup" name="Veterinarian Lookup" isExecutable="false">
     <bpmn:documentation>A member of the public wants to know which veterinarian treats what, and finds out without occupying the front desk.</bpmn:documentation>
@@ -32,41 +27,41 @@
     <bpmn:endEvent id="EndEvent_VetFound" name="Specialties known">
       <bpmn:incoming>Flow_3</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_VetWanted" targetRef="Activity_ViewWelcomePage"/>
-    <bpmn:sequenceFlow id="Flow_2" sourceRef="Activity_ViewWelcomePage" targetRef="Activity_ViewVeterinarians"/>
-    <bpmn:sequenceFlow id="Flow_3" sourceRef="Activity_ViewVeterinarians" targetRef="EndEvent_VetFound"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_VetWanted" targetRef="Activity_ViewWelcomePage" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Activity_ViewWelcomePage" targetRef="Activity_ViewVeterinarians" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Activity_ViewVeterinarians" targetRef="EndEvent_VetFound" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_VeterinarianLookup">
     <bpmndi:BPMNPlane id="BPMNPlane_VeterinarianLookup" bpmnElement="Collaboration_VeterinarianLookup">
       <bpmndi:BPMNShape id="Participant_PetClinic_di" bpmnElement="Participant_PetClinic" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="580" height="160"/>
+        <dc:Bounds x="130" y="80" width="610" height="160" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_Visitor_di" bpmnElement="Lane_Visitor" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="550" height="160"/>
+        <dc:Bounds x="160" y="80" width="580" height="160" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_VetWanted_di" bpmnElement="StartEvent_VetWanted">
-        <dc:Bounds x="232" y="142" width="36" height="36"/>
+        <dc:Bounds x="232" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_ViewWelcomePage_di" bpmnElement="Activity_ViewWelcomePage">
-        <dc:Bounds x="320" y="120" width="100" height="80"/>
+        <dc:Bounds x="320" y="120" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_ViewVeterinarians_di" bpmnElement="Activity_ViewVeterinarians">
-        <dc:Bounds x="480" y="120" width="100" height="80"/>
+        <dc:Bounds x="480" y="120" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_VetFound_di" bpmnElement="EndEvent_VetFound">
-        <dc:Bounds x="642" y="142" width="36" height="36"/>
+        <dc:Bounds x="642" y="142" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
-        <di:waypoint x="268" y="160"/>
-        <di:waypoint x="320" y="160"/>
+        <di:waypoint x="268" y="160" />
+        <di:waypoint x="320" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
-        <di:waypoint x="420" y="160"/>
-        <di:waypoint x="480" y="160"/>
+        <di:waypoint x="420" y="160" />
+        <di:waypoint x="480" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
-        <di:waypoint x="580" y="160"/>
-        <di:waypoint x="642" y="160"/>
+        <di:waypoint x="580" y="160" />
+        <di:waypoint x="642" y="160" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
