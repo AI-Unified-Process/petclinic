@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_VisitBooking" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="Collaboration_VisitBooking">
+    <bpmn:participant id="Participant_PetClinic" name="Spring PetClinic" processRef="Process_VisitBooking" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_VisitBooking" name="Visit Booking" isExecutable="false">
+    <bpmn:documentation>An owner phones or walks in and wants an appointment for an animal. The front desk identifies the owner, registers owner and pet where they are not known yet, and books the visit.</bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_VisitBooking">
+      <bpmn:lane id="Lane_ClinicUser" name="Clinic User">
+        <bpmn:flowNodeRef>StartEvent_VisitRequested</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_FindOwners</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_OwnerRegistered</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_ViewOwnerDetails</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_PetRegistered</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_RegisterNewOwner</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_JoinAddPet</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_AddPetToOwner</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_JoinBookVisit</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_BookVisitForPet</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_VisitBooked</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_VisitRequested" name="Owner requests a visit">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_FindOwners" name="UC-004 Find Owners by Last Name">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_OwnerRegistered" name="Owner registered?">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_OwnerYes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_OwnerNo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_ViewOwnerDetails" name="UC-005 View Owner Details">
+      <bpmn:incoming>Flow_OwnerYes</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_PetRegistered" name="Pet registered?">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_PetYes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PetNo</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_RegisterNewOwner" name="UC-003 Register New Owner">
+      <bpmn:incoming>Flow_OwnerNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_JoinAddPet">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:incoming>Flow_PetNo</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_AddPetToOwner" name="UC-007 Add Pet to Owner">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_JoinBookVisit">
+      <bpmn:incoming>Flow_PetYes</bpmn:incoming>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_BookVisitForPet" name="UC-009 Book Visit for Pet">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_VisitBooked" name="Visit booked">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_VisitRequested" targetRef="Activity_FindOwners" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Activity_FindOwners" targetRef="Gateway_OwnerRegistered" />
+    <bpmn:sequenceFlow id="Flow_OwnerYes" name="yes" sourceRef="Gateway_OwnerRegistered" targetRef="Activity_ViewOwnerDetails" />
+    <bpmn:sequenceFlow id="Flow_OwnerNo" name="no" sourceRef="Gateway_OwnerRegistered" targetRef="Activity_RegisterNewOwner" />
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Activity_ViewOwnerDetails" targetRef="Gateway_PetRegistered" />
+    <bpmn:sequenceFlow id="Flow_PetYes" name="yes" sourceRef="Gateway_PetRegistered" targetRef="Gateway_JoinBookVisit" />
+    <bpmn:sequenceFlow id="Flow_PetNo" name="no" sourceRef="Gateway_PetRegistered" targetRef="Gateway_JoinAddPet" />
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="Activity_RegisterNewOwner" targetRef="Gateway_JoinAddPet" />
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Gateway_JoinAddPet" targetRef="Activity_AddPetToOwner" />
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Activity_AddPetToOwner" targetRef="Gateway_JoinBookVisit" />
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Gateway_JoinBookVisit" targetRef="Activity_BookVisitForPet" />
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Activity_BookVisitForPet" targetRef="EndEvent_VisitBooked" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_VisitBooking">
+    <bpmndi:BPMNPlane id="BPMNPlane_VisitBooking" bpmnElement="Collaboration_VisitBooking">
+      <bpmndi:BPMNShape id="Participant_PetClinic_di" bpmnElement="Participant_PetClinic" isHorizontal="true">
+        <dc:Bounds x="130" y="80" width="1180" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ClinicUser_di" bpmnElement="Lane_ClinicUser" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1150" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_VisitRequested_di" bpmnElement="StartEvent_VisitRequested">
+        <dc:Bounds x="232" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_FindOwners_di" bpmnElement="Activity_FindOwners">
+        <dc:Bounds x="310" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_OwnerRegistered_di" bpmnElement="Gateway_OwnerRegistered" isMarkerVisible="true">
+        <dc:Bounds x="455" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_ViewOwnerDetails_di" bpmnElement="Activity_ViewOwnerDetails">
+        <dc:Bounds x="560" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_PetRegistered_di" bpmnElement="Gateway_PetRegistered" isMarkerVisible="true">
+        <dc:Bounds x="705" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_RegisterNewOwner_di" bpmnElement="Activity_RegisterNewOwner">
+        <dc:Bounds x="560" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_JoinAddPet_di" bpmnElement="Gateway_JoinAddPet" isMarkerVisible="true">
+        <dc:Bounds x="705" y="275" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_AddPetToOwner_di" bpmnElement="Activity_AddPetToOwner">
+        <dc:Bounds x="810" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_JoinBookVisit_di" bpmnElement="Gateway_JoinBookVisit" isMarkerVisible="true">
+        <dc:Bounds x="985" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_BookVisitForPet_di" bpmnElement="Activity_BookVisitForPet">
+        <dc:Bounds x="1080" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_VisitBooked_di" bpmnElement="EndEvent_VisitBooked">
+        <dc:Bounds x="1232" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="268" y="160" />
+        <di:waypoint x="310" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="410" y="160" />
+        <di:waypoint x="455" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OwnerYes_di" bpmnElement="Flow_OwnerYes">
+        <di:waypoint x="505" y="160" />
+        <di:waypoint x="560" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_OwnerNo_di" bpmnElement="Flow_OwnerNo">
+        <di:waypoint x="480" y="185" />
+        <di:waypoint x="480" y="300" />
+        <di:waypoint x="560" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="660" y="160" />
+        <di:waypoint x="705" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PetYes_di" bpmnElement="Flow_PetYes">
+        <di:waypoint x="755" y="160" />
+        <di:waypoint x="985" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PetNo_di" bpmnElement="Flow_PetNo">
+        <di:waypoint x="730" y="185" />
+        <di:waypoint x="730" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="660" y="300" />
+        <di:waypoint x="705" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="755" y="300" />
+        <di:waypoint x="810" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="910" y="300" />
+        <di:waypoint x="1010" y="300" />
+        <di:waypoint x="1010" y="185" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="1035" y="160" />
+        <di:waypoint x="1080" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="1180" y="160" />
+        <di:waypoint x="1232" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
