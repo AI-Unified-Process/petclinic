@@ -7,6 +7,7 @@ import com.tngtech.archunit.core.domain.JavaCall;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaConstructor;
 import com.tngtech.archunit.core.domain.JavaField;
+import com.tngtech.archunit.core.domain.JavaMethodCall;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.domain.properties.HasName;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -17,6 +18,7 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import com.tngtech.archunit.library.GeneralCodingRules;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.router.Route;
 import org.jooq.PlainSQL;
@@ -173,6 +175,16 @@ class ArchitectureTest {
                     .should().dependOnClassesThat().haveFullyQualifiedName(Transactional.class.getName())
                     .because("development.md: transactions are declared in domain, not in ui");
 
+    // A call from a repository to its own method never passes through the Spring proxy,
+    // so the callee's @Transactional is silently ignored: a write called from a read
+    // runs inside the read-only transaction.
+    @ArchTest
+    static final ArchRule repositoriesDoNotCallTheirOwnTransactionalMethods =
+            classes()
+                    .that().haveSimpleNameEndingWith("Repository")
+                    .should(notCallTheirOwnTransactionalMethods())
+                    .because("development.md: a self-call bypasses the proxy and drops @Transactional");
+
     @ArchTest
     static final ArchRule repositoryAnnotationOnlyOnRepositories =
             classes()
@@ -235,6 +247,23 @@ class ArchitectureTest {
                                     && assignableTo(HasStyle.class).test(call.getTargetOwner())))
                     .because("development.md: use LumoUtility class names, never getStyle().set()");
 
+    // --- General coding rules ---
+
+    @ArchTest
+    static final ArchRule noFieldInjection =
+            GeneralCodingRules.NO_CLASSES_SHOULD_USE_FIELD_INJECTION
+                    .because("development.md: constructor injection only");
+
+    @ArchTest
+    static final ArchRule noGenericExceptions =
+            GeneralCodingRules.NO_CLASSES_SHOULD_THROW_GENERIC_EXCEPTIONS
+                    .because("development.md: throw a type that says what went wrong");
+
+    @ArchTest
+    static final ArchRule noJavaUtilLogging =
+            GeneralCodingRules.NO_CLASSES_SHOULD_USE_JAVA_UTIL_LOGGING
+                    .because("development.md: logging goes through SLF4J");
+
     // --- Conditions ---
 
     private static ArchCondition<JavaClass> dependOnAnotherFeaturesUiOnlyThroughRouting() {
@@ -280,6 +309,30 @@ class ArchitectureTest {
                                     + " in its constructor but has no field for it,"
                                     + " so only a lambda can be holding it"));
                         }
+                    }
+                }
+            }
+        };
+    }
+
+    // Transactional means annotated itself, or public in a class annotated at class level.
+    private static ArchCondition<JavaClass> notCallTheirOwnTransactionalMethods() {
+        return new ArchCondition<>("not call their own @Transactional methods") {
+            @Override
+            public void check(JavaClass repository, ConditionEvents events) {
+                boolean classTransactional = repository.isAnnotatedWith(Transactional.class);
+                for (JavaMethodCall call : repository.getMethodCallsFromSelf()) {
+                    if (!call.getTargetOwner().equals(repository)) {
+                        continue;
+                    }
+                    boolean transactional = call.getTarget().resolveMember()
+                            .map(method -> method.isAnnotatedWith(Transactional.class)
+                                    || (classTransactional && method.getModifiers().contains(JavaModifier.PUBLIC)))
+                            .orElse(false);
+                    if (transactional) {
+                        events.add(SimpleConditionEvent.violated(call, repository.getSimpleName() + "."
+                                + call.getOrigin().getName() + " calls its own transactional method "
+                                + call.getTarget().getName() + " past the proxy"));
                     }
                 }
             }

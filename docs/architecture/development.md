@@ -174,6 +174,11 @@ public class PetRepository {
   `@Transactional` method in the feature's `domain` package that performs both —
   not two calls from the view. What that means at runtime is in
   [`process.md`](process.md#transaction-boundaries).
+- **No self-invocation.** A repository never calls one of its own transactional
+  methods — which, with the class-level annotation, is every public one. The
+  call does not pass through the Spring proxy, so the callee's `@Transactional`
+  is silently ignored: a write called from a read would run inside the read-only
+  transaction. What needs both is one method.
 
 ## Vaadin view conventions
 
@@ -241,6 +246,16 @@ public class PetRepository {
   `HasErrorParameter<NotFoundException>` (HTTP 404), `ApplicationErrorView`
   handles `HasErrorParameter<Exception>` (HTTP 500). Both delegate rendering to
   `ErrorPanel`, and neither shows a stack trace — message only (NFR-004).
+
+## General coding rules
+
+- **Constructor injection only, never field injection.** It keeps a class's
+  dependencies visible in one place, and the `transient` repository rule above
+  relies on the repository arriving through the constructor.
+- **Never throw a generic `Exception`, `RuntimeException`, or `Throwable`.**
+  Throw a type that says what went wrong, so a caller — or an error view — can
+  tell one failure from another.
+- **No `java.util.logging`.** Spring Boot routes logging through SLF4J.
 
 ## Flyway
 
