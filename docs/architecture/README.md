@@ -119,8 +119,11 @@ are separate transactions, so the constraint is the backstop*) → the `pet`
 module's form, queries, and migration → a test method annotated
 `@UseCase(id = "UC-007", businessRules = "BR-001", scenario = "A1: Duplicate Pet Name for Owner")`.
 
-Three of the arrows are enforced. `BusinessRuleTraceabilityTest` fails the
-build when a use case and the catalogue disagree about a `GR-NNN`;
+Four of the arrows are enforced. `RequirementTraceabilityTest` fails the build
+when a use case's `**Requirements:**` line and the *Use Cases* column of
+[`requirements.md`](../requirements.md) disagree, or when a functional
+requirement is realized by no use case; `BusinessRuleTraceabilityTest` fails it
+when a use case and the catalogue disagree about a `GR-NNN`;
 `UseCaseTraceabilityTest` and `TestCaseTraceabilityTest` fail it when an
 annotation points at a use case, flow, or business rule that does not exist.
 
@@ -139,7 +142,7 @@ specified.
 | Layer          | Question it answers                              | Kind           | Parts                                                                                                                  | Binds                  |
 |----------------|--------------------------------------------------|----------------|------------------------------------------------------------------------------------------------------------------------|------------------------|
 | **Guides**     | What should the agent do, and how?               | before, prose  | `CLAUDE.md`, the specifications in `docs/`, the five views, the ADRs, the `aiup-*` skills                               | whoever reads them     |
-| **Sensors**    | Does the repository still agree with the guides? | after, code    | `ArchitectureTest`, `TestLayerConventionsTest`, the three traceability tests; then the full suite and the quality gate | everyone, CI included  |
+| **Sensors**    | Does the repository still agree with the guides? | after, code    | `ArchitectureTest`, `TestLayerConventionsTest`, the four traceability tests; then the full suite and the quality gate  | everyone, CI included  |
 | **Guards**     | Did this session actually run the sensors?       | during, hooks  | the scripts in `.claude/hooks/`, wired up by `.claude/settings.json`                                                    | a Claude Code session  |
 | **Backstop**   | Does it hold for everybody else?                 | after, CI      | `.github/workflows/build.yml`: `smoke.sh`, then the Maven build and SonarQube                                           | every push             |
 
@@ -164,10 +167,11 @@ model. The views and ADRs say *how*. The skills (`aiup-vaadin-jooq:implement`,
 `:browserless-test`, `:playwright-test`, `:coverage-check`) turn both into a
 repeatable procedure, so the tenth use case gets built the way the first one was.
 
-**Sensors** are feedback. The five sensor classes read the repository from disk
+**Sensors** are feedback. The six sensor classes read the repository from disk
 and compare it with the guides: ArchUnit checks the code against the
 [Development View](development.md), and the traceability tests check the tests
-against the use cases, test cases and business rules
+against the use cases, test cases and business rules, and the use cases against
+the requirements
 ([ADR-007](adr/ADR-007-traceability-sensors.md),
 [`testing.md`](testing.md#the-traceability-sensors)). They are deterministic,
 and they are built to be read by the agent. Every violation is listed at once

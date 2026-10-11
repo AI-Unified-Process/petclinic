@@ -38,11 +38,11 @@ run() { # hook json → exit code
     set +e; printf '%s' "$2" | "$hooks/$1" >/dev/null 2>&1; local code=$?; set -e; echo "$code"
 }
 present() { if [ -e "$1" ]; then echo present; else echo absent; fi; }
-reports() { # green | failed | none — the Surefire reports of the five sensors
+reports() { # green | failed | none — the Surefire reports of the six sensors
     local dir="$tmp/target/surefire-reports" name
     rm -rf "$dir"; [ "$1" = none ] && return 0
     mkdir -p "$dir"
-    for name in ArchitectureTest TestLayerConventionsTest UseCaseTraceabilityTest TestCaseTraceabilityTest BusinessRuleTraceabilityTest; do
+    for name in ArchitectureTest TestLayerConventionsTest UseCaseTraceabilityTest TestCaseTraceabilityTest BusinessRuleTraceabilityTest RequirementTraceabilityTest; do
         if [ "$1" = green ]; then
             printf '<?xml version="1.0"?>\n<testsuite name="x.%s" time="0.1" tests="3" errors="0" skipped="0" failures="0">\n</testsuite>\n' "$name"
         else
@@ -197,7 +197,7 @@ git worktree add -q "$tmp/wt" -b wt
     sleep 0.1 # the report has to be strictly newer than the change, and mtimes are coarse on Linux
     reports() { :; }
     mkdir -p target/surefire-reports
-    for name in ArchitectureTest TestLayerConventionsTest UseCaseTraceabilityTest TestCaseTraceabilityTest BusinessRuleTraceabilityTest; do
+    for name in ArchitectureTest TestLayerConventionsTest UseCaseTraceabilityTest TestCaseTraceabilityTest BusinessRuleTraceabilityTest RequirementTraceabilityTest; do
         printf '<testsuite name="x" tests="1" errors="0" skipped="0" failures="0">\n</testsuite>\n' > "target/surefire-reports/TEST-ai.unifiedprocess.petclinic.$name.xml"
     done
     run record-sensor-run.sh "$full" >/dev/null

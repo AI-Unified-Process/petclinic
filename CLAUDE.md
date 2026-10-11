@@ -30,12 +30,14 @@ something, read the relevant spec first:
   [`docs/architecture/README.md`](docs/architecture/README.md) says which
   document answers which question.
 
-Three sensors (`./mvnw test`) enforce the links between the documents and the
-code: `UseCaseTraceabilityTest`, `TestCaseTraceabilityTest`, and
-`BusinessRuleTraceabilityTest` — the last one between `docs/business_rules.md`
-and the use cases that reference a `GR-NNN`. Because of the first two a
-`Status:` line (`Done`/`Tested` on a use case, `Automated` on a test case) is
-an assertion that switches the sensor on, not a label — run
+Four sensors (`./mvnw test`) enforce the links between the documents and the
+code: `UseCaseTraceabilityTest`, `TestCaseTraceabilityTest`,
+`BusinessRuleTraceabilityTest` — between `docs/business_rules.md` and the use
+cases that reference a `GR-NNN` — and `RequirementTraceabilityTest`, between
+`docs/requirements.md` and the `**Requirements:**` line of every use case.
+Because of the first two a `Status:` line (`Done`/`Tested` on a use case,
+`Automated` on a test case) is an assertion that switches the sensor on, not a
+label — run
 `aiup-vaadin-jooq:coverage-check` first; the hooks refuse a status set without
 it. What each sensor checks is in
 [`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors).
@@ -66,10 +68,10 @@ The full table, with the decisions behind each choice, is in
 
 # Unit / server-side tests: Surefire runs every *Test class
 # (browserless Vaadin view tests, UC<NNN><Name>Test, the ArchUnit rules in
-# ArchitectureTest and TestLayerConventionsTest, and the three traceability sensors)
+# ArchitectureTest and TestLayerConventionsTest, and the four traceability sensors)
 ./mvnw test
 
-# Only the sensors (ArchitectureTest, TestLayerConventionsTest and the three
+# Only the sensors (ArchitectureTest, TestLayerConventionsTest and the four
 # traceability sensors): seconds, no Docker. The run the Stop hook asks for.
 ./mvnw -q test -Dgroups=sensor
 

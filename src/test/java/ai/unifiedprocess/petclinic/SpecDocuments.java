@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * The bits of markdown handling that both traceability sensors share.
+ * The bits of markdown handling that the traceability sensors share.
  *
  * <p>{@link UseCaseTraceabilityTest} reads {@code docs/use_cases/} and
  * {@link TestCaseTraceabilityTest} reads {@code docs/test_cases/}, but the two

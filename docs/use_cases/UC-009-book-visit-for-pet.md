@@ -6,7 +6,8 @@
 **Use Case Name:** Book Visit for Pet   
 **Primary Actor:** Clinic User   
 **Goal:** Record a veterinary visit for an existing pet, documenting the date and the reason for the appointment.   
-**Status:** Approved
+**Status:** Approved   
+**Requirements:** [FR-018, FR-019, FR-020, FR-021, FR-022, FR-023](../requirements.md)
 
 ## Preconditions
 

@@ -90,7 +90,7 @@ Each sensor rejects its own annotation anywhere else.
 
 ## The traceability sensors
 
-`docs/` is the source of truth, and three sensors make that claim checkable. All run in `./mvnw test`, all read the
+`docs/` is the source of truth, and four sensors make that claim checkable. All run in `./mvnw test`, all read the
 documents from disk rather than trusting a summary, and all list every violation at once so the failure reads as a
 work list:
 
@@ -99,11 +99,12 @@ work list:
 | `UseCaseTraceabilityTest`      | `docs/use_cases/` ↔ `@UseCase` methods       | the `@UseCase` annotation      |
 | `TestCaseTraceabilityTest`     | `docs/test_cases/` ↔ `TC<NNN>…IT` classes    | the class name and `@TestCase` |
 | `BusinessRuleTraceabilityTest` | `docs/business_rules.md` ↔ `docs/use_cases/` | the `GR-NNN` id and its link   |
+| `RequirementTraceabilityTest`  | `docs/requirements.md` ↔ `docs/use_cases/`   | the `**Requirements:**` line   |
 
 The shared markdown handling (the `**Status:**` pattern, the file scan, the violation report) lives in
 `SpecDocuments`, so the document format is described in one place.
 
-All five sensor classes — these three and the two ArchUnit classes, `ArchitectureTest` and `TestLayerConventionsTest` —
+All six sensor classes — these four and the two ArchUnit classes, `ArchitectureTest` and `TestLayerConventionsTest` —
 carry the JUnit tag `sensor`. `./mvnw -q test -Dgroups=sensor` runs them alone, in seconds and without Docker: the
 `sensors` profile in the POM skips jOOQ code generation and JaCoCo for that run. It is the run the Stop hook asks for
 (ADR-011); the full suite remains the definition of done.
@@ -154,6 +155,28 @@ each other, and markdown enforces nothing. What the sensor checks:
 
 There is no status line here and nothing is exempt: unlike a use case, a shared rule has no "not written yet" state —
 it exists or it does not.
+
+### Requirements — `RequirementTraceabilityTest`
+
+The first arrow of `Requirement → Use Case → … → Test`. Every use case names the requirements it realizes in a
+`**Requirements:** [FR-014, FR-015, C-011](../requirements.md)` line right after its `**Status:**` — the format the
+`aiup-core:use-case-spec` skill writes and `aiup-core:spec-review` reads — and
+[`../requirements.md`](../requirements.md) mirrors it in a *Use Cases* column, so the trace reads from either end.
+What the sensor checks:
+
+- every id a use case lists is a row of the catalogue, and every use case the catalogue names exists,
+- the *Use Cases* cell of a requirement names exactly the use cases whose `**Requirements:**` line lists it — in both
+  directions, as with the `**Realized by:**` line of a shared rule,
+- every `FR-NNN` is realized by at least one use case, and every use case realizes at least one `FR-NNN`. An `NFR-NNN`
+  or `C-NNN` may stand without one (`—`): it constrains how the system is built or tested, and the architecture
+  answers for it, not a use case,
+- the requirements a `GR-NNN` comes from (the *From* column of the business rule catalogue) are listed by the use
+  cases applying that rule, so the chain through `business_rules.md` does not skip a link,
+- a requirement's status follows its use cases: *Verified* when every one is `Done` or `Tested`, *Implemented* when
+  every one is at least `Implemented` — the same derivation `spec-review` reports as `REQ_STATUS_DRIFT`.
+
+The link is made in the use case; the column is its mirror. When a use case starts realizing a requirement, add the id
+to its `**Requirements:**` line and the use case to the requirement's row, and the sensor confirms the two agree.
 
 ### Test cases — `TestCaseTraceabilityTest`
 

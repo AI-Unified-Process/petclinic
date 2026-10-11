@@ -7,7 +7,8 @@
 **Primary Actor:** Clinic User   
 **Goal:** Register a new pet under an existing owner so that visits and medical information can subsequently be tracked
 for it.   
-**Status:** Approved
+**Status:** Approved   
+**Requirements:** [FR-014, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
 
 ## Preconditions
 
