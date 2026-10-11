@@ -6,7 +6,7 @@
 **Goal:** A clinic user finds an owner among several with the same last name and corrects the birth date of one of the owner's pets — verifying the corrected pet is shown under the right owner.  
 **Priority:** Medium  
 **Status:** Automated  
-**Process:** [customer-record-maintenance.bpmn](../processes/customer-record-maintenance.bpmn) — Owner reports changed details → UC-004 Find Owners by Last Name → UC-005 View Owner Details → What changed? pet details → UC-008 Update Pet → Record updated
+**Process:** [BP-006 Update Pet](../processes/BP-006-update-pet.bpmn) — Owner reports changed pet details → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → Pet on record? yes → UC-008 Update Pet → Pet details updated
 
 ## Roles
 
@@ -14,9 +14,8 @@
 
 ## Preconditions
 
-- Two owners whose last name starts with "Davis" exist — "Betty Davis" and "Harold Davis" (Flyway test data `V2__seed_reference_data.sql`) — so the search shows the Owners List.
-- Harold Davis owns the pet "Iggy" (lizard, born 2000-11-30) (Flyway test data `V2__seed_reference_data.sql`).
-- The decision "What changed? pet details" is forced by the journey itself: the caller reports a wrong birth date for a pet, not a change to their own details.
+- Two owners whose last name starts with "Davis" exist — "Betty Davis" and "Harold Davis" (Flyway test data `V2__seed_reference_data.sql`) — so the search shows the Owners List and forces "Owner on record? yes".
+- Harold Davis owns the pet "Iggy" (lizard, born 2000-11-30) (Flyway test data `V2__seed_reference_data.sql`) — this forces "Pet on record? yes".
 
 ## Flow
 

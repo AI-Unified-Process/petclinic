@@ -6,7 +6,7 @@
 **Goal:** A visitor arrives on the welcome page and finds out which veterinarian holds which specialty, without any customer data being involved.  
 **Priority:** Low  
 **Status:** Automated  
-**Process:** [veterinarian-lookup.bpmn](../processes/veterinarian-lookup.bpmn) — Visitor looks for a veterinarian → UC-001 View Welcome Page → UC-002 View Veterinarians → Specialties known
+**Process:** [BP-001 View Veterinarians](../processes/BP-001-view-veterinarians.bpmn) — Visitor looks for a veterinarian → UC-001 View Welcome Page → UC-002 View Veterinarians → Specialties known
 
 ## Roles
 

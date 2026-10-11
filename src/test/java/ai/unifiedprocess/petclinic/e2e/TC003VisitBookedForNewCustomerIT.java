@@ -39,8 +39,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Executes test case TC-003 (docs/test_cases/TC-003-visit-booked-for-new-customer.md),
- * the "Owner registered? no" path of the Visit Booking process
- * (docs/processes/visit-booking.bpmn): a clinic user searches for a caller by
+ * the Register New Owner, Add Pet and Book Visit processes
+ * (docs/processes/BP-002, BP-004, BP-005): a clinic user searches for a caller by
  * last name and finds nobody (UC-004), registers the owner (UC-003), adds a pet
  * (UC-007) and books the pet's first visit (UC-009).
  *
@@ -171,7 +171,7 @@ class TC003VisitBookedForNewCustomerIT extends AbstractBasePlaywrightIT {
 
     /**
      * Step 2: nobody matches, so Find Owners stays open with "not found" on the
-     * last-name field (UC-004 A3) — the "Owner registered? no" decision.
+     * last-name field (UC-004 A3) — the "Owner already on record? no" decision.
      */
     private void verifyOwnerUnknown() {
         TextFieldElement lastName = TextFieldElement.getByLabel(page, "Last name");

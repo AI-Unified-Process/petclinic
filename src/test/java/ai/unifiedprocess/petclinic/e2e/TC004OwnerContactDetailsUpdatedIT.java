@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Executes test case TC-004 (docs/test_cases/TC-004-owner-contact-details-updated.md),
- * the "What changed? owner contact details" path of the Customer Record
- * Maintenance process (docs/processes/customer-record-maintenance.bpmn): a
+ * the "Owner on record? yes" path of the Update Owner
+ * process (docs/processes/BP-003-update-owner.bpmn): a
  * clinic user finds an owner (UC-004), reviews his details (UC-005) and updates
  * address and telephone (UC-006).
  *

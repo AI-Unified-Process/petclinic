@@ -38,8 +38,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Executes test case TC-001 (docs/test_cases/TC-001-visit-booked-for-known-pet.md),
- * the "Owner registered? yes / Pet registered? yes" path of the Visit Booking
- * process (docs/processes/visit-booking.bpmn): a clinic user finds an existing
+ * the "Owner on record? yes / Pet on record? yes" path of the Book Visit
+ * process (docs/processes/BP-005-book-visit.bpmn): a clinic user finds an existing
  * owner (UC-004), reviews her details (UC-005) and books a visit for a pet
  * already on record (UC-009).
  *
@@ -130,7 +130,7 @@ class TC001VisitBookedForKnownPetIT extends AbstractBasePlaywrightIT {
         assertExactText("(no visits yet)");
     }
 
-    /** Step 3: "Pet registered? yes" — the pet is listed, and it is the only one. */
+    /** Step 3: "Pet on record? yes" — the pet is listed, and it is the only one. */
     private void verifyPetOnRecord() {
         assertThat(page.getByRole(AriaRole.HEADING,
                 new Page.GetByRoleOptions().setName(PET_NAME).setExact(true))).hasCount(1);

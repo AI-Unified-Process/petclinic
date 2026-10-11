@@ -40,8 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Executes test case TC-002 (docs/test_cases/TC-002-visit-booked-for-new-pet.md),
- * the "Owner registered? yes / Pet registered? no" path of the Visit Booking
- * process (docs/processes/visit-booking.bpmn): a clinic user finds an existing
+ * the Add Pet process (docs/processes/BP-004-add-pet.bpmn) followed by the
+ * Book Visit process (docs/processes/BP-005-book-visit.bpmn): a clinic user finds an existing
  * owner (UC-004), reviews his details (UC-005), adds the animal the clinic has
  * not seen before (UC-007) and books its first visit (UC-009).
  *
@@ -129,7 +129,7 @@ class TC002VisitBookedForNewPetIT extends AbstractBasePlaywrightIT {
         assertOnOwnerDetails();
     }
 
-    /** Step 2: "Pet registered? no" — only the seeded pet is on record. */
+    /** Step 2: the new pet is not on record yet — only the seeded pet is on record. */
     private void reviewOwnerDetails() {
         assertExactText(OWNER_NAME);
         assertExactText(ADDRESS);

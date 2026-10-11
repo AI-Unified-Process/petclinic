@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Executes test case TC-006 (docs/test_cases/TC-006-veterinarian-specialties-found.md),
- * the single path of the Veterinarian Lookup process
- * (docs/processes/veterinarian-lookup.bpmn): an anonymous visitor opens the
+ * the single path of the View Veterinarians process
+ * (docs/processes/BP-001-view-veterinarians.bpmn): an anonymous visitor opens the
  * welcome page (UC-001) and browses the veterinarians (UC-002).
  *
  * <p>Read-only: the journey creates and changes nothing, so there is no cleanup.

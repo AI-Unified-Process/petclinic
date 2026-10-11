@@ -6,7 +6,7 @@
 **Goal:** A clinic user finds an existing owner who brings an animal the clinic has not seen before, adds that pet to the owner and books its first visit — verifying the new pet and its visit appear next to the owner's existing pet.  
 **Priority:** High  
 **Status:** Automated  
-**Process:** [visit-booking.bpmn](../processes/visit-booking.bpmn) — Owner requests a visit → UC-004 Find Owners by Last Name → Owner registered? yes → UC-005 View Owner Details → Pet registered? no → UC-007 Add Pet to Owner → UC-009 Book Visit for Pet → Visit booked
+**Process:** [BP-004 Add Pet](../processes/BP-004-add-pet.bpmn), then [BP-005 Book Visit](../processes/BP-005-book-visit.bpmn) — Owner reports a new animal → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → UC-007 Add Pet to Owner → Animal on record; the visit is then booked for the new pet: UC-009 Book Visit for Pet → Visit booked
 
 ## Roles
 
@@ -14,8 +14,8 @@
 
 ## Preconditions
 
-- The owner "Jeff Black", 1450 Oak Blvd., Monona, 6085555387, exists and is the only owner whose last name starts with "Black" (Flyway test data `V2__seed_reference_data.sql`) — this forces "Owner registered? yes".
-- Jeff Black owns only the pet "Lucky" (bird) and no pet named "Pepper" (Flyway test data `V2__seed_reference_data.sql`) — this forces "Pet registered? no".
+- The owner "Jeff Black", 1450 Oak Blvd., Monona, 6085555387, exists and is the only owner whose last name starts with "Black" (Flyway test data `V2__seed_reference_data.sql`) — this forces "Owner on record? yes".
+- Jeff Black owns only the pet "Lucky" (bird) and no pet named "Pepper" (Flyway test data `V2__seed_reference_data.sql`) — the pet the caller brings is not on record yet, which is why BP-004 Add Pet runs before BP-005 Book Visit.
 - The pet type "hamster" exists (Flyway test data `V2__seed_reference_data.sql`).
 
 ## Flow

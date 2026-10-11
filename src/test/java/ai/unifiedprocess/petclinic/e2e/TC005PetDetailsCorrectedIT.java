@@ -35,8 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Executes test case TC-005 (docs/test_cases/TC-005-pet-details-corrected.md),
- * the "What changed? pet details" path of the Customer Record Maintenance
- * process (docs/processes/customer-record-maintenance.bpmn): a clinic user
+ * the "Owner on record? yes / Pet on record? yes" path of the Update Pet
+ * process (docs/processes/BP-006-update-pet.bpmn): a clinic user
  * picks an owner from several matches (UC-004), reviews his details (UC-005)
  * and corrects a pet's birth date (UC-008).
  *
