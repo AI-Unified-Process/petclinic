@@ -6,7 +6,7 @@
 **Goal:** A clinic user finds an owner who has moved and changed number, and updates the owner's address and telephone — verifying the new contact details are what a later search shows.  
 **Priority:** Medium  
 **Status:** Approved  
-**Process:** [customer-record-maintenance.bpmn](../processes/customer-record-maintenance.bpmn) — Owner reports changed details → UC-004 Find Owners by Last Name → UC-005 View Owner Details → What changed? owner contact details → UC-006 Update Owner → Record updated
+**Process:** [BP-003 Update Owner](../processes/BP-003-update-owner.bpmn) — Owner reports changed contact details → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → UC-006 Update Owner → Contact details updated
 
 ## Roles
 
@@ -15,7 +15,6 @@
 ## Preconditions
 
 - The owner "George Franklin", 110 W. Liberty St., Madison, 6085551023, exists and is the only owner whose last name starts with "Franklin" (Flyway test data `V2__seed_reference_data.sql`), so the search lands directly on his details.
-- The decision "What changed? owner contact details" is forced by the journey itself: the caller reports a new address and telephone, not a change to a pet.
 
 ## Flow
 

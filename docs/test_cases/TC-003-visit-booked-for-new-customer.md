@@ -6,7 +6,7 @@
 **Goal:** A clinic user searches for a caller who turns out not to be a customer yet, registers the owner, adds the pet and books its first visit — verifying owner, pet and visit are linked on the Owner Details view.  
 **Priority:** Critical  
 **Status:** Approved  
-**Process:** [visit-booking.bpmn](../processes/visit-booking.bpmn) — Owner requests a visit → UC-004 Find Owners by Last Name → Owner registered? no → UC-003 Register New Owner → UC-007 Add Pet to Owner → UC-009 Book Visit for Pet → Visit booked
+**Process:** [BP-002 Register New Owner](../processes/BP-002-register-new-owner.bpmn), then [BP-004 Add Pet](../processes/BP-004-add-pet.bpmn), then [BP-005 Book Visit](../processes/BP-005-book-visit.bpmn) — New client wants to register → UC-004 Find Owners by Last Name → Owner already on record? no → UC-003 Register New Owner → Owner registered; then UC-007 Add Pet to Owner → Animal on record; then UC-009 Book Visit for Pet → Visit booked
 
 ## Roles
 
@@ -14,7 +14,7 @@
 
 ## Preconditions
 
-- No owner whose last name starts with "Keller" exists — the seeded owners use other last names (Flyway test data `V2__seed_reference_data.sql`) — this forces "Owner registered? no".
+- No owner whose last name starts with "Keller" exists — the seeded owners use other last names (Flyway test data `V2__seed_reference_data.sql`) — this forces "Owner already on record? no".
 - The pet type "dog" exists (Flyway test data `V2__seed_reference_data.sql`).
 
 ## Flow

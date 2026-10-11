@@ -6,7 +6,7 @@
 **Goal:** A clinic user finds an existing owner, picks one of the pets already on record and books a visit for it — verifying the visit is added to that pet's history.  
 **Priority:** High  
 **Status:** Approved  
-**Process:** [visit-booking.bpmn](../processes/visit-booking.bpmn) — Owner requests a visit → UC-004 Find Owners by Last Name → Owner registered? yes → UC-005 View Owner Details → Pet registered? yes → UC-009 Book Visit for Pet → Visit booked
+**Process:** [BP-005 Book Visit](../processes/BP-005-book-visit.bpmn) — Owner requests a visit → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → Pet on record? yes → UC-009 Book Visit for Pet → Visit booked
 
 ## Roles
 
@@ -14,8 +14,8 @@
 
 ## Preconditions
 
-- The owner "Maria Escobito", 345 Maple St., Madison, 6085557683, exists and is the only owner whose last name starts with "Escobito" (Flyway test data `V2__seed_reference_data.sql`) — this forces "Owner registered? yes" and makes the search land directly on her details.
-- Maria Escobito owns the pet "Mulligan" (dog, born 1997-02-24) with no visits (Flyway test data `V2__seed_reference_data.sql`) — this forces "Pet registered? yes".
+- The owner "Maria Escobito", 345 Maple St., Madison, 6085557683, exists and is the only owner whose last name starts with "Escobito" (Flyway test data `V2__seed_reference_data.sql`) — this forces "Owner on record? yes" and makes the search land directly on her details.
+- Maria Escobito owns the pet "Mulligan" (dog, born 1997-02-24) with no visits (Flyway test data `V2__seed_reference_data.sql`) — this forces "Pet on record? yes".
 
 ## Flow
 
