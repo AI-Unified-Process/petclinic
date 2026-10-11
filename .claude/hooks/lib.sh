@@ -119,7 +119,7 @@ aiup_unverified() {
 
 # The classes whose Surefire reports prove that the sensors ran. All carry the
 # JUnit tag "sensor", so `./mvnw test -Dgroups=sensor` runs exactly these.
-AIUP_SENSORS="ArchitectureTest TestLayerConventionsTest UseCaseTraceabilityTest TestCaseTraceabilityTest BusinessRuleTraceabilityTest"
+AIUP_SENSORS="ArchitectureTest TestLayerConventionsTest UseCaseTraceabilityTest TestCaseTraceabilityTest BusinessRuleTraceabilityTest RequirementTraceabilityTest"
 
 # aiup_sensor_reports_ok <since>: every sensor's Surefire report exists, is
 # newer than <since>, ran at least one test, and had no failure or error.

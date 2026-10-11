@@ -6,7 +6,8 @@
 **Use Case Name:** Update Pet   
 **Primary Actor:** Clinic User   
 **Goal:** Modify the details of an existing pet (name, birth date, or type).   
-**Status:** Done
+**Status:** Done   
+**Requirements:** [FR-017, FR-015, FR-016, FR-022, FR-023](../requirements.md)
 
 ## Preconditions
 

@@ -291,7 +291,7 @@ What `verify` does, in order:
 
 **Docker must be running** for `generate-sources`, `test` and `verify` (C-007).
 The exception is `test -Dgroups=sensor`: the `sensors` profile it activates skips
-code generation and JaCoCo and runs only the five classes tagged `sensor`, so it
+code generation and JaCoCo and runs only the six classes tagged `sensor`, so it
 needs no container once the generated sources exist.
 
 CI is `.github/workflows/build.yml`: the hook smoke test, then `mvn -B verify`

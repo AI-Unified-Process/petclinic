@@ -6,7 +6,8 @@
 **Use Case Name:** Register New Owner   
 **Primary Actor:** Clinic User   
 **Goal:** Add a new pet owner to the clinic so that their pets and visits can subsequently be tracked.   
-**Status:** Done
+**Status:** Done   
+**Requirements:** [FR-004, FR-005, FR-006, FR-022, FR-023](../requirements.md)
 
 ## Preconditions
 

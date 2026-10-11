@@ -6,7 +6,8 @@
 **Use Case Name:** View Veterinarians   
 **Primary Actor:** Visitor   
 **Goal:** Browse the list of veterinarians employed at the clinic along with their specialties.   
-**Status:** Done
+**Status:** Done   
+**Requirements:** [FR-003, NFR-001, NFR-002, NFR-003, C-010, C-011](../requirements.md)
 
 ## Preconditions
 

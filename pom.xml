@@ -315,7 +315,7 @@
 
     <profiles>
         <!-- `./mvnw test -Dgroups=sensor` runs only the classes tagged "sensor":
-             ArchitectureTest, TestLayerConventionsTest and the three traceability
+             ArchitectureTest, TestLayerConventionsTest and the four traceability
              sensors. They need neither a database nor coverage, so the profile
              that -Dgroups=sensor activates skips jOOQ code generation (Docker)
              and the JaCoCo agent. Seconds instead of minutes; the Stop hook in
