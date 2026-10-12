@@ -71,10 +71,15 @@ and a use case disagree, the use case wins:
 - [`docs/architecture/`](docs/architecture) — the 4+1 views (logical, process, development, physical), the code and
   test conventions the generated code must follow, and the ADRs behind them
 
-The link between specs and code is enforced by tests: `UseCaseTraceabilityTest` checks that every `@UseCase` annotation points
-at a use case, flow, and business rule that really exists, `TestCaseTraceabilityTest` does the same for the test
-cases, and `BusinessRuleTraceabilityTest` keeps the shared business rules and the use cases that reference them in
-agreement.
+The link between specs and code is enforced by tests, the *sensors*: `UseCaseTraceabilityTest` checks that every
+`@UseCase` annotation points at a use case, flow, and business rule that really exists, `TestCaseTraceabilityTest` does
+the same for the test cases, `BusinessRuleTraceabilityTest` keeps the shared business rules and the use cases that
+reference them in agreement, and `RequirementTraceabilityTest` does the same for the requirements. Together with the
+ArchUnit rules in `ArchitectureTest` and `TestLayerConventionsTest` they run in seconds, without Docker:
+`./mvnw -q test -Dgroups=sensor`. What each sensor checks is in
+[`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors), and how they fit into the
+harness is in [`docs/architecture/README.md`](docs/architecture/README.md#the-harness) and
+[ADR-007](docs/architecture/adr/ADR-007-traceability-sensors.md).
 
 The guardrails an AI coding agent works under are part of the repository too: the Claude Code hooks in
 [`.claude/`](.claude) refuse to end a turn while changed code or specs are unverified, and
