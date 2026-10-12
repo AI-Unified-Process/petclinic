@@ -23,3 +23,24 @@ updates:
       github-actions:
         patterns:
           - "*"
+  # The same updates for the start branch, so the talk's starting point builds
+  # on the same versions as main. Dependabot reads this file only from main.
+  - package-ecosystem: "maven"
+    directory: "/"
+    target-branch: "start"
+    schedule:
+      interval: "daily"
+    groups:
+      maven:
+        update-types:
+          - "minor"
+          - "patch"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "start"
+    schedule:
+      interval: "daily"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
