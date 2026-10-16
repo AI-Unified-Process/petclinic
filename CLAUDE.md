@@ -6,7 +6,8 @@ Guidance for Claude Code when working in this repository.
 
 Demo for a talk on **Spec-Driven Development with the AI Unified Process
 (AIUP)**. Re-implements the classic Spring PetClinic by writing the specs
-first (`docs/`) and generating code against them.
+first (`docs/`) and generating code against them — here as an Angular
+frontend over a Quarkus REST API with JPA.
 
 **`docs/` is the source of truth, not the code.** When asked to implement
 something, read the relevant spec first:
@@ -30,7 +31,7 @@ something, read the relevant spec first:
   [`docs/architecture/README.md`](docs/architecture/README.md) says which
   document answers which question.
 
-Four sensors (`./mvnw test`) enforce the links between the documents and the
+Four sensors (`mvn test`) enforce the links between the documents and the
 code: `UseCaseTraceabilityTest`, `TestCaseTraceabilityTest`,
 `BusinessRuleTraceabilityTest` — between `docs/business_rules.md` and the use
 cases that reference a `GR-NNN` — and `RequirementTraceabilityTest`, between
@@ -38,7 +39,7 @@ cases that reference a `GR-NNN` — and `RequirementTraceabilityTest`, between
 Because of the first two a `Status:` line (`Done`/`Tested` on a use case,
 `Automated` on a test case) is an assertion that switches the sensor on, not a
 label — run
-`aiup-vaadin-jooq:coverage-check` first; the hooks refuse a status set without
+`aiup-angular-jpa:coverage-check` first; the hooks refuse a status set without
 it. What each sensor checks is in
 [`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors).
 
@@ -47,12 +48,14 @@ otherwise.
 
 ## Stack
 
-**Java 25**, **Spring Boot 4.1.1**, **Vaadin Flow 25.2**, **jOOQ** on
-**PostgreSQL**, schema owned by **Flyway**, **Testcontainers** for tests and for
-jOOQ code generation. Application code lives under
-`ai.unifiedprocess.petclinic`, package by feature; generated jOOQ sources under
-`ai.unifiedprocess.demo.petclinic.database` (the extra `demo` segment is
-deliberate).
+**Java 25**, **Quarkus 3.40** (Quarkus REST + Jackson), **Hibernate ORM with
+Panache** (repository pattern) on **PostgreSQL**, schema owned by **Flyway**,
+**Angular 22** (standalone components, signals, Angular Material) in
+`frontend/`, served by Quarkus from the frontend's build output. Backend code
+lives under `ai.unifiedprocess.petclinic`, package by feature (`api` +
+`domain`); the frontend under `frontend/src/app`, one folder per feature.
+There is no code generation: the entities are written by hand against the
+tables Flyway creates.
 
 The full table, with the decisions behind each choice, is in
 [`docs/architecture/development.md`](docs/architecture/development.md#technology-stack).
@@ -60,52 +63,63 @@ The full table, with the decisions behind each choice, is in
 ## Commands
 
 ```bash
-# Run the app locally (Testcontainers-backed Postgres via TestAiupPetclinicApplication)
-./mvnw spring-boot:test-run
+# Build the frontend. Quarkus serves frontend/dist/petclinic/browser, so every
+# browser test (UC<NNN><Name>Test with a page, TC<NNN><Name>IT) needs it built first.
+cd frontend && npm run build
 
-# Regenerate jOOQ sources after changing a Flyway migration
-./mvnw generate-sources
+# Frontend component tests: Vitest runs every *.spec.ts beside its component
+cd frontend && npm test
 
-# Unit / server-side tests: Surefire runs every *Test class
-# (browserless Vaadin view tests, UC<NNN><Name>Test, the ArchUnit rules in
-# ArchitectureTest and TestLayerConventionsTest, and the four traceability sensors)
-./mvnw test
+# Run the app locally: backend on :8080 (postgres database, cleaned, migrated
+# and seeded on start), frontend dev server on :4200 proxying /api to it
+mvn quarkus:dev
+cd frontend && npm start
+
+# Backend tests: Surefire runs every *Test class
+# (UC<NNN><Name>Test — REST Assured against /api and/or Playwright against the
+# built frontend — the ArchUnit rules in ArchitectureTest and
+# TestLayerConventionsTest, and the four traceability sensors)
+mvn test
 
 # Only the sensors (ArchitectureTest, TestLayerConventionsTest and the four
-# traceability sensors): seconds, no Docker. The run the Stop hook asks for.
-./mvnw -q test -Dgroups=sensor
+# traceability sensors): seconds, no Quarkus application, no database, no
+# frontend build. The run the Stop hook asks for.
+mvn -q test -Dgroups=sensor
 
 # Run a single *Test class / method
-./mvnw test -Dtest=UC004FindOwnersByLastNameTest
-./mvnw test -Dtest=UC004FindOwnersByLastNameTest#singleMatchNavigatesDirectlyToDetails
+mvn test -Dtest=UC004FindOwnersByLastNameTest
+mvn test -Dtest=UC004FindOwnersByLastNameTest#singleMatchNavigatesDirectlyToDetails
 
 # Integration tests: Failsafe runs every *IT class in the verify phase
-# (Playwright browser tests, UC<NNN><Name>IT / TC<NNN><Name>IT).
-# verify also runs jOOQ codegen, the frontend build, and all *Test first,
-# and writes the merged coverage report SonarQube reads.
-./mvnw verify
+# (the Playwright journeys TC<NNN><Name>IT, @QuarkusTest + @TestCase).
+# verify runs all *Test first; it does not build the frontend.
+mvn verify
 
 # Run a single *IT class
-./mvnw verify -Dit.test=TC001NewOwnerFirstVisitIT
-./mvnw verify -Dit.test=TC001NewOwnerFirstVisitIT -Dheadless=false   # watch the browser
+mvn verify -Dit.test=TC001NewOwnerFirstVisitIT
 ```
 
 Test class suffix decides the phase: `*Test` → `test` (Surefire),
-`*IT` → `verify` (Failsafe). Never name a browserless test `*IT` or a
-Playwright test `*Test` — `TestLayerConventionsTest` fails the build if you do,
-because the wrong suffix makes a test silently never run.
+`*IT` → `verify` (Failsafe). Never name a `UC*` use-case test `*IT` or a
+`@TestCase` journey `*Test` — `TestLayerConventionsTest` fails the build if you
+do, because the wrong suffix makes a test silently never run.
 
-Docker must be running for `test`, `verify`, and `generate-sources` — but not
-for `test -Dgroups=sensor`, once the generated sources exist. **If
-you add or change a migration, jOOQ classes won't update until you re-run
-`generate-sources` (or any later phase).**
+PostgreSQL runs locally on localhost:5432 (`vb-postgres start`); every Maven
+build makes sure it is running and that the `petclinic_test` database exists.
+There is no Docker, so Quarkus Dev Services are off. Tests use
+`petclinic_test`, cleaned and migrated at start and seeded from
+`src/test/resources/db/migration/V2__seed_reference_data.sql`. **If you
+change the frontend, rebuild it before running the browser tests — they test
+whatever `frontend/dist` holds.**
 
 ## Coverage
 
-Coverage spans **both** test layers and the two JaCoCo reports are merged, so a
-line reached only by a Playwright `*IT` counts as covered — **don't add a
-browserless test just to cover something a `TC<NNN><Name>IT` already
-exercises.** Only `./mvnw verify` produces the merged report. Details:
+Coverage comes from `quarkus-jacoco` and spans **both** Java test layers: the
+`TC<NNN><Name>IT` journeys are `@QuarkusTest`s too, so a line reached only by a
+journey counts as covered — **don't add a use-case test just to cover
+something a `TC<NNN><Name>IT` already exercises.** `mvn verify` runs both
+layers; the report is in `target/jacoco-report`. Vitest specs cover the
+frontend and do not count toward it. Details:
 [`docs/architecture/development.md`](docs/architecture/development.md#coverage).
 
 ## When to read the detailed guides
@@ -118,23 +132,23 @@ exercises.** Only `./mvnw verify` produces the merged report. Details:
   business rules, field labels, and navigation. The spec is the source of
   truth.
 
-- **Before implementing a use case, writing a view, adding a repository, or
-  touching anything in `src/main/java/`** → read
-  [`docs/architecture/development.md`](docs/architecture/development.md)
-  first. It covers the stack, package layout, jOOQ mapping patterns, the
-  transaction boundary, Vaadin view conventions, the shell exception, form
-  validation, error handling, the `*Repository` stereotype rule, and the
-  build. Much of it is enforced by ArchUnit in `ArchitectureTest`
-  (`./mvnw test`) — if you change a convention there, update the matching
-  rule in the same commit.
+- **Before implementing a use case, writing a page or a resource, adding a
+  repository, or touching anything in `src/main/java/` or `frontend/src/`** →
+  read [`docs/architecture/development.md`](docs/architecture/development.md)
+  first. It covers the stack, package and folder layout, JPA mapping patterns,
+  the transaction boundary, REST resource and Angular page conventions, the
+  shell, form validation, error handling, the `*Repository` naming and scope
+  rule, and the build. Much of it is enforced by ArchUnit in
+  `ArchitectureTest` (`mvn test`) — if you change a convention there, update
+  the matching rule in the same commit.
 
 - **Before changing a transaction, a save path, or anything about how the
   application behaves at runtime** → read
   [`docs/architecture/process.md`](docs/architecture/process.md). It holds the
-  transaction rule (the repository is the boundary, never a view), the
+  transaction rule (the repository is the boundary, never a resource), the
   check-then-act on duplicate pet names that the database backs up, and the
-  fact that nothing here is asynchronous — don't add a job, an event, or server
-  push that no use case asks for.
+  fact that nothing here is asynchronous — don't add a job, an event, or a
+  server push that no use case asks for.
 
 - **Before changing `.claude/` or wondering why a turn refuses to end** → the
   hooks in `.claude/hooks/` enforce what the sensors cannot: that they actually
@@ -148,13 +162,20 @@ exercises.** Only `./mvnw verify` produces the merged report. Details:
   for adding one: if it can be checked by reading the repository, it is a test,
   not a hook.
 
-- **Before writing or modifying any test under `src/test/java/`** → read
-  [`docs/architecture/testing.md`](docs/architecture/testing.md) first. It
-  covers `SpringBrowserlessTest`, the `UC<NNN><Name>Test` / `*IT` naming
-  rule, the `@UseCase` annotation, `PetClinicTestBase`, seed-data
-  conventions, locator patterns, the Playwright `*IT` layer, and what you
-  must **not** do (no public test getters, no `assertNotNull` on fields, no
-  field reach-in, no Karibu).
+- **Before writing or modifying any test under `src/test/java/` or a
+  `*.spec.ts`** → read [`docs/architecture/testing.md`](docs/architecture/testing.md)
+  first. It covers `BrowserTest`, REST Assured against `/api`, the
+  `UC<NNN><Name>Test` / `*IT` naming rule, the `@UseCase` annotation, seed-data
+  conventions, accessibility-role locators, the Playwright `*IT` layer, the
+  Vitest specs, and what you must **not** do (no CSS or XPath locators where a
+  role and an accessible name work, no assertions on a component's internal
+  state, no sleeps).
+
+The logical, physical and decision views —
+[`logical.md`](docs/architecture/logical.md),
+[`physical.md`](docs/architecture/physical.md) and
+[`adr/`](docs/architecture/adr) (why JPA with Panache, why an Angular SPA over
+a REST API, why Flyway owns the schema) — answer *why it is shaped this way*.
 
 Do not skip these. The files are short and kept current — drift between
 them and the code is a bug to fix, not a style preference to ignore.
@@ -166,17 +187,19 @@ Prefer these over ad-hoc generation:
 - `aiup-core:entity-model`, `aiup-core:use-case-spec`,
   `aiup-core:use-case-diagram`, `aiup-core:requirements` — authoring/updating
   specs in `docs/`.
-- `aiup-vaadin-jooq:flyway-migration` — generate `V*.sql` from the entity
+- `aiup-angular-jpa:flyway-migration` — generate `V*.sql` from the entity
   model.
-- `aiup-vaadin-jooq:implement` — implement a use case end-to-end (view +
-  jOOQ queries). Already honours `docs/architecture/development.md`.
-- `aiup-vaadin-jooq:browserless-test` — server-side Vaadin view tests
-  (`SpringBrowserlessTest`, `find()` locators), named `UC<NNN><Name>Test`, run
-  by `./mvnw test`. Default for UC tests; see `docs/architecture/testing.md`.
-- `aiup-vaadin-jooq:playwright-test` — browser-based tests with Drama
-  Finder, named `UC<NNN><Name>IT` / `TC<NNN><Name>IT`, run by
-  `./mvnw verify`. Use for test cases (TC-*) and journeys that need a real
-  browser. The `karibu-test` skill is obsolete.
+- `aiup-angular-jpa:implement` — implement a use case end-to-end (JPA entity
+  and repository, REST resource, Angular page). Already honours
+  `docs/architecture/development.md`.
+- `aiup-angular-jpa:spring-boot-test` — the backend test skill: `@QuarkusTest`
+  use-case tests (REST Assured, `BrowserTest`), named `UC<NNN><Name>Test`, run
+  by `mvn test`. Default for UC tests; see `docs/architecture/testing.md`.
+- `aiup-angular-jpa:vitest-test` — Angular component tests, `*.spec.ts` beside
+  the component, run by `npm test`.
+- `aiup-angular-jpa:playwright-test` — browser journeys extending
+  `BrowserTest`, named `TC<NNN><Name>IT`, run by `mvn verify`. Use for test
+  cases (TC-*) and journeys that span several use cases.
 - `aiup-core:test-case` — author `docs/test_cases/TC-NNN-*.md`.
-- `aiup-vaadin-jooq:coverage-check` — audit a UC/TC against code and tests
-  before changing its `Status:` line.
+- `aiup-angular-jpa:coverage-check` — audit a UC/TC against code and tests
+  before changing its `Status:` line (sub-agent `aiup-angular-jpa:uc-coverage`).

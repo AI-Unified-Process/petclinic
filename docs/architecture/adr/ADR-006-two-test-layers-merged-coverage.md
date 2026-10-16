@@ -1,4 +1,4 @@
-# ADR-006: Two test layers — browserless `*Test` and Playwright `*IT`
+# ADR-006: Two test layers — use-case `*Test` and journey `*IT` — plus Vitest
 
 **Status:** Accepted   
 **Date:** 2026-09-17   
@@ -11,35 +11,38 @@ screen's behaviour: validation, notifications, navigation, ordering. A **test
 case** is a journey across several use cases, and it is only convincing if a
 real browser walks it.
 
-Verifying everything in a browser is slow and flaky. Verifying everything
-server-side never proves the application actually renders and responds in a
-browser. Running both, but measuring coverage on only one, would push an agent
-into writing duplicate server-side tests for code an end-to-end test already
-covers.
+Walking every use case as a full journey is slow and brittle. Testing only the
+REST API never proves the page renders and responds in a browser; testing only
+Angular components with a mocked backend never proves the two halves agree.
+Measuring coverage on one layer only would push an agent into writing duplicate
+tests for code another layer already covers.
 
 ## Decision
 
-Two layers, distinguished by the class name suffix, which also decides the Maven
-phase:
+Two Java layers, distinguished by the class name suffix, which also decides the
+Maven phase, and a component layer in the frontend:
 
 | Layer | Name | Runner | Scope |
 |-------|------|--------|-------|
-| Vaadin Browserless Testing | `UC<NNN><Name>Test` | Surefire, `test` | one use case, server-side, no browser — **the default** |
-| Playwright + Drama Finder  | `TC<NNN><Name>IT` (or `UC<NNN><Name>IT`) | Failsafe, `verify` | a test case journey in a real browser |
+| `@QuarkusTest` + `BrowserTest` / REST Assured | `UC<NNN><Name>Test` | Surefire, `test` | one use case: its page in Playwright, its resource over `/api` — **the default** |
+| `@QuarkusTest` + `BrowserTest`, `@TestCase` | `TC<NNN><Name>IT` | Failsafe, `verify` | a test case journey in a real browser |
+| Vitest (`ng test`) | `*.spec.ts` beside the component | `npm test` | a component's own logic, `describe('UC-NNN: …')` |
 
-Both run against a real PostgreSQL from Testcontainers (NFR-007). JaCoCo runs in
-both JVMs, and `post-integration-test` **merges the two exec files** into the one
-report Sonar reads.
+Both Java layers run against a real PostgreSQL, the local server (NFR-007, C-007),
+and the built frontend. `quarkus-jacoco` instruments the `@QuarkusTest` runs and
+writes its report to `target/jacoco-report`. Vitest specs are not seen by the
+Java sensors; they never replace a `UC<NNN><Name>Test`.
 
 ## Consequences
 
-- **A line covered only by a Playwright `*IT` counts as covered,** so nobody
-  writes a browserless test just to satisfy the gate. That is the whole point of
-  the merge.
-- **Only `./mvnw verify` produces the merged report.** `./mvnw test` runs the
-  agent and stops before the merge — checking coverage after `test` shows a
-  number that is wrong by construction.
-- **Naming is load-bearing.** A browserless test called `*IT` never runs in
-  `test`; a Playwright test called `*Test` runs in the wrong phase and fails.
-- **The browser layer stays small** — one class per specified test case, and no
+- **Coverage counts what the application did, not which layer drove it.**
+  `quarkus-jacoco` instruments the application inside every `@QuarkusTest`,
+  journeys included, so nobody writes a use-case test just to satisfy the gate.
+- **Only `mvn verify` runs both layers.** `mvn test` stops before the journeys —
+  a coverage number read after `test` leaves them out by construction. And the
+  frontend must be built first, or every browser test fails.
+- **Naming is load-bearing.** A use-case test called `*IT` never runs in `test`;
+  a journey called `*Test` runs in the wrong phase. `TestLayerConventionsTest`
+  fails the build on either.
+- **The journey layer stays small** — one class per specified test case, and no
   more — because it is the expensive one.

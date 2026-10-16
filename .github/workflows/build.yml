@@ -7,8 +7,19 @@ on:
     types: [ opened, synchronize, reopened ]
 jobs:
   build:
-    name: Build and analyze
+    name: Build and test
     runs-on: ubuntu-latest
+    # The tests run against PostgreSQL, as in every environment (C-005, C-007).
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: petclinic_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -18,22 +29,20 @@ jobs:
         with:
           java-version: 25
           distribution: 'zulu' # Alternative distribution options are available.
-      - name: Cache SonarQube packages
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
       - name: Cache Maven packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      # Playwright downloads its browser on first use, outside ~/.m2. The
-      # version comes in transitively via dramafinder (1.59.0 today), so the
-      # POM hash is what invalidates this: a bumped Playwright fetches the
-      # browser it needs and the restore-key still saves the download.
+      # Playwright downloads its browser on first use, outside ~/.m2; the
+      # version is pinned in pom.xml, so the POM hash invalidates this.
       - name: Cache Playwright browsers
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -44,7 +53,13 @@ jobs:
       # test reaches; their smoke test needs only git and jq (ADR-011).
       - name: Check the session hooks
         run: ./.claude/hooks/smoke.sh
-      - name: Build and analyze
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=simasch_aiup-petclinic
+      # Quarkus serves the built frontend, so it is built before the backend's
+      # browser tests run.
+      - name: Build and test the frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+          npm test
+      - name: Build and test the backend
+        run: mvn -B verify

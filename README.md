@@ -1,10 +1,12 @@
-# AIUP PetClinic
+# AIUP PetClinic — Angular and Quarkus
 
-A demo project accompanying a talk on **Spec-Driven Development with the AI Unified Process (AIUP)**.
+A demo project accompanying a talk on **Spec-Driven Development with the AI Unified Process (AIUP)**, on an Angular
+frontend and a Quarkus backend with JPA.
 
 It revisits the classic [Spring PetClinic](https://github.com/spring-projects/spring-petclinic) sample, but built from
 the ground up using specifications first — use cases, an entity model, and UI flows — and then letting AI assistants
-implement the code against those specs.
+implement the code against those specs. It is the [AIUP PetClinic](https://github.com/AI-Unified-Process/petclinic)
+with the same specifications on a different stack.
 
 ## AI Unified Process
 
@@ -18,43 +20,36 @@ AI-assisted development. It keeps the artifacts that matter — use cases, domai
 drops the ceremony that doesn't. The result is a workflow where humans stay in charge of *intent* and AI handles the
 mechanical translation to code.
 
-This repository is the running example used in the talk.
+Because the specifications say *what* and not *how*, they carry over unchanged from one stack to another; only
+[`docs/architecture/`](docs/architecture) and the technical constraints in [`docs/requirements.md`](docs/requirements.md)
+change with the technology.
 
 ## Branches
 
-The repository has two branches, marking the beginning and the end of the demo.
+This project starts where the upstream project's demo starts: at the state of its `start` branch.
 
-| Branch  | Description                                                                                                                                                              |
+| State   | Description                                                                                                                                                              |
 |---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `start` | The state right after reverse-engineering the original Spring PetClinic. All ten use cases are specified in [`docs/`](docs/), but only UC-001 (welcome page) is built. **This is where the live demo begins.** |
-| `main`  | The end state: every use case implemented against those specifications, covered by server-side view tests and a Playwright end-to-end journey.                            |
+| start   | The state right after reverse-engineering the original Spring PetClinic. All ten use cases are specified in [`docs/`](docs/), but only UC-001 (welcome page) is built, together with the application-error handling of UC-010. **This is where the live demo begins.** |
 
-`main` is a single commit on top of `start`, so the whole demo is one diff:
+The upstream project, [AI-Unified-Process/petclinic](https://github.com/AI-Unified-Process/petclinic), also has the end
+state on its `main` branch: every use case implemented against those specifications, in Vaadin Flow and jOOQ. This
+project has no such branch; the remaining use cases are the work to do here.
 
-```bash
-git diff start main
-```
-
-To follow along yourself, start from the beginning:
+To follow along yourself, create your own branch and let your AI assistant implement the remaining use cases:
 
 ```bash
-git switch start
-```
-
-Or create your own branch from it and let your AI assistant implement the remaining use cases:
-
-```bash
-git switch -c my-experiment start
+git switch -c my-experiment
 ```
 
 ## Stack
 
 - **Java 25**
-- **Spring Boot 4.1**
-- **Vaadin 25.2** — UI
-- **jOOQ** — type-safe SQL
+- **Quarkus 3.40** — REST API under `/api` (Quarkus REST + Jackson)
+- **Hibernate ORM with Panache** — JPA, repository pattern
 - **Flyway** — database migrations
-- **PostgreSQL** (via Testcontainers for tests and for jOOQ code generation)
+- **PostgreSQL** (a local server on port 5432, for the application and the tests)
+- **Angular 22** with Angular Material — UI, in `frontend/`
 
 ## Specs
 
@@ -75,8 +70,8 @@ The link between specs and code is enforced by tests, the *sensors*: `UseCaseTra
 `@UseCase` annotation points at a use case, flow, and business rule that really exists, `TestCaseTraceabilityTest` does
 the same for the test cases, `BusinessRuleTraceabilityTest` keeps the shared business rules and the use cases that
 reference them in agreement, and `RequirementTraceabilityTest` does the same for the requirements. Together with the
-ArchUnit rules in `ArchitectureTest` and `TestLayerConventionsTest` they run in seconds, without Docker:
-`./mvnw -q test -Dgroups=sensor`. What each sensor checks is in
+ArchUnit rules in `ArchitectureTest` and `TestLayerConventionsTest` they run in seconds, without a database or a
+frontend build: `mvn -q test -Dgroups=sensor`. What each sensor checks is in
 [`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors), and how they fit into the
 harness is in [`docs/architecture/README.md`](docs/architecture/README.md#the-harness) and
 [ADR-007](docs/architecture/adr/ADR-007-traceability-sensors.md).
@@ -87,26 +82,31 @@ The guardrails an AI coding agent works under are part of the repository too: th
 
 ## Running locally
 
-Docker must be running — Testcontainers provides PostgreSQL for the application, the tests, and jOOQ code generation.
+PostgreSQL must be running on localhost:5432 (`vb-postgres start`); there is no Docker. Start the backend, which cleans,
+migrates and seeds the `postgres` database, and the frontend dev server, which proxies `/api` to it:
 
 ```bash
-./mvnw spring-boot:test-run
+mvn quarkus:dev
+cd frontend && npm start          # on a fresh clone, run npm ci first
 ```
 
-The application is then available at <http://localhost:8080>.
+The application is then available at <http://localhost:4200>.
 
 ## Tests
 
 ```bash
-./mvnw test     # server-side Vaadin view tests and the traceability sensors (*Test)
-./mvnw verify   # additionally runs the Playwright browser tests (*IT)
+cd frontend && npm run build   # the frontend Quarkus serves — the browser tests need it
+cd frontend && npm test        # Angular component tests (Vitest, *.spec.ts)
+mvn test                       # API and browser use-case tests and the sensors (*Test)
+mvn verify                     # additionally runs the Playwright journeys (*IT)
 ```
 
 ## Structure
 
 ```
 docs/       — specifications (the source of truth)
-src/main/   — implementation derived from the specs
+src/main/   — the Quarkus backend derived from the specs
+frontend/   — the Angular frontend derived from the specs
 src/test/   — tests verifying the implementation against the specs
 ```
 
