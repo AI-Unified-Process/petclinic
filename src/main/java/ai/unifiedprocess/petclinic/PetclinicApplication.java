@@ -2,12 +2,12 @@ package ai.unifiedprocess.petclinic;
 
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.page.AppShellConfigurator;
-import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.theme.aura.Aura;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@StyleSheet(Lumo.STYLESHEET)
-@StyleSheet(Lumo.UTILITY_STYLESHEET)
+@StyleSheet(Aura.STYLESHEET)
+@StyleSheet("styles.css")
 @SpringBootApplication
 public class PetclinicApplication implements AppShellConfigurator {
 

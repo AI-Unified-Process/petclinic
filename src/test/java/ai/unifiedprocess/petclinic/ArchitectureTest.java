@@ -219,7 +219,14 @@ class ArchitectureTest {
                     .should().callMethodWhere(describe("getStyle() on a HasStyle component",
                             (JavaCall<?> call) -> call.getTarget().getName().equals("getStyle")
                                     && assignableTo(HasStyle.class).test(call.getTargetOwner())))
-                    .because("development.md: use LumoUtility class names, never getStyle().set()");
+                    .because("development.md: use a CSS class from styles.css, never getStyle().set()");
+
+    // The app runs on Aura; LumoUtility class names compile but have no stylesheet behind them.
+    @ArchTest
+    static final ArchRule noLumoUtilityClasses =
+            noClasses()
+                    .should().dependOnClassesThat().resideInAPackage("com.vaadin.flow.theme.lumo..")
+                    .because("development.md: the theme is Aura, Lumo utility classes are not loaded");
 
     // --- Conditions ---
 

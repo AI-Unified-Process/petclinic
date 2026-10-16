@@ -9,7 +9,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * Shared application shell. Renders the clinic logo in the header and the
@@ -26,13 +25,13 @@ public class MainLayout extends AppLayout {
         logo.setHeight("40px");
 
         H1 title = new H1("PetClinic");
-        title.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
+        title.addClassNames("app-title");
 
         HorizontalLayout header = new HorizontalLayout(
                 new DrawerToggle(), logo, title);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.setWidthFull();
-        header.addClassNames(LumoUtility.Padding.Horizontal.MEDIUM);
+        header.addClassNames("app-header");
 
         addToNavbar(header);
 

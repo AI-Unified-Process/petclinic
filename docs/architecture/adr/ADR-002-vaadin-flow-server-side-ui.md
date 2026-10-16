@@ -35,5 +35,6 @@ a new decision and a new ADR, not a quiet addition.
 - **No public API.** Nothing outside the application can reach the data, which
   fits C-010's trusted-network assumption — and is also why breaking that
   assumption is a bigger change than it looks.
-- **Vaadin conventions become code conventions:** `SideNav` for the menu,
-  `LumoUtility` for styling, `NotFoundException` from `beforeEnter` for a 404.
+- **Vaadin conventions become code conventions:** `SideNav` for the menu, the
+  Aura theme with class names from `styles.css` for styling, `NotFoundException`
+  from `beforeEnter` for a 404.
