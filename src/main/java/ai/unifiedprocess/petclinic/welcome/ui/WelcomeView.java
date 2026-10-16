@@ -8,7 +8,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * UC-001: View Welcome Page.
@@ -32,7 +31,7 @@ public class WelcomeView extends VerticalLayout {
 
         Anchor unifiedProcessLink = new Anchor("https://unifiedprocess.ai", "https://unifiedprocess.ai");
         unifiedProcessLink.setTarget(AnchorTarget.BLANK);
-        unifiedProcessLink.addClassNames(LumoUtility.Margin.Top.MEDIUM);
+        unifiedProcessLink.addClassNames("welcome-link");
 
         add(decorativeImage, unifiedProcessLink);
     }

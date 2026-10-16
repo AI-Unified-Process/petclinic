@@ -14,7 +14,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * UC-004: Find Owners by Last Name.
@@ -45,7 +44,7 @@ public class FindOwnersView extends VerticalLayout {
         setSizeFull();
 
         H2 heading = new H2("Find Owners");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         lastNameField = new TextField("Last name");
         lastNameField.setPlaceholder("Starts with...");

@@ -17,7 +17,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * UC-008: Update Pet.
@@ -47,7 +46,7 @@ public class EditPetView extends VerticalLayout implements BeforeEnterObserver {
         setSizeFull();
 
         H2 heading = new H2("Edit Pet");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         petForm = new PetForm(petRepository.findAllTypes());
 

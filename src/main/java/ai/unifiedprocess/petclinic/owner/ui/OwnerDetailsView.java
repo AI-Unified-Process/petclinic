@@ -23,7 +23,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -63,7 +62,7 @@ public class OwnerDetailsView extends VerticalLayout implements BeforeEnterObser
         setSizeFull();
 
         H2 heading = new H2("Owner Information");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         namePara = new Paragraph();
         addressPara = new Paragraph();
@@ -119,11 +118,10 @@ public class OwnerDetailsView extends VerticalLayout implements BeforeEnterObser
         VerticalLayout petBox = new VerticalLayout();
         petBox.setPadding(false);
         petBox.setSpacing(false);
-        petBox.addClassNames(LumoUtility.Border.ALL, LumoUtility.Padding.SMALL,
-                LumoUtility.BorderRadius.SMALL, LumoUtility.Margin.Bottom.SMALL);
+        petBox.addClassNames("pet-card");
 
         H3 petName = new H3(pet.name());
-        petName.addClassNames(LumoUtility.Margin.NONE);
+        petName.addClassNames("pet-name");
 
         Paragraph birthDate = new Paragraph("Birth Date: " + pet.birthDate().format(DATE_FORMAT));
         Paragraph type = new Paragraph("Type: " + pet.type().name());
@@ -145,7 +143,7 @@ public class OwnerDetailsView extends VerticalLayout implements BeforeEnterObser
         List<Visit> visitList = visitRepository.findByPetId(pet.id());
         if (visitList.isEmpty()) {
             Paragraph none = new Paragraph("(no visits yet)");
-            none.addClassNames(LumoUtility.TextColor.SECONDARY);
+            none.addClassNames("secondary-text");
             visits.add(none);
         } else {
             for (Visit visit : visitList) {

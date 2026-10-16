@@ -197,10 +197,17 @@ public class PetRepository {
   between views. **Check for an existing holder that already names the
   parameter before adding a parameterized route** — `OwnerRouteParameters`
   serves every route under `/owners/…`, whichever feature owns the view.
-- **Styling — never `component.getStyle().set(...)`.** Always
-  `addClassNames(LumoUtility.…)` (e.g. `LumoUtility.Padding.Horizontal.MEDIUM`,
-  `LumoUtility.Margin.NONE`). If no utility class covers what you need, ask
-  rather than falling back to inline styles.
+- **Styling — Aura theme, never `component.getStyle().set(...)`.** The app
+  shell loads `Aura.STYLESHEET` and `styles.css`
+  (`src/main/resources/META-INF/resources/`). Give the component a semantic
+  class name with `addClassNames("page-heading")` and put the rule in
+  `styles.css`, built from Aura and base style properties (`--aura-*`,
+  `--vaadin-*`) so light and dark color schemes keep working. Reuse an existing
+  class before adding one. `LumoUtility` is not an option: its stylesheet is
+  only for the Lumo theme, so the class names would silently do nothing.
+  The brand — accent, background, font, radii — lives in
+  `petclinic-theme.css`, imported by `styles.css`, and mirrors the Aura
+  variables of the Figma file; change both together.
 - **Main menu — `SideNav` + `SideNavItem` in the drawer.** Not `Tabs`, not
   hand-rolled `RouterLink`s in a `HorizontalLayout`. `new SideNavItem(label,
   ViewClass.class)` gives active-route highlighting and a11y semantics for free.

@@ -21,7 +21,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -60,10 +59,10 @@ public class AddVisitView extends VerticalLayout implements BeforeEnterObserver 
         setSizeFull();
 
         H2 heading = new H2("New Visit");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         petContext = new Paragraph();
-        petContext.addClassNames(LumoUtility.TextColor.SECONDARY);
+        petContext.addClassNames("secondary-text");
 
         visitForm = new VisitForm();
 

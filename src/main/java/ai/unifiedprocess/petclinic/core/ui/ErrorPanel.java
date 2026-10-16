@@ -5,7 +5,6 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * Shared content for UC-010 error views. Both {@link ApplicationErrorView}
@@ -23,13 +22,13 @@ class ErrorPanel extends VerticalLayout {
     ErrorPanel() {
         setPadding(true);
         setSpacing(true);
-        addClassNames(LumoUtility.Padding.LARGE);
+        addClassNames("error-panel");
 
         H2 heading = new H2("Something happened...");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         messagePara = new Paragraph();
-        messagePara.addClassNames(LumoUtility.TextColor.SECONDARY);
+        messagePara.addClassNames("secondary-text");
 
         RouterLink backLink = new RouterLink("Back to Home", WelcomeView.class);
 

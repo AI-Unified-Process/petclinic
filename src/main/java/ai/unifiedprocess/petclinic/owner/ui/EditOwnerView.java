@@ -14,7 +14,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * UC-006: Update Owner.
@@ -40,7 +39,7 @@ public class EditOwnerView extends VerticalLayout implements BeforeEnterObserver
         setSizeFull();
 
         H2 heading = new H2("Edit Owner");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         ownerForm = new OwnerForm();
 

@@ -18,7 +18,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.NotFoundException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * UC-007: Add Pet to Owner.
@@ -48,10 +47,10 @@ public class AddPetView extends VerticalLayout implements BeforeEnterObserver {
         setSizeFull();
 
         H2 heading = new H2("Add New Pet");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         ownerPara = new Paragraph();
-        ownerPara.addClassNames(LumoUtility.TextColor.SECONDARY);
+        ownerPara.addClassNames("secondary-text");
 
         petForm = new PetForm(petRepository.findAllTypes());
 

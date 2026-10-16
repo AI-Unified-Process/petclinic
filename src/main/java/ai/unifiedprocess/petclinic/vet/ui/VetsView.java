@@ -9,7 +9,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import java.util.stream.Stream;
 
@@ -30,7 +29,7 @@ public class VetsView extends VerticalLayout {
         setSizeFull();
 
         H2 heading = new H2("Veterinarians");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         Grid<Vet> vetsGrid = new Grid<>(Vet.class, false);
         vetsGrid.addColumn(Vet::firstName).setHeader("First Name").setAutoWidth(true);

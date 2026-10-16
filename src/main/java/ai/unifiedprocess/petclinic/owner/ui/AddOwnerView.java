@@ -10,7 +10,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 
 /**
  * UC-003: Register New Owner.
@@ -36,7 +35,7 @@ public class AddOwnerView extends VerticalLayout {
         setSizeFull();
 
         H2 heading = new H2("Add Owner");
-        heading.addClassNames(LumoUtility.Margin.NONE);
+        heading.addClassNames("page-heading");
 
         ownerForm = new OwnerForm();
 
