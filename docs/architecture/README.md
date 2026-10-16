@@ -179,7 +179,7 @@ the requirements
 and they are built to be read by the agent. Every violation is listed at once
 and names the section or heading it comes from, so a failure reads as a work
 list, not a stack trace. Because they carry the JUnit tag `sensor`,
-`mvn -q test -Dgroups=sensor` runs them in seconds; they start no Quarkus
+`./mvnw -q test -Dgroups=sensor` runs them in seconds; they start no Quarkus
 application and need neither the database nor a frontend build, which is cheap
 enough to run every turn. The slower sensors sit behind them: the `@QuarkusTest`
 suites `UC*Test` and `TC*IT`, the Vitest specs, and the quarkus-jacoco coverage
@@ -210,7 +210,7 @@ Implementing a use case, say UC-007 *Add Pet to Owner*, goes through every layer
    [`development.md`](development.md) before it touches `src/main/java/` or
    `frontend/src/app/`. The `implement` skill turns them into an Angular page
    with its form, a REST resource and repository queries.
-3. **Sensors.** The agent runs `mvn -q test -Dgroups=sensor`. If a resource
+3. **Sensors.** The agent runs `./mvnw -q test -Dgroups=sensor`. If a resource
    declares `@Transactional`, `ArchitectureTest` fails and names the rule
    (`resourcesAreNotTransactional`). If a test is annotated with a flow that the
    specification calls something else, `UseCaseTraceabilityTest` fails and
@@ -227,7 +227,7 @@ Implementing a use case, say UC-007 *Add Pet to Owner*, goes through every layer
    test for the main success scenario, every alternative flow and every
    business rule.
 6. **Backstop.** On push, CI runs `smoke.sh`, then builds the frontend
-   (`npm run build`, `npm test`), then `mvn verify` with both Java test layers,
+   (`npm run build`, `npm test`), then `./mvnw verify` with both Java test layers,
    then the quality gate on the quarkus-jacoco coverage.
 
 ### The rules the harness is built on
@@ -264,14 +264,14 @@ Implementing a use case, say UC-007 *Add Pet to Owner*, goes through every layer
   possible.
 - **There is one deliberate escape.** After one blocked Stop, the second one is
   let through, so a session without a working build cannot loop forever. A turn
-  that ends that way shows it in the transcript. `mvn clean` after a run removes
+  that ends that way shows it in the transcript. `./mvnw clean` after a run removes
   the evidence, and the Stop hook asks for the run again.
 
 ### Changing the harness
 
 | You change                                 | Also update                                         | Then run                            |
 |--------------------------------------------|-----------------------------------------------------|-------------------------------------|
-| a convention in a view                     | the matching rule in `ArchitectureTest`             | `mvn -q test -Dgroups=sensor`       |
-| the specification format (`Status:`, ids)  | `SpecDocuments` and [`testing.md`](testing.md)      | `mvn -q test -Dgroups=sensor`       |
+| a convention in a view                     | the matching rule in `ArchitectureTest`             | `./mvnw -q test -Dgroups=sensor`       |
+| the specification format (`Status:`, ids)  | `SpecDocuments` and [`testing.md`](testing.md)      | `./mvnw -q test -Dgroups=sensor`       |
 | a hook or `.claude/settings.json`          | the table in [`development.md`](development.md)     | `./.claude/hooks/smoke.sh`          |
 | what a layer is responsible for            | an [ADR](adr)                                       | both                                |

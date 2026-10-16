@@ -38,7 +38,7 @@ Java sensors; they never replace a `UC<NNN><Name>Test`.
 - **Coverage counts what the application did, not which layer drove it.**
   `quarkus-jacoco` instruments the application inside every `@QuarkusTest`,
   journeys included, so nobody writes a use-case test just to satisfy the gate.
-- **Only `mvn verify` runs both layers.** `mvn test` stops before the journeys —
+- **Only `./mvnw verify` runs both layers.** `./mvnw test` stops before the journeys —
   a coverage number read after `test` leaves them out by construction. And the
   frontend must be built first, or every browser test fails.
 - **Naming is load-bearing.** A use-case test called `*IT` never runs in `test`;

@@ -14,7 +14,7 @@ express *"the agent ran the sensors before it claimed to be done"*, because that
 is a property of the session, not of the repository.
 
 So the failure mode survives every check in the previous ADRs: an agent edits a
-page or a resource, skips `mvn test`, and reports success. The drift is real from that
+page or a resource, skips `./mvnw test`, and reports success. The drift is real from that
 moment until CI catches it — minutes or hours later, and only if someone pushes.
 
 A second gap has the same shape. `CLAUDE.md` states in prose that a `Status:`

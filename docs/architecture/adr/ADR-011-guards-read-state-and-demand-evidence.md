@@ -54,7 +54,7 @@ that it found nothing: the sensors judge the claim itself on the next run.
 And three consequences of taking the rules seriously:
 
 - The five sensor classes carry the JUnit tag `sensor` and start no Quarkus
-  application. `mvn -q test -Dgroups=sensor` is what the Stop hook asks for:
+  application. `./mvnw -q test -Dgroups=sensor` is what the Stop hook asks for:
   seconds, no database, no frontend build. The full suite remains the definition
   of done and the commit gate.
 - `pom.xml` joins the watched paths. A change under `.claude/hooks/` or to
@@ -80,7 +80,7 @@ And three consequences of taking the rules seriously:
   the agent, leaves no marker and the edit is refused. That is intended: the
   agent is read-only and its checklist is the audit.
 - **Known limits.** A hook still runs only in a Claude Code session. The report
-  check reads `target/`, so `mvn clean` after a run takes the evidence away and
+  check reads `target/`, so `./mvnw clean` after a run takes the evidence away and
   the Stop hook says so. A report is per class, so a run interrupted after the
   five sensors passed but before the rest of the suite counts as a sensor run —
   which is what it is. And a status set through Bash is refused only after the

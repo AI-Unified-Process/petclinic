@@ -31,7 +31,7 @@ something, read the relevant spec first:
   [`docs/architecture/README.md`](docs/architecture/README.md) says which
   document answers which question.
 
-Four sensors (`mvn test`) enforce the links between the documents and the
+Four sensors (`./mvnw test`) enforce the links between the documents and the
 code: `UseCaseTraceabilityTest`, `TestCaseTraceabilityTest`,
 `BusinessRuleTraceabilityTest` — between `docs/business_rules.md` and the use
 cases that reference a `GR-NNN` — and `RequirementTraceabilityTest`, between
@@ -72,31 +72,31 @@ cd frontend && npm test
 
 # Run the app locally: backend on :8080 (postgres database, cleaned, migrated
 # and seeded on start), frontend dev server on :4200 proxying /api to it
-mvn quarkus:dev
+./mvnw quarkus:dev
 cd frontend && npm start
 
 # Backend tests: Surefire runs every *Test class
 # (UC<NNN><Name>Test — REST Assured against /api and/or Playwright against the
 # built frontend — the ArchUnit rules in ArchitectureTest and
 # TestLayerConventionsTest, and the four traceability sensors)
-mvn test
+./mvnw test
 
 # Only the sensors (ArchitectureTest, TestLayerConventionsTest and the four
 # traceability sensors): seconds, no Quarkus application, no database, no
 # frontend build. The run the Stop hook asks for.
-mvn -q test -Dgroups=sensor
+./mvnw -q test -Dgroups=sensor
 
 # Run a single *Test class / method
-mvn test -Dtest=UC004FindOwnersByLastNameTest
-mvn test -Dtest=UC004FindOwnersByLastNameTest#singleMatchNavigatesDirectlyToDetails
+./mvnw test -Dtest=UC004FindOwnersByLastNameTest
+./mvnw test -Dtest=UC004FindOwnersByLastNameTest#singleMatchNavigatesDirectlyToDetails
 
 # Integration tests: Failsafe runs every *IT class in the verify phase
 # (the Playwright journeys TC<NNN><Name>IT, @QuarkusTest + @TestCase).
 # verify runs all *Test first; it does not build the frontend.
-mvn verify
+./mvnw verify
 
 # Run a single *IT class
-mvn verify -Dit.test=TC001NewOwnerFirstVisitIT
+./mvnw verify -Dit.test=TC001NewOwnerFirstVisitIT
 ```
 
 Test class suffix decides the phase: `*Test` → `test` (Surefire),
@@ -117,7 +117,7 @@ whatever `frontend/dist` holds.**
 Coverage comes from `quarkus-jacoco` and spans **both** Java test layers: the
 `TC<NNN><Name>IT` journeys are `@QuarkusTest`s too, so a line reached only by a
 journey counts as covered — **don't add a use-case test just to cover
-something a `TC<NNN><Name>IT` already exercises.** `mvn verify` runs both
+something a `TC<NNN><Name>IT` already exercises.** `./mvnw verify` runs both
 layers; the report is in `target/jacoco-report`. Vitest specs cover the
 frontend and do not count toward it. Details:
 [`docs/architecture/development.md`](docs/architecture/development.md#coverage).
@@ -139,7 +139,7 @@ frontend and do not count toward it. Details:
   the transaction boundary, REST resource and Angular page conventions, the
   shell, form validation, error handling, the `*Repository` naming and scope
   rule, and the build. Much of it is enforced by ArchUnit in
-  `ArchitectureTest` (`mvn test`) — if you change a convention there, update
+  `ArchitectureTest` (`./mvnw test`) — if you change a convention there, update
   the matching rule in the same commit.
 
 - **Before changing a transaction, a save path, or anything about how the
@@ -194,11 +194,11 @@ Prefer these over ad-hoc generation:
   `docs/architecture/development.md`.
 - `aiup-angular-jpa:spring-boot-test` — the backend test skill: `@QuarkusTest`
   use-case tests (REST Assured, `BrowserTest`), named `UC<NNN><Name>Test`, run
-  by `mvn test`. Default for UC tests; see `docs/architecture/testing.md`.
+  by `./mvnw test`. Default for UC tests; see `docs/architecture/testing.md`.
 - `aiup-angular-jpa:vitest-test` — Angular component tests, `*.spec.ts` beside
   the component, run by `npm test`.
 - `aiup-angular-jpa:playwright-test` — browser journeys extending
-  `BrowserTest`, named `TC<NNN><Name>IT`, run by `mvn verify`. Use for test
+  `BrowserTest`, named `TC<NNN><Name>IT`, run by `./mvnw verify`. Use for test
   cases (TC-*) and journeys that span several use cases.
 - `aiup-core:test-case` — author `docs/test_cases/TC-NNN-*.md`.
 - `aiup-angular-jpa:coverage-check` — audit a UC/TC against code and tests

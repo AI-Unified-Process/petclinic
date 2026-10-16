@@ -8,7 +8,7 @@ it. It is the mirror of the `**Requirements:**` line in every
 id there, then add the use case here. A `—` marks a requirement no use case
 realizes because it constrains how the system is built or tested rather than
 what a user does with it; [`architecture/`](architecture/README.md) answers for
-those. `RequirementTraceabilityTest` (`mvn test`) fails when the two sides
+those. `RequirementTraceabilityTest` (`./mvnw test`) fails when the two sides
 disagree, when an id does not exist, or when a functional requirement is
 realized by no use case.
 

@@ -19,7 +19,7 @@ reviewer reading a diff of generated code is unlikely to catch it.
 
 Make the link executable. Every use case test method carries
 `@UseCase(id, scenario, businessRules)`; every journey class carries
-`@TestCase`. Two tests run in `mvn test` and read the documents from disk:
+`@TestCase`. Two tests run in `./mvnw test` and read the documents from disk:
 
 - **`UseCaseTraceabilityTest`** — every annotated id, scenario, and business rule
   must exist in the specification, and every use case whose `Status:` is `Done`

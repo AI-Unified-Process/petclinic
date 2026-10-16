@@ -10,7 +10,7 @@ correction in every use case.
 
 Most of what follows is **enforced executably** by
 `src/test/java/ai/unifiedprocess/petclinic/ArchitectureTest.java` (ArchUnit, runs
-with `mvn test`). Each rule names the section it comes from, so a failure points
+with `./mvnw test`). Each rule names the section it comes from, so a failure points
 straight back here. If you change a convention below, change the matching rule in
 the same commit — a rule that contradicts this document is the rule that's wrong.
 ArchUnit reads Java only: the Angular conventions below are held by review and
@@ -292,7 +292,7 @@ public class PetRepository implements PanacheRepositoryBase<Pet, Integer> {
   reproduce [`../entity_model.md`](../entity_model.md) exactly (NFR-009) — the
   migrations effectively *are* the schema DSL. Quarkus runs them at start-up.
 - Test seed data: `src/test/resources/db/migration/` (test classpath only —
-  Flyway picks both up when tests run; `mvn quarkus:dev` adds it explicitly).
+  Flyway picks both up when tests run; `./mvnw quarkus:dev` adds it explicitly).
   The test and dev profiles clean and migrate the database on every start.
 - **After changing a migration**, change the entity mapping by hand to match —
   nothing regenerates or checks it; a test running the affected query does.
@@ -300,13 +300,13 @@ public class PetRepository implements PanacheRepositoryBase<Pet, Integer> {
 ## Build
 
 ```bash
-mvn quarkus:dev                 # backend on :8080; the postgres database, migrated and seeded
+./mvnw quarkus:dev                 # backend on :8080; the postgres database, migrated and seeded
 cd frontend && npm start        # Angular dev server on :4200, proxying /api to :8080
 cd frontend && npm run build    # the bundle Quarkus serves — browser tests need it
 cd frontend && npm test         # Vitest component tests
-mvn test                        # *Test: API and browser tests, ArchUnit, traceability sensors
-mvn test -Dgroups=sensor        # only ArchUnit and the traceability sensors
-mvn verify                      # additionally *IT: Playwright journeys, and the full coverage report
+./mvnw test                        # *Test: API and browser tests, ArchUnit, traceability sensors
+./mvnw test -Dgroups=sensor        # only ArchUnit and the traceability sensors
+./mvnw verify                      # additionally *IT: Playwright journeys, and the full coverage report
 ```
 
 What `verify` does, in order:
@@ -332,7 +332,7 @@ which is a `@QuarkusTest`, so it starts no application and needs neither the
 database nor a frontend build.
 
 CI is `.github/workflows/build.yml`: the hook smoke test, then `npm run build`
-and `npm test`, then `mvn -B verify` plus the Sonar scanner, on every push to
+and `npm test`, then `./mvnw -B verify` plus the Sonar scanner, on every push to
 `main` and every pull request. `.github/workflows/aiup-generate.yml` is the
 dispatch hook for AI Unified Process Studio and is not edited by hand.
 
@@ -363,10 +363,10 @@ showed no failure — so a run in the background, piped through `tail`, narrowed
 with `-Dtest=`, or skipped leaves no marker. An audit counts because the
 `uc-coverage` agent finished, not because a status change said it did.
 
-The run the Stop hook asks for is `mvn -q test -Dgroups=sensor`: the six sensor
+The run the Stop hook asks for is `./mvnw -q test -Dgroups=sensor`: the six sensor
 classes carry the JUnit tag `sensor` (`@ArchTag` on the two ArchUnit classes),
 and Surefire runs only those. None starts Quarkus, so it takes seconds and works
-straight after a clone — there is nothing to generate. A full `mvn test` or
+straight after a clone — there is nothing to generate. A full `./mvnw test` or
 `verify` counts too.
 
 `.claude/hooks/smoke.sh` exercises all of them against a throwaway repository,
@@ -390,8 +390,8 @@ layers ([ADR-006](adr/ADR-006-two-test-layers-merged-coverage.md)). Every `*Test
 and `*IT` is a `@QuarkusTest`, and `quarkus-jacoco` records all of them into one
 data file, so a line reached only by a Playwright `*IT` counts as covered —
 **do not add a use-case test just to cover something a journey test already
-exercises.** Only `mvn verify` covers both layers (`mvn clean verify` for a
-number with nothing carried over); `mvn test` reports `*Test` alone. The report
+exercises.** Only `./mvnw verify` covers both layers (`./mvnw clean verify` for a
+number with nothing carried over); `./mvnw test` reports `*Test` alone. The report
 measures the Java backend only, not the Angular code. The gate wants 80 % on
 new code.
 
@@ -409,10 +409,10 @@ Read it before writing or changing anything under `src/test/java/` or a
 
 1. The `UC-NNN-*.md` specification is the input; where code and specification
    disagree, the specification wins (C-008).
-2. The code follows the conventions above; `mvn test` passes, ArchUnit
+2. The code follows the conventions above; `./mvnw test` passes, ArchUnit
    included, and so does `npm test` in `frontend/`.
 3. At least one test per use case, each `@Test` carrying `@UseCase` (NFR-006).
-4. `npm run build`, then `mvn verify`, is green and coverage has not dropped.
+4. `npm run build`, then `./mvnw verify`, is green and coverage has not dropped.
 5. The `Status:` line is updated only after a coverage check.
 6. If the change contradicts a view in this folder, the view changes with it —
    and a decision that could have gone the other way gets an [ADR](adr).

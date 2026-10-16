@@ -6,8 +6,8 @@ Read this **before writing or modifying any test** under `src/test/java/` or any
 
 | Layer               | Suffix     | Runs in      | Framework                                                          | Skill                              |
 |---------------------|------------|--------------|--------------------------------------------------------------------|------------------------------------|
-| Use case test       | `*Test`    | `mvn test`   | `@QuarkusTest` + Playwright for Java (`BrowserTest`), REST Assured | the backend test skill (`aiup-angular-jpa:spring-boot-test`) |
-| Journey test        | `*IT`      | `mvn verify` | `@QuarkusTest` + Playwright for Java (`BrowserTest`), `@TestCase`  | `aiup-angular-jpa:playwright-test` |
+| Use case test       | `*Test`    | `./mvnw test`   | `@QuarkusTest` + Playwright for Java (`BrowserTest`), REST Assured | the backend test skill (`aiup-angular-jpa:spring-boot-test`) |
+| Journey test        | `*IT`      | `./mvnw verify` | `@QuarkusTest` + Playwright for Java (`BrowserTest`), `@TestCase`  | `aiup-angular-jpa:playwright-test` |
 | Component test      | `*.spec.ts`| `npm test`   | Vitest through `ng test`, beside the component                     | `aiup-angular-jpa:vitest-test`     |
 
 Surefire picks up `*Test`, Failsafe picks up `*IT` (both declared in `pom.xml`). A use case test named `*IT` or a
@@ -25,7 +25,7 @@ rendering logic; the Java sensors do not see them, so they never count towards a
   Reference: https://quarkus.io/guides/getting-started-testing
 - A use case test that exercises a page extends `BrowserTest` and drives headless Chromium through
   **Playwright for Java**. A test of the API alone uses **REST Assured** (`given().when().get("/api/…")`) and needs no
-  base class (`UC010ViewApplicationErrorTest`). One class may do both. They all run against the same local PostgreSQL
+  base class (`PetclinicApplicationTests`, which only starts the application, is the smallest). One class may do both. They all run against the same local PostgreSQL
   test database as the rest of the tests.
 - **Use the backend test skill (`aiup-angular-jpa:spring-boot-test`)** to scaffold a test for a use case, and
   `aiup-angular-jpa:vitest-test` for a component spec. Prefer them over hand-rolling — they know the conventions in this
@@ -46,8 +46,8 @@ If a page or resource is touched by multiple use cases, write one `UC<NNN>…Tes
 A Vitest spec sits beside its component and names the use case in its `describe('UC-004: Find Owners by Last Name')`.
 
 **Exception — cross-cutting tests.** `ArchitectureTest` (the ArchUnit rules behind
-[`development.md`](development.md)), `TestLayerConventionsTest` and `BrowserTest` verify no single use case, so they
-sit in the root package under their own names. Everything that *does* verify a use case follows the format above.
+[`development.md`](development.md)) and `PetclinicApplicationTests` verify no single use case, so they sit in the
+root package under their own names. Everything that *does* verify a use case follows the format above.
 
 ## `@UseCase` on every test method
 
@@ -97,7 +97,7 @@ Each sensor rejects its own annotation anywhere else.
 
 ## The traceability sensors
 
-`docs/` is the source of truth, and four sensors make that claim checkable. All run in `mvn test`, all read the
+`docs/` is the source of truth, and four sensors make that claim checkable. All run in `./mvnw test`, all read the
 documents from disk rather than trusting a summary, and all list every violation at once so the failure reads as a
 work list:
 
@@ -112,7 +112,7 @@ The shared markdown handling (the `**Status:**` pattern, the file scan, the viol
 `SpecDocuments`, so the document format is described in one place.
 
 All six sensor classes — these four and the two ArchUnit classes, `ArchitectureTest` and `TestLayerConventionsTest` —
-carry the JUnit tag `sensor`. `mvn -q test -Dgroups=sensor` runs them alone, in seconds: none of them is a
+carry the JUnit tag `sensor`. `./mvnw -q test -Dgroups=sensor` runs them alone, in seconds: none of them is a
 `@QuarkusTest`, so they start no Quarkus application and need no database or frontend build. It is the run the Stop
 hook asks for (ADR-011); the full suite remains the definition of done.
 
@@ -137,7 +137,7 @@ its main success scenario, for *every* alternative flow, and for *every* busines
 is a normal intermediate state, not a defect.
 
 The consequence is that **the `Status:` line is an assertion, not a label**. Setting it to `Done` switches the sensor
-on for that use case; if the tests are not there, `mvn test` says so and names each gap. Use
+on for that use case; if the tests are not there, `./mvnw test` says so and names each gap. Use
 `aiup-angular-jpa:coverage-check` (or the `aiup-angular-jpa:uc-coverage` sub-agent) before you change a status line.
 
 When the sensor fails, the honest fixes are to write the missing test or to correct the status — never to weaken the
@@ -225,7 +225,7 @@ A test that drives a page extends `ai.unifiedprocess.petclinic.BrowserTest` and 
   rather than hard-coding a numeric ID in the test.
 - For not-found / error flows open the location string, `open("owners/999999")`: the page asks the API, gets a 404
   with `{"message": …}`, and shows the error panel; an unknown route falls through to the `**` route (`NotFoundPage`).
-- Tests that never open a page (`UC010ViewApplicationErrorTest`) do not extend it; `@QuarkusTest` and REST Assured are
+- Tests that never open a page (`PetclinicApplicationTests`) do not extend it; `@QuarkusTest` and REST Assured are
   enough.
 
 Test seed data lives **only** on the test classpath (`src/test/resources/db/migration/V2__seed_reference_data.sql`). Do
@@ -342,7 +342,7 @@ There is no Docker and no Testcontainers. The tests use a local PostgreSQL serve
 (`exec-maven-plugin`, `vb-postgres ensure petclinic_test`). Quarkus Dev Services are off. The `%test` profile in
 `application.properties` points at `petclinic_test`, and Flyway **cleans and migrates** it when the test application
 starts, applying `src/test/resources/db/migration/V2__seed_reference_data.sql` with the schema — every run starts from
-the same seed. `mvn quarkus:dev` does the same against the `postgres` database.
+the same seed. `./mvnw quarkus:dev` does the same against the `postgres` database.
 
 ## Playwright `*IT` tests
 
@@ -359,6 +359,6 @@ Journey tests are the second Java layer, not a replacement for the use case test
 - Data a journey creates is cleaned up in `@AfterEach` (targeted deletes, or Flyway clean + migrate, idempotent). A test
   case's **Postconditions** section is the cleanup contract.
 - `@TestCase` on the class; `@UseCase` never appears here.
-- Run with `mvn verify` (all) or `mvn verify -Dit.test=TC003VisitBookedForNewCustomerIT`;
+- Run with `./mvnw verify` (all) or `./mvnw verify -Dit.test=TC003VisitBookedForNewCustomerIT`;
   `BrowserTest` always launches headless — set `PWDEBUG=1` to watch the browser with the Playwright Inspector.
 - Coverage: `quarkus-jacoco` writes the report of the `@QuarkusTest` runs to `target/jacoco-report`.

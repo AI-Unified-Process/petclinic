@@ -71,7 +71,7 @@ The link between specs and code is enforced by tests, the *sensors*: `UseCaseTra
 the same for the test cases, `BusinessRuleTraceabilityTest` keeps the shared business rules and the use cases that
 reference them in agreement, and `RequirementTraceabilityTest` does the same for the requirements. Together with the
 ArchUnit rules in `ArchitectureTest` and `TestLayerConventionsTest` they run in seconds, without a database or a
-frontend build: `mvn -q test -Dgroups=sensor`. What each sensor checks is in
+frontend build: `./mvnw -q test -Dgroups=sensor`. What each sensor checks is in
 [`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors), and how they fit into the
 harness is in [`docs/architecture/README.md`](docs/architecture/README.md#the-harness) and
 [ADR-007](docs/architecture/adr/ADR-007-traceability-sensors.md).
@@ -86,7 +86,7 @@ PostgreSQL must be running on localhost:5432 (`vb-postgres start`); there is no 
 migrates and seeds the `postgres` database, and the frontend dev server, which proxies `/api` to it:
 
 ```bash
-mvn quarkus:dev
+./mvnw quarkus:dev
 cd frontend && npm start          # on a fresh clone, run npm ci first
 ```
 
@@ -97,8 +97,8 @@ The application is then available at <http://localhost:4200>.
 ```bash
 cd frontend && npm run build   # the frontend Quarkus serves — the browser tests need it
 cd frontend && npm test        # Angular component tests (Vitest, *.spec.ts)
-mvn test                       # API and browser use-case tests and the sensors (*Test)
-mvn verify                     # additionally runs the Playwright journeys (*IT)
+./mvnw test                       # API and browser use-case tests and the sensors (*Test)
+./mvnw verify                     # additionally runs the Playwright journeys (*IT)
 ```
 
 ## Structure
