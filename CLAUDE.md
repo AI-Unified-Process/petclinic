@@ -170,10 +170,10 @@ Prefer these over ad-hoc generation:
   skills of the Layers table in
   [`docs/architecture/development.md`](docs/architecture/development.md#layers)
   bottom-up: `aiup-flyway:flyway-schema`, `aiup-jooq:jooq-persistence`,
-  `aiup-spring-boot:spring-service`, `aiup-vaadin:vaadin-flow-ui`. Each also
-  runs on its own (`aiup-vaadin:vaadin-flow-ui UC-NNN`). The Service layer is
-  not yet reconciled with `ArchitectureTest`; see the note under the Layers
-  table.
+  `aiup-vaadin:vaadin-flow-ui`. Each also runs on its own
+  (`aiup-vaadin:vaadin-flow-ui UC-NNN`). The Layers table marks the Service
+  layer `–` (ADR-004), so the view calls the repository directly and the
+  repository stays the transaction boundary (ADR-009).
 - `aiup-core:use-case-test` — test a use case in its integration layer:
   `aiup-vaadin:vaadin-flow-ui-test` writes server-side view tests
   (`SpringBrowserlessTest`, `find()` locators) named `UC<NNN><Name>Test`, run

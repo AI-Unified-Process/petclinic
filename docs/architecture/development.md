@@ -41,6 +41,44 @@ traceability sensors take towards a use case that is not `Done` yet.
 
 Exact versions are in `pom.xml`, which wins over this table.
 
+## Layers
+
+Which layer skill of the AI Unified Process builds and tests each technical layer:
+`aiup-core:use-case-implement` runs the Skill column bottom-up,
+`aiup-core:use-case-test` runs the Test skill column from the integration layer
+up, and `aiup-core:use-case-coverage` searches for the markers under
+[Markers](#markers).
+
+| Layer       | Technology                | Skill              | Test skill              | Location                           |
+|-------------|---------------------------|--------------------|-------------------------|------------------------------------|
+| Migration   | Flyway                    | `flyway-schema`    | –                       | `src/main/resources/db/migration/` |
+| Persistence | jOOQ                      | `jooq-persistence` | `jooq-persistence-test` | `<feature>/domain/`                |
+| Service     | –                         | –                  | –                       | –                                  |
+| API         | –                         | –                  | –                       | –                                  |
+| UI          | Vaadin Flow               | `vaadin-flow-ui`   | `vaadin-flow-ui-test`   | `<feature>/ui/`                    |
+| E2E         | Playwright + Drama Finder | –                  | `vaadin-e2e-test`       | `src/test/java/` (`*IT`)           |
+
+There is **no service layer** ([ADR-004](adr/ADR-004-package-by-feature-ui-domain.md)):
+a view calls the feature's `<Entity>Repository` directly, the form is the
+validation boundary ([ADR-005](adr/ADR-005-validation-in-the-form.md)), and the
+repository is the transaction boundary
+([ADR-009](adr/ADR-009-repository-is-the-transaction-boundary.md)).
+`vaadin-flow-ui` and the persistence skills follow that when the Service row is
+`–`. There is no API layer either ([ADR-002](adr/ADR-002-vaadin-flow-server-side-ui.md)).
+
+**Integration layer:**
+
+| Use case offered through | Tested in   | Test skill              |
+|--------------------------|-------------|-------------------------|
+| UI                       | UI          | `vaadin-flow-ui-test`   |
+| Service                  | Persistence | `jooq-persistence-test` |
+
+**E2E scope:** Test cases only
+
+Browser tests are written for the TC-* journeys alone, one class per specified
+test case ([ADR-006](adr/ADR-006-two-test-layers-merged-coverage.md)); a use
+case is tested in its integration layer.
+
 ## Module layout
 
 Single Maven module, **package by feature** under
@@ -356,6 +394,30 @@ The test conventions are the other half of this view and live in
 traceability sensors, the browserless API and locator patterns, and what you
 must **not** do. Read it before writing or changing anything under
 `src/test/java/`.
+
+## Markers
+
+Each layer skill keeps its own rows here: on every run it checks that the rows
+for its layer match its marker reference and corrects them. Do not edit the rows
+by hand; rerun the layer skill instead.
+
+| Layer       | Skill                 | Kind | Marker to grep for |
+|-------------|-----------------------|------|--------------------|
+| All         | –                     | Code | `// UC-XXX BR-YYY:` directly above the method, query condition, or validator that enforces the rule |
+| Migration   | flyway-schema         | Code | `-- UC-XXX BR-YYY:` directly above the `CHECK`, `UNIQUE`, index, or trigger that enforces the rule |
+| Migration   | flyway-schema         | Name | `src/main/resources/db/migration/V*__*.sql`, named after the tables they change, never after a use case — search them by table and column |
+| Persistence | jooq-persistence      | Code | `// UC-XXX BR-YYY:` directly above the jOOQ `.where(...)`/`.and(...)` condition or query that enforces the rule |
+| Persistence | jooq-persistence      | Name | `<Aggregate>Repository` (`@Repository` with a `DSLContext`), named after the aggregate root, never a use case |
+| Persistence | jooq-persistence-test | Test | `@UseCase(id = "UC-XXX", scenario = "…", businessRules = {"BR-YYY"})` on every repository test method |
+| Persistence | jooq-persistence-test | Name | `UC<id><Name>RepositoryTest`, e.g. `UC001RegisterPersonRepositoryTest`; test data in `src/test/resources/db/testdata/R__uc<id>_<slug>.sql` |
+| UI          | vaadin-flow-ui        | Code | `UC-XXX` in the view's class Javadoc (`/** UC-XXX <Use Case Name>. */`) |
+| UI          | vaadin-flow-ui        | Code | `// UC-XXX BR-YYY:` directly above the `Binder` validator or UI guard that enforces the rule |
+| UI          | vaadin-flow-ui        | Name | `@Route` view class `<Name>View` named after the use case (`ManagePersonsView` for "Manage Persons") |
+| UI          | vaadin-flow-ui-test   | Test | `@UseCase(id = "UC-XXX", scenario = "…", businessRules = {"BR-YYY"})` on every Browserless test method |
+| UI          | vaadin-flow-ui-test   | Name | `UC<id><Name>Test`, e.g. `UC001ManagePersonsTest`, extending `SpringBrowserlessTest` |
+| E2E         | vaadin-e2e-test       | Test | `@DisplayName("UC-XXX: …")` on the class and one `@Nested` `@DisplayName("A<n>: …")` per alternative flow |
+| E2E         | vaadin-e2e-test       | Test | `@TestCase(id = "TC-XXX", useCases = {…})` on the class, `@DisplayName("TC-XXX: …")`, and one `// Step <n>: <name>` comment per Flow row |
+| E2E         | vaadin-e2e-test       | Name | `UC<id><Name>IT` for a use case, `TC<id><Name>IT` for a test case journey |
 
 ## Definition of done for a use case
 
