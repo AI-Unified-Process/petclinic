@@ -6,8 +6,8 @@ Read this **before writing or modifying any test** under `src/test/java/`.
 
 | Layer                 | Suffix  | Runs in         | Framework                                              | Skill                               |
 |-----------------------|---------|-----------------|--------------------------------------------------------|-------------------------------------|
-| Server-side view test | `*Test` | `./mvnw test`   | Vaadin Browserless (`SpringBrowserlessTest`)           | `aiup-vaadin-jooq:browserless-test` |
-| Browser test          | `*IT`   | `./mvnw verify` | Playwright + Drama Finder (`AbstractBasePlaywrightIT`) | `aiup-vaadin-jooq:playwright-test`  |
+| Server-side view test | `*Test` | `./mvnw test`   | Vaadin Browserless (`SpringBrowserlessTest`)           | `aiup-vaadin:vaadin-flow-ui-test`   |
+| Browser test          | `*IT`   | `./mvnw verify` | Playwright + Drama Finder (`AbstractBasePlaywrightIT`) | `aiup-vaadin:vaadin-e2e-test`       |
 
 Surefire picks up `*Test`, Failsafe picks up `*IT` (both configured via `spring-boot-starter-parent`; the failsafe
 plugin is declared in `pom.xml`). A browserless test named `*IT` or a Playwright test named `*Test` runs in the wrong
@@ -25,7 +25,7 @@ anything that genuinely needs a browser (client-side rendering, keyboard focus, 
 - View tests extend `PetClinicTestBase` (or `SpringBrowserlessTest` directly for tests that don't touch the DB, in
   which case add `@SpringBootTest` and `@Import(TestcontainersConfiguration.class)` yourself).
   They run inside a Spring context and use the same Testcontainers Postgres as the rest of the tests.
-- **Use the `aiup-vaadin-jooq:browserless-test` skill** to scaffold a browserless test for a use case. Prefer it over
+- **Use the `aiup-vaadin:vaadin-flow-ui-test` skill** to scaffold a browserless test for a use case. Prefer it over
   hand-rolling — it knows the conventions in this file (locators, `@UseCase`, naming, etc.).
 - **Karibu is gone.** Any `com.github.mvysny.kaributesting.*` import is a mistake — the project is all
   `SpringBrowserlessTest` / `ComponentQuery` now. The `karibu-test` skill is obsolete.
@@ -131,7 +131,7 @@ is a normal intermediate state, not a defect.
 
 The consequence is that **the `Status:` line is an assertion, not a label**. Setting it to `Done` switches the sensor
 on for that use case; if the tests are not there, `./mvnw test` says so and names each gap. Use
-`aiup-vaadin-jooq:coverage-check` before you change a status line.
+`aiup-core:use-case-coverage` (`aiup-core:test-case-coverage` for a test case) before you change a status line.
 
 When the sensor fails, the honest fixes are to write the missing test or to correct the status — never to weaken the
 check.

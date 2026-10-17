@@ -41,8 +41,8 @@ cases that reference a `GR-NNN` — and `RequirementTraceabilityTest`, between
 Because of the first two a `Status:` line (`Done`/`Tested` on a use case,
 `Automated` on a test case) is an assertion that switches the sensor on, not a
 label — run
-`aiup-vaadin-jooq:coverage-check` first; the hooks refuse a status set without
-it. What each sensor checks is in
+`aiup-core:use-case-coverage UC-NNN` (or `aiup-core:test-case-coverage TC-NNN`)
+first; the hooks refuse a status set without it. What each sensor checks is in
 [`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors).
 
 If a use case and the code disagree, the use case wins unless the user says
@@ -169,17 +169,23 @@ Prefer these over ad-hoc generation:
 - `aiup-core:entity-model`, `aiup-core:use-case-spec`,
   `aiup-core:use-case-diagram`, `aiup-core:requirements` — authoring/updating
   specs in `docs/`.
-- `aiup-vaadin-jooq:flyway-migration` — generate `V*.sql` from the entity
-  model.
-- `aiup-vaadin-jooq:implement` — implement a use case end-to-end (view +
-  jOOQ queries). Already honours `docs/architecture/development.md`.
-- `aiup-vaadin-jooq:browserless-test` — server-side Vaadin view tests
-  (`SpringBrowserlessTest`, `find()` locators), named `UC<NNN><Name>Test`, run
-  by `./mvnw test`. Default for UC tests; see `docs/architecture/testing.md`.
-- `aiup-vaadin-jooq:playwright-test` — browser-based tests with Drama
-  Finder, named `UC<NNN><Name>IT` / `TC<NNN><Name>IT`, run by
-  `./mvnw verify`. Use for test cases (TC-*) and journeys that need a real
-  browser. The `karibu-test` skill is obsolete.
-- `aiup-core:test-case` — author `docs/test_cases/TC-NNN-*.md`.
-- `aiup-vaadin-jooq:coverage-check` — audit a UC/TC against code and tests
-  before changing its `Status:` line.
+- `aiup-core:use-case-implement` — implement a use case by running the layer
+  skills of the Layers table in
+  [`docs/architecture/development.md`](docs/architecture/development.md#layers)
+  bottom-up: `aiup-flyway:flyway-schema`, `aiup-jooq:jooq-persistence`,
+  `aiup-spring-boot:spring-service`, `aiup-vaadin:vaadin-flow-ui`. Each also
+  runs on its own (`aiup-vaadin:vaadin-flow-ui UC-NNN`). The Service layer is
+  not yet reconciled with `ArchitectureTest`; see the note under the Layers
+  table.
+- `aiup-core:use-case-test` — test a use case in its integration layer:
+  `aiup-vaadin:vaadin-flow-ui-test` writes server-side view tests
+  (`SpringBrowserlessTest`, `find()` locators) named `UC<NNN><Name>Test`, run
+  by `./mvnw test`; see `docs/architecture/testing.md`.
+- `aiup-core:test-case` — author `docs/test_cases/TC-NNN-*.md`;
+  `aiup-core:test-case-implement TC-NNN` automates it with
+  `aiup-vaadin:vaadin-e2e-test` (Playwright + Drama Finder,
+  `TC<NNN><Name>IT`, run by `./mvnw verify`).
+- `aiup-core:use-case-coverage UC-NNN` / `aiup-core:test-case-coverage TC-NNN`
+  — audit a UC/TC against code and tests before changing its `Status:` line.
+  Both run aiup-core's read-only `uc-coverage-layered` agent, whose finish is
+  the evidence the status hooks ask for.

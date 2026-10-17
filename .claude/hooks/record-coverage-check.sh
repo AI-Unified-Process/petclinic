@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 #
-# SubagentStop(uc-coverage) — remember that a coverage audit finished.
+# SubagentStop(uc-coverage-layered) — remember that a coverage audit finished.
 #
 # guard-spec-status.sh and check-spec-status.sh accept an asserting Status:
-# only after aiup-vaadin-jooq:coverage-check has audited that specification,
-# and the audit runs in the plugin's read-only uc-coverage agent. Its stop is
+# only after /use-case-coverage or /test-case-coverage has audited that
+# specification, and both run the audit in aiup-core's read-only
+# uc-coverage-layered agent. Its stop is
 # the one moment the session knows the audit happened, so this writes a marker
 # per id the agent was asked about. The marker says an audit finished, not that
 # it found no gaps: the sensors judge the claim itself on the next run.
@@ -14,7 +15,7 @@ set -euo pipefail
 input=$(cat)
 
 case "$(jq -r '.agent_type // ""' <<<"$input" 2>/dev/null)" in
-    *uc-coverage) ;;
+    *uc-coverage-layered) ;;
     *) exit 0 ;;
 esac
 # An agent cut off by its token limit has audited nothing.

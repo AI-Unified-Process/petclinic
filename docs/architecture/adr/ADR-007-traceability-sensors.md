@@ -36,7 +36,7 @@ means an unimplemented use case is a normal intermediate state, not a defect.
 
 - **A `Status:` line is an assertion, not a label.** Setting it to `Done`
   switches the sensor on. Never set one by hand without running the
-  `coverage-check` skill first.
+  coverage audit first (`/use-case-coverage`, `/test-case-coverage`).
 - **Renaming a flow in a specification breaks the build** until the annotations
   follow. That is the point.
 - **The honest fixes are always two:** write the missing test, or correct the

@@ -61,7 +61,7 @@
     ],
     "SubagentStop": [
       {
-        "matcher": "aiup-vaadin-jooq:uc-coverage$",
+        "matcher": "uc-coverage-layered$",
         "hooks": [
           {
             "type": "command",

@@ -163,8 +163,8 @@ likelier, it does not prevent the wrong one. That is why they are written for an
 agent (short, in text, one home per fact, see above) and why `CLAUDE.md` is an
 index that names the document to open for each task rather than a copy of it.
 The specifications say *what*: the use cases, the business rules, the entity
-model. The views and ADRs say *how*. The skills (`aiup-vaadin-jooq:implement`,
-`:browserless-test`, `:playwright-test`, `:coverage-check`) turn both into a
+model. The views and ADRs say *how*. The skills (`/use-case-implement`,
+`/use-case-test`, `/test-case-implement`, `/use-case-coverage`) turn both into a
 repeatable procedure, so the tenth use case gets built the way the first one was.
 
 **Sensors** are feedback. The six sensor classes read the repository from disk
@@ -187,7 +187,7 @@ and whether it ran is a property of the session, not of the repository, so no
 test can check it ([ADR-010](adr/ADR-010-hooks-guard-the-session.md)). The hooks
 enforce exactly two things: a turn does not end while something under `src/`,
 `docs/` or `pom.xml` changed after the last green sensor run, and a `Status:`
-line does not claim coverage unless the `uc-coverage` agent audited that
+line does not claim coverage unless the `uc-coverage-layered` agent audited that
 specification after the code last changed. The individual hooks are listed in
 [`development.md`](development.md) under *Agent guardrails*.
 
@@ -216,7 +216,7 @@ Implementing a use case, say UC-007 *Add Pet to Owner*, goes through every layer
    `record-sensor-run.sh` counts a run only when every sensor's Surefire report
    is fresh and green. What the console printed does not matter.
 5. **Guard on status.** To mark UC-007 `Done`, the agent first runs
-   `coverage-check`. Its `uc-coverage` agent leaves a marker when it finishes.
+   `/use-case-coverage`. Its `uc-coverage-layered` agent leaves a marker when it finishes.
    Without that marker, `guard-spec-status.sh` refuses the edit, and
    `check-spec-status.sh` reports a status that was changed some other way.
    From then on `Done` is an assertion: `UseCaseTraceabilityTest` demands a

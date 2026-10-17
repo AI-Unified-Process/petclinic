@@ -314,14 +314,14 @@ this session, and that a `Status:` line was audited before it was set
 ([ADR-010](adr/ADR-010-hooks-guard-the-session.md),
 [ADR-011](adr/ADR-011-guards-read-state-and-demand-evidence.md)):
 
-| Hook                       | Event                          | What it does                                                                                                                                                                              |
-|----------------------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `session-start.sh`         | `SessionStart`                 | records the commit the session started on and when, drops the previous session's markers, and takes a first reading of every `Status:` line                                              |
-| `guard-spec-status.sh`     | `PreToolUse` (Edit, Write)     | refuses an edit that sets a `Status:` to `Done`, `Tested` or `Automated` unless a coverage audit of that specification finished in this session after the last change under `src/`        |
-| `check-spec-status.sh`     | `PostToolUse` (every tool)     | rereads every `Status:` line after each tool call and reports one that now asserts coverage without an audit behind it — whichever tool changed it, `sed` and heredocs included           |
-| `record-coverage-check.sh` | `SubagentStop` (`uc-coverage`) | records that `aiup-vaadin-jooq:coverage-check` audited a UC or TC: the evidence the two guards above ask for                                                                               |
-| `record-sensor-run.sh`     | `PostToolUse` (Bash)           | after a Maven `test` / `verify`, records the change set the sensors saw — if, and only if, every sensor's Surefire report is fresh and green                                              |
-| `require-sensors.sh`       | `Stop`                         | refuses to end a turn while `src/`, `docs/` or `pom.xml` changed and the sensors have not run since the newest change, or while a hook changed and `smoke.sh` has not                     |
+| Hook                       | Event                                  | What it does                                                                                                                                                                       |
+|----------------------------|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `session-start.sh`         | `SessionStart`                         | records the commit the session started on and when, drops the previous session's markers, and takes a first reading of every `Status:` line                                        |
+| `guard-spec-status.sh`     | `PreToolUse` (Edit, Write)             | refuses an edit that sets a `Status:` to `Done`, `Tested` or `Automated` unless a coverage audit of that specification finished in this session after the last change under `src/` |
+| `check-spec-status.sh`     | `PostToolUse` (every tool)             | rereads every `Status:` line after each tool call and reports one that now asserts coverage without an audit behind it — whichever tool changed it, `sed` and heredocs included    |
+| `record-coverage-check.sh` | `SubagentStop` (`uc-coverage-layered`) | records that `/use-case-coverage` or `/test-case-coverage` audited a UC or TC: the evidence the two guards above ask for                                                           |
+| `record-sensor-run.sh`     | `PostToolUse` (Bash)                   | after a Maven `test` / `verify`, records the change set the sensors saw — if, and only if, every sensor's Surefire report is fresh and green                                       |
+| `require-sensors.sh`       | `Stop`                                 | refuses to end a turn while `src/`, `docs/` or `pom.xml` changed and the sensors have not run since the newest change, or while a hook changed and `smoke.sh` has not              |
 
 Two rules shape them. **A guard reads the repository, not the tool call**: the
 status check compares the files with what it saw last, so it holds for an edit
@@ -330,7 +330,7 @@ positive**: a sensor run counts because `target/surefire-reports/TEST-*.xml`
 says every sensor ran and passed after the change, never because the console
 showed no failure — so a run in the background, piped through `tail`, narrowed
 with `-Dtest=`, or skipped leaves no marker. An audit counts because the
-`uc-coverage` agent finished, not because a status change said it did.
+`uc-coverage-layered` agent finished, not because a status change said it did.
 
 The run the Stop hook asks for is `./mvnw -q test -Dgroups=sensor`: the five
 sensor classes carry the JUnit tag `sensor`, and the `sensors` profile that
