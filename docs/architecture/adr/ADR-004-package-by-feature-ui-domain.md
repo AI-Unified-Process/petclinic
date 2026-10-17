@@ -41,5 +41,9 @@ enforce this.
   duplicate-name check UC-007 needs before its insert, for example. Accepted
   while each use case writes one row; the moment two views need the same rule,
   it moves to `domain`.
+- **The Layers table of [`../development.md`](../development.md#layers) marks
+  the Service layer `–`.** The AI Unified Process layer skills read that:
+  `vaadin-flow-ui` builds views on the repositories, and `jooq-persistence`
+  keeps the transaction boundary there.
 - **The feature graph is cyclic by design** because of the routing exception —
   which is why the cycle rule slices on `domain` packages instead.
