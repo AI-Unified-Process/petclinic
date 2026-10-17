@@ -39,6 +39,10 @@
         <archunit.version>1.5.1</archunit.version>
         <dramafinder.version>1.2.0</dramafinder.version>
         <jacoco.version>0.8.15</jacoco.version>
+        <!-- Empty default for the Failsafe argLine: JaCoCo's prepare-agent-integration
+             overrides it, but when JaCoCo is skipped (or an IDE runs an *IT) the
+             unresolved @{failsafeArgLine} would reach the JVM as an @argfile. -->
+        <failsafeArgLine></failsafeArgLine>
         <!-- The sensors profile below flips this: the traceability sensors and
              the ArchUnit rules read files and class files, not a database. -->
         <jooq.codegen.skip>false</jooq.codegen.skip>
