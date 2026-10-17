@@ -46,7 +46,7 @@ refuse the edit before it lands; it is the fast path, not the guarantee.
 every sensor class exists, is newer than the session start and than every
 changed file, ran tests, and counts no failure or error — the test JVM writes
 those files whatever the console shows. An audit counts because the
-`uc-coverage` agent finished (`SubagentStop`), which writes a marker per audited
+`uc-coverage-layered` agent finished (`SubagentStop`), which writes a marker per audited
 id; the guards accept `Done` / `Tested` / `Automated` only with such a marker
 newer than the last change under `src/`. The marker says an audit happened, not
 that it found nothing: the sensors judge the claim itself on the next run.
@@ -76,7 +76,8 @@ And three consequences of taking the rules seriously:
   profile buys. It costs one more Maven profile and a `build-helper` execution
   that registers the generated sources the skipped generator no longer does.
 - **The status guards depend on the plugin's agent.** The `SubagentStop`
-  matcher names `aiup-vaadin-jooq:uc-coverage`; an audit done inline, without
+  matcher names `uc-coverage-layered`, the agent aiup-core's
+  `/use-case-coverage` and `/test-case-coverage` run; an audit done inline, without
   the agent, leaves no marker and the edit is refused. That is intended: the
   agent is read-only and its checklist is the audit.
 - **Known limits.** A hook still runs only in a Claude Code session. The report

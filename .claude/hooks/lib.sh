@@ -169,6 +169,16 @@ aiup_asserting_status() {
     esac
 }
 
+# The skill that audits <id>: /use-case-coverage for a UC, /test-case-coverage
+# for a TC. Both run the uc-coverage-layered agent record-coverage-check.sh
+# listens for.
+aiup_coverage_command() {
+    case "$1" in
+        TC-*) echo "aiup-core:test-case-coverage $1" ;;
+        *) echo "aiup-core:use-case-coverage $1" ;;
+    esac
+}
+
 # UC-NNN / TC-NNN from a specification's path.
 aiup_spec_id() {
     basename "$1" | grep -oE '^(UC|TC)-[0-9]{3}'
