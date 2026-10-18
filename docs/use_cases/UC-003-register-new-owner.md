@@ -7,7 +7,7 @@
 **Primary Actor:** Clinic User   
 **Goal:** Add a new pet owner to the clinic so that their pets and visits can subsequently be tracked.   
 **Trigger:** A new customer comes to the clinic and the Clinic User wants to record them as an owner.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-004, FR-005, FR-006, FR-022, FR-023](../requirements.md)
 
 ## Preconditions

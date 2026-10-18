@@ -6,7 +6,7 @@
 **Use Case Name:** Update Owner   
 **Primary Actor:** Clinic User   
 **Goal:** Modify an existing owner's contact information.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-013, FR-005, FR-006, FR-022, FR-023](../requirements.md)
 
 ## Preconditions

@@ -6,7 +6,7 @@
 **Use Case Name:** Find Owners by Last Name   
 **Primary Actor:** Clinic User   
 **Goal:** Locate one or more owners by their last name so their details can be reviewed or edited.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-007, FR-008, FR-009, FR-010, NFR-001, NFR-002](../requirements.md)
 
 ## Preconditions
