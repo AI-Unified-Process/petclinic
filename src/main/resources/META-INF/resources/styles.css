@@ -1,0 +1,44 @@
+@import "petclinic-theme.css";
+
+/*
+ * Application styles on top of the Aura theme. Components get a semantic class
+ * name from Java (addClassNames), the look lives here — never inline styles.
+ * Use Aura / base style properties (--aura-*, --vaadin-*) so light and dark
+ * color schemes keep working.
+ */
+
+.app-header {
+  padding-inline: var(--vaadin-padding-m);
+}
+
+.app-title {
+  font-size: var(--aura-font-size-l);
+  margin: 0;
+}
+
+.page-heading {
+  margin: 0;
+}
+
+.secondary-text {
+  color: var(--vaadin-text-color-secondary);
+}
+
+.error-panel {
+  padding: var(--vaadin-padding-l);
+}
+
+.pet-card {
+  border: 1px solid var(--vaadin-border-color-secondary);
+  border-radius: var(--vaadin-radius-s);
+  padding: var(--vaadin-padding-s);
+  margin-bottom: var(--vaadin-gap-s);
+}
+
+.pet-name {
+  margin: 0;
+}
+
+.welcome-link {
+  margin-top: var(--vaadin-gap-m);
+}

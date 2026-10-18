@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "TestPetclinicApplication",
+            "request": "launch",
+            "mainClass": "ai.unifiedprocess.petclinic.TestPetclinicApplication",
+            "projectName": "petclinic"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PetclinicApplication<petclinic>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "ai.unifiedprocess.petclinic.PetclinicApplication",
+            "projectName": "petclinic",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
