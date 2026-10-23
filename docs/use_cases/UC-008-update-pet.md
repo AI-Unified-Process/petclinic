@@ -8,7 +8,7 @@
 **Goal:** Modify the details of an existing pet (name, birth date, or type).   
 **Trigger:** The Clinic User learns that a pet's recorded name, birth date, or type is wrong, for example when the owner
 points out a mistake made at registration.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-017, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
 
 ## Preconditions

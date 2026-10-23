@@ -7,7 +7,7 @@
 **Primary Actor:** Visitor, Clinic User   
 **Goal:** See a friendly error page with a way back whenever a failure occurs during navigation, so users are never shown a raw technical error or stranded on a blank page. The "Error" drawer link demonstrates this page on demand, mirroring the Spring PetClinic `/oups` demonstration page.   
 **Trigger:** A Visitor or Clinic User opens the error demonstration, or a failure occurs while the system prepares a view the user requested.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-024, FR-025, FR-002, NFR-004, NFR-005, C-010](../requirements.md)
 
 ## Preconditions

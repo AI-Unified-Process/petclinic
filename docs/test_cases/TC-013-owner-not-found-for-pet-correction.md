@@ -5,7 +5,7 @@
 **ID:** TC-013  
 **Goal:** A clinic user searches for a caller who reports changed details of an animal, finds no owner with that last name and stops — verifying the search reports the miss and nothing is recorded.  
 **Priority:** Low  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-006 Update Pet](../processes/BP-006-update-pet.bpmn) — Owner reports changed pet details → UC-004 Find Owners by Last Name → Owner on record? no → Owner not on record
 
 ## Roles

@@ -5,7 +5,7 @@
 **ID:** TC-005  
 **Goal:** A clinic user finds an owner among several with the same last name and corrects the birth date of one of the owner's pets — verifying the corrected pet is shown under the right owner.  
 **Priority:** Medium  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-006 Update Pet](../processes/BP-006-update-pet.bpmn) — Owner reports changed pet details → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → Pet on record? yes → UC-008 Update Pet → Pet details updated
 
 ## Roles

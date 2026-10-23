@@ -1,0 +1,106 @@
+package ai.unifiedprocess.petclinic.owner.domain;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static ai.unifiedprocess.demo.petclinic.database.Tables.OWNERS;
+import static ai.unifiedprocess.demo.petclinic.database.Tables.PETS;
+import static org.jooq.Records.mapping;
+import static org.jooq.impl.DSL.*;
+
+/**
+ * jOOQ-backed persistence for {@link Owner}. Feeds UC-003…UC-006.
+ */
+@Repository
+@Transactional(readOnly = true)
+public class OwnerRepository {
+
+    private final DSLContext dsl;
+
+    public OwnerRepository(DSLContext dsl) {
+        this.dsl = dsl;
+    }
+
+    /**
+     * Case-insensitive prefix match on last name (BR-001 of UC-004) with each owner's pet names
+     * pre-joined in a single query. An empty prefix returns every owner
+     * (BR-003 of UC-004); results are ordered for stable lazy loading. The
+     * {@code multiset} avoids the N+1 that a per-row
+     * {@link ai.unifiedprocess.petclinic.pet.domain.PetRepository} lookup
+     * would cause in the results grid. Pet names are alphabetical to match
+     * {@code PetRepository.findByOwnerId}.
+     */
+    public Stream<OwnerListing> findListingByLastNamePrefix(String lastNamePrefix, int offset, int limit) {
+        Field<List<String>> petNames = multiset(
+                select(PETS.NAME)
+                        .from(PETS)
+                        .where(PETS.OWNER_ID.eq(OWNERS.ID))
+                        .orderBy(PETS.NAME.asc()))
+                .convertFrom(r -> r.getValues(PETS.NAME));
+
+        return dsl.select(
+                        row(OWNERS.ID, OWNERS.FIRST_NAME, OWNERS.LAST_NAME,
+                                OWNERS.ADDRESS, OWNERS.CITY, OWNERS.TELEPHONE).mapping(Owner::new),
+                        petNames)
+                .from(OWNERS)
+                // UC-004 BR-001: a case-insensitive "starts with" match on last name.
+                // UC-004 BR-003: an empty prefix matches every owner.
+                .where(OWNERS.LAST_NAME.startsWithIgnoreCase(lastNamePrefix == null ? "" : lastNamePrefix))
+                // UC-004 BR-004: sorted by last name, then first name; the id keeps paging stable.
+                .orderBy(OWNERS.LAST_NAME.asc(), OWNERS.FIRST_NAME.asc(), OWNERS.ID.asc())
+                // UC-004 BR-002: only the requested range is fetched, never every match.
+                .offset(offset)
+                .limit(limit)
+                .fetch(mapping(OwnerListing::new))
+                .stream();
+    }
+
+    public int countByLastNamePrefix(String lastNamePrefix) {
+        return dsl.fetchCount(
+                dsl.selectFrom(OWNERS)
+                        // UC-004 BR-001: the count uses the same case-insensitive "starts with" match as the listing.
+                        .where(OWNERS.LAST_NAME.startsWithIgnoreCase(lastNamePrefix == null ? "" : lastNamePrefix)));
+    }
+
+    public Optional<Owner> findById(Integer id) {
+        return dsl.select(
+                        OWNERS.ID, OWNERS.FIRST_NAME, OWNERS.LAST_NAME,
+                        OWNERS.ADDRESS, OWNERS.CITY, OWNERS.TELEPHONE)
+                .from(OWNERS)
+                .where(OWNERS.ID.eq(id))
+                .fetchOptional(mapping(Owner::new));
+    }
+
+    /** Insert the owner and return the generated id. */
+    @Transactional
+    public Integer insert(Owner owner) {
+        // UC-003 BR-003: the id is never taken from the owner; the database generates it on insert.
+        return dsl.insertInto(OWNERS)
+                .set(OWNERS.FIRST_NAME, owner.firstName())
+                .set(OWNERS.LAST_NAME, owner.lastName())
+                .set(OWNERS.ADDRESS, owner.address())
+                .set(OWNERS.CITY, owner.city())
+                .set(OWNERS.TELEPHONE, owner.telephone())
+                .returning(OWNERS.ID)
+                .fetchOne()
+                .getId();
+    }
+
+    @Transactional
+    public void update(Owner owner) {
+        dsl.update(OWNERS)
+                .set(OWNERS.FIRST_NAME, owner.firstName())
+                .set(OWNERS.LAST_NAME, owner.lastName())
+                .set(OWNERS.ADDRESS, owner.address())
+                .set(OWNERS.CITY, owner.city())
+                .set(OWNERS.TELEPHONE, owner.telephone())
+                .where(OWNERS.ID.eq(owner.id()))
+                .execute();
+    }
+}

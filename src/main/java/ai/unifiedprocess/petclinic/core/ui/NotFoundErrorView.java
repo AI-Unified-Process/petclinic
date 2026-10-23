@@ -15,11 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
  * {@link ErrorShellView} as the generic {@link ApplicationErrorView},
  * with HTTP 404.
  */
+// UC-010 BR-002: the error view renders inside the shell, so drawer and header stay usable.
 @ParentLayout(MainLayout.class)
 public class NotFoundErrorView extends ErrorShellView implements HasErrorParameter<NotFoundException> {
 
     @Override
     public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
-        return show(parameter, HttpServletResponse.SC_NOT_FOUND);
+        // The not-found messages are written by the views for the user ("Owner 7 not found").
+        return showMessage(parameter, HttpServletResponse.SC_NOT_FOUND);
     }
 }

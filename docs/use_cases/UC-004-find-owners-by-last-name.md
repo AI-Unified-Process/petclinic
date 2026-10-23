@@ -8,7 +8,7 @@
 **Goal:** Locate one or more owners by their last name so their details can be reviewed or edited.   
 **Trigger:** A customer calls or comes to the clinic, and the Clinic User needs to find the customer's record from their
 last name.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-007, FR-008, FR-009, FR-010, NFR-001, NFR-002](../requirements.md)
 
 ## Preconditions

@@ -5,7 +5,7 @@
 **ID:** TC-004  
 **Goal:** A clinic user finds an owner who has moved and changed number, and updates the owner's address and telephone — verifying the new contact details are what a later search shows.  
 **Priority:** Medium  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-003 Update Owner](../processes/BP-003-update-owner.bpmn) — Owner reports changed contact details → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → UC-006 Update Owner → Contact details updated
 
 ## Roles

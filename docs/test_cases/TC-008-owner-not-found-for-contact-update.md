@@ -5,7 +5,7 @@
 **ID:** TC-008  
 **Goal:** A clinic user searches for a caller who reports changed contact details, finds no owner with that last name and stops — verifying the search reports the miss and nothing is recorded.  
 **Priority:** Low  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-003 Update Owner](../processes/BP-003-update-owner.bpmn) — Owner reports changed contact details → UC-004 Find Owners by Last Name → Owner on record? no → Owner not on record
 
 ## Roles

@@ -7,7 +7,7 @@
 **Primary Actor:** Clinic User   
 **Goal:** Record a veterinary visit for an existing pet, documenting the date and the reason for the appointment.   
 **Trigger:** An owner brings a pet in or asks for an appointment, and the Clinic User wants to record the visit.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-018, FR-019, FR-020, FR-021, FR-022, FR-023](../requirements.md)
 
 ## Preconditions

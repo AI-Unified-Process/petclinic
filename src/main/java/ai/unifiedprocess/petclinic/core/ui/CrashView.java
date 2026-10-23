@@ -12,6 +12,7 @@ import com.vaadin.flow.router.Route;
  * target that exercises {@link ApplicationErrorView}. Mirrors Spring
  * PetClinic's {@code CrashController}, including the exception message.
  */
+// UC-010 BR-001 (UC-001 BR-001): no access annotation and no security; any visitor reaches the error view.
 @Route(value = "oups", layout = MainLayout.class)
 @PageTitle("Error")
 public class CrashView extends Div implements BeforeEnterObserver {

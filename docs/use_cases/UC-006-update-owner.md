@@ -7,7 +7,7 @@
 **Primary Actor:** Clinic User   
 **Goal:** Modify an existing owner's contact information.   
 **Trigger:** An owner reports changed contact details, for example after moving or getting a new telephone number.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-013, FR-005, FR-006, FR-022, FR-023](../requirements.md)
 
 ## Preconditions

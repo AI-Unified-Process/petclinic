@@ -7,7 +7,7 @@
 **Primary Actor:** Visitor, Clinic User   
 **Goal:** Browse the list of veterinarians employed at the clinic along with their specialties.   
 **Trigger:** A Visitor or Clinic User wants to know which veterinarians work at the clinic and what they treat.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-003, NFR-001, NFR-002, NFR-003, C-010, C-011](../requirements.md)
 
 ## Preconditions

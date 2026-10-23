@@ -8,7 +8,7 @@
 **Goal:** Inspect an owner's contact information together with the list of their pets and each pet's visit history.   
 **Trigger:** The Clinic User needs an owner's contact details, pets, or visit history, for example while answering a
 customer's call.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-011, FR-012, NFR-003](../requirements.md)
 
 ## Preconditions

@@ -8,7 +8,7 @@
 **Goal:** Register a new pet under an existing owner so that visits and medical information can subsequently be tracked
 for it.   
 **Trigger:** An owner brings a pet to the clinic that is not yet recorded, or asks to have a new pet recorded.   
-**Status:** Approved   
+**Status:** Done   
 **Requirements:** [FR-014, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
 
 ## Preconditions
