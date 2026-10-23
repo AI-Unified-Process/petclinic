@@ -1,7 +1,7 @@
 # ADR-007: Specification traceability is enforced by tests, not by review
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Use Case View, Development View
 
 ## Context

@@ -2,12 +2,12 @@
 
 ## Overview
 
-**Use Case ID:** UC-001   
-**Use Case Name:** View Welcome Page   
-**Primary Actor:** Visitor, Clinic User   
-**Goal:** Display the application's home page so the user can orient themselves and navigate to the main functional areas.   
-**Trigger:** A Visitor or Clinic User opens the PetClinic application.   
-**Status:** Done   
+**Use Case ID:** UC-001  
+**Use Case Name:** View Welcome Page  
+**Primary Actor:** Visitor, Clinic User  
+**Goal:** Display the application's home page so the user can orient themselves and navigate to the main functional areas.  
+**Trigger:** A Visitor or Clinic User opens the PetClinic application.  
+**Status:** Done  
 **Requirements:** [FR-001, FR-002, C-010](../requirements.md)
 
 ## Preconditions

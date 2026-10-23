@@ -24,14 +24,14 @@ class UC001ViewWelcomePageTest extends SpringBrowserlessTest {
     @UseCase(id = "UC-001", businessRules = "BR-001")
     void welcomePageRendersAtRootRoute() {
         // No authentication is performed, covering BR-001 (Anonymous Access).
-        assertDoesNotThrow(() -> navigate(WelcomeView.class),
-                "Expected root route '/' to resolve to WelcomeView without error");
+        assertDoesNotThrow(() -> navigate(ViewWelcomePageView.class),
+                "Expected root route '/' to resolve to ViewWelcomePageView without error");
     }
 
     @Test
     @UseCase(id = "UC-001")
     void welcomePageShowsDecorativeImage() {
-        navigate(WelcomeView.class);
+        navigate(ViewWelcomePageView.class);
 
         assertDoesNotThrow(() -> find(Image.class)
                 .withPropertyValue(Image::getSrc, "images/pets.png")
@@ -42,7 +42,7 @@ class UC001ViewWelcomePageTest extends SpringBrowserlessTest {
     @Test
     @UseCase(id = "UC-001")
     void clinicLogoIsRendered() {
-        navigate(WelcomeView.class);
+        navigate(ViewWelcomePageView.class);
 
         assertDoesNotThrow(() -> find(Image.class)
                 .withPropertyValue(Image::getSrc, "images/petclinic-logo.svg")
@@ -53,7 +53,7 @@ class UC001ViewWelcomePageTest extends SpringBrowserlessTest {
     @Test
     @UseCase(id = "UC-001")
     void unifiedProcessLinkIsRendered() {
-        navigate(WelcomeView.class);
+        navigate(ViewWelcomePageView.class);
 
         Anchor link = assertDoesNotThrow(() -> find(Anchor.class)
                 .withPropertyValue(Anchor::getHref, "https://unifiedprocess.ai")
@@ -65,7 +65,7 @@ class UC001ViewWelcomePageTest extends SpringBrowserlessTest {
     @Test
     @UseCase(id = "UC-001")
     void mainNavigationMenuHasRequiredItems() {
-        navigate(WelcomeView.class);
+        navigate(ViewWelcomePageView.class);
 
         assertDoesNotThrow(() -> find(SideNavItem.class)
                 .withPropertyValue(SideNavItem::getLabel, "Home").single(),

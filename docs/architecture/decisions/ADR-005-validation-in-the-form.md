@@ -1,7 +1,7 @@
 # ADR-005: Validation lives in the Vaadin form, not in the domain record
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Logical View, Development View
 
 ## Context

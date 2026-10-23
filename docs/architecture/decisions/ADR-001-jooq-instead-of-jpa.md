@@ -1,7 +1,7 @@
 # ADR-001: jOOQ with generated SQL instead of JPA/Hibernate
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Logical View, Development View
 
 ## Context

@@ -2,13 +2,13 @@
 
 ## Overview
 
-**Use Case ID:** UC-004   
-**Use Case Name:** Find Owners by Last Name   
-**Primary Actor:** Clinic User   
-**Goal:** Locate one or more owners by their last name so their details can be reviewed or edited.   
+**Use Case ID:** UC-004  
+**Use Case Name:** Find Owners by Last Name  
+**Primary Actor:** Clinic User  
+**Goal:** Locate one or more owners by their last name so their details can be reviewed or edited.  
 **Trigger:** A customer calls or comes to the clinic, and the Clinic User needs to find the customer's record from their
-last name.   
-**Status:** Approved   
+last name.  
+**Status:** Done  
 **Requirements:** [FR-007, FR-008, FR-009, FR-010, NFR-001, NFR-002](../requirements.md)
 
 ## Preconditions
@@ -30,7 +30,7 @@ _None — the search relies on no prior state; an empty result is handled in A3.
 
 ### A1: Empty Last-Name Search
 
-**Trigger:** Clinic User submits the form with an empty last-name field, or one that holds only spaces (step 3).
+**Trigger:** Clinic User submits the form with an empty last-name field, or one that holds only spaces (step 3).  
 **Flow:**
 
 1. System treats the empty term as matching every owner (BR-003).
@@ -38,7 +38,7 @@ _None — the search relies on no prior state; an empty result is handled in A3.
 
 ### A2: Exactly One Match
 
-**Trigger:** The search returns exactly one owner (step 4).
+**Trigger:** The search returns exactly one owner (step 4).  
 **Flow:**
 
 1. System navigates directly to the Owner Details view for that owner (UC-005).
@@ -46,7 +46,7 @@ _None — the search relies on no prior state; an empty result is handled in A3.
 
 ### A3: No Match
 
-**Trigger:** The search returns no owners (step 4).
+**Trigger:** The search returns no owners (step 4).  
 **Flow:**
 
 1. System re-renders the Find Owners form, keeping the entered search term.
@@ -56,7 +56,7 @@ _None — the search relies on no prior state; an empty result is handled in A3.
 
 ### A4: Scroll Through Results
 
-**Trigger:** The result set is larger than what fits on screen (step 5).
+**Trigger:** The result set is larger than what fits on screen (step 5).  
 **Flow:**
 
 1. Clinic User scrolls toward the bottom of the Owners List.

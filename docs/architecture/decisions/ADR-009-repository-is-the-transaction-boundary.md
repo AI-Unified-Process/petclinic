@@ -1,8 +1,8 @@
 # ADR-009: The repository is the transaction boundary
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
-**Affects:** Process View, Development View   
+**Status:** Accepted  
+**Date:** 2026-09-17  
+**Affects:** Process View, Development View  
 **Supersedes:** relying on auto-commit with no transaction declared anywhere
 
 ## Context

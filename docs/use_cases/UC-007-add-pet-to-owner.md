@@ -2,13 +2,13 @@
 
 ## Overview
 
-**Use Case ID:** UC-007   
-**Use Case Name:** Add Pet to Owner   
-**Primary Actor:** Clinic User   
+**Use Case ID:** UC-007  
+**Use Case Name:** Add Pet to Owner  
+**Primary Actor:** Clinic User  
 **Goal:** Register a new pet under an existing owner so that visits and medical information can subsequently be tracked
-for it.   
-**Trigger:** An owner brings a pet to the clinic that is not yet recorded, or asks to have a new pet recorded.   
-**Status:** Approved   
+for it.  
+**Trigger:** An owner brings a pet to the clinic that is not yet recorded, or asks to have a new pet recorded.  
+**Status:** Done  
 **Requirements:** [FR-014, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
 
 ## Preconditions
@@ -30,7 +30,7 @@ for it.
 
 ### A1: Duplicate Pet Name for Owner
 
-**Trigger:** The submitted name matches a pet already owned by this owner (step 4).
+**Trigger:** The submitted name matches a pet already owned by this owner (step 4).  
 **Flow:**
 
 1. System rejects the name field with the error "already exists".
@@ -40,7 +40,7 @@ for it.
 
 ### A2: Birth Date in the Future
 
-**Trigger:** The submitted birth date is later than today (step 4).
+**Trigger:** The submitted birth date is later than today (step 4).  
 **Flow:**
 
 1. System rejects the birth date field with the error "invalid date".
@@ -50,7 +50,7 @@ for it.
 
 ### A3: Missing Required Field
 
-**Trigger:** Name, birth date, or type is missing (step 4).
+**Trigger:** Name, birth date, or type is missing (step 4).  
 **Flow:**
 
 1. System rejects the affected field with a "required" error.
@@ -60,7 +60,7 @@ for it.
 
 ### A4: Pet Creation Cancelled
 
-**Trigger:** Clinic User cancels instead of submitting the form (step 3).
+**Trigger:** Clinic User cancels instead of submitting the form (step 3).  
 **Flow:**
 
 1. System discards the entered values and returns to the Owner Details view.
@@ -69,7 +69,7 @@ for it.
 ### A5: Owner Not Found
 
 **Trigger:** No owner exists for the requested identifier, for example when the pet form is opened from an outdated
-bookmark (step 2).
+bookmark (step 2).  
 **Flow:**
 
 1. System cannot resolve the owner and shows the application error view (UC-010 A1).
@@ -77,7 +77,7 @@ bookmark (step 2).
 
 ### A6: Pet Name Too Long
 
-**Trigger:** The submitted name exceeds its maximum length (step 4).
+**Trigger:** The submitted name exceeds its maximum length (step 4).  
 **Flow:**
 
 1. System rejects the name field with an error stating the maximum length (BR-004).

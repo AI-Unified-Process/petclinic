@@ -1,7 +1,7 @@
 # ADR-002: Vaadin Flow server-side UI instead of REST plus an SPA
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Process View, Development View, Physical View
 
 ## Context

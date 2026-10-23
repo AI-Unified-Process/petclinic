@@ -10,7 +10,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 /**
- * UC-001: View Welcome Page.
+ * UC-001 View Welcome Page.
  *
  * Root view shown at {@code /}. Displays a decorative image and a link to
  * https://unifiedprocess.ai. The surrounding logo and navigation menu are
@@ -18,9 +18,9 @@ import com.vaadin.flow.router.Route;
  */
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Welcome")
-public class WelcomeView extends VerticalLayout {
+public class ViewWelcomePageView extends VerticalLayout {
 
-    public WelcomeView() {
+    public ViewWelcomePageView() {
         setSizeFull();
         setAlignItems(FlexComponent.Alignment.CENTER);
         setJustifyContentMode(FlexComponent.JustifyContentMode.START);

@@ -1,7 +1,7 @@
 # ADR-003: Flyway owns the schema, and code generation runs against it
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Logical View, Development View, Physical View
 
 ## Context

@@ -2,12 +2,12 @@
 
 ## Overview
 
-**Use Case ID:** UC-009   
-**Use Case Name:** Book Visit for Pet   
-**Primary Actor:** Clinic User   
-**Goal:** Record a veterinary visit for an existing pet, documenting the date and the reason for the appointment.   
-**Trigger:** An owner brings a pet in or asks for an appointment, and the Clinic User wants to record the visit.   
-**Status:** Approved   
+**Use Case ID:** UC-009  
+**Use Case Name:** Book Visit for Pet  
+**Primary Actor:** Clinic User  
+**Goal:** Record a veterinary visit for an existing pet, documenting the date and the reason for the appointment.  
+**Trigger:** An owner brings a pet in or asks for an appointment, and the Clinic User wants to record the visit.  
+**Status:** Done  
 **Requirements:** [FR-018, FR-019, FR-020, FR-021, FR-022, FR-023](../requirements.md)
 
 ## Preconditions
@@ -29,7 +29,7 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### A1: Missing Description
 
-**Trigger:** The description field is blank (step 4).
+**Trigger:** The description field is blank (step 4).  
 **Flow:**
 
 1. System re-renders the visit form with a "required" error on the description field, keeping the entered date
@@ -39,7 +39,7 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### A2: Pet Not Owned by Given Owner
 
-**Trigger:** The requested pet does not exist or does not belong to the owner (step 2).
+**Trigger:** The requested pet does not exist or does not belong to the owner (step 2).  
 **Flow:**
 
 1. System cannot resolve the pet for the given owner and shows the application error view (UC-010 A1).
@@ -47,7 +47,7 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### A3: Owner Not Found
 
-**Trigger:** No owner exists for the requested identifier (step 2).
+**Trigger:** No owner exists for the requested identifier (step 2).  
 **Flow:**
 
 1. System cannot resolve the owner and shows the application error view (UC-010 A1).
@@ -55,7 +55,7 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### A4: Visit Booking Cancelled
 
-**Trigger:** Clinic User cancels instead of submitting the form (step 3).
+**Trigger:** Clinic User cancels instead of submitting the form (step 3).  
 **Flow:**
 
 1. System discards the entered values and returns to the Owner Details view.
@@ -63,7 +63,7 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### A5: Description Too Long
 
-**Trigger:** The description exceeds its maximum length (step 4).
+**Trigger:** The description exceeds its maximum length (step 4).  
 **Flow:**
 
 1. System re-renders the visit form with an error on the description field stating the maximum length, keeping every
@@ -73,7 +73,7 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### A6: Missing Visit Date
 
-**Trigger:** The Clinic User cleared the date field (step 4).
+**Trigger:** The Clinic User cleared the date field (step 4).  
 **Flow:**
 
 1. System re-renders the visit form with a "required" error on the date field, keeping the entered description

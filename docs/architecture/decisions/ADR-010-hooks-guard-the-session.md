@@ -1,7 +1,7 @@
 # ADR-010: Hooks guard the session; tests guard the repository
 
-**Status:** Accepted, amended by [ADR-011](ADR-011-guards-read-state-and-demand-evidence.md)   
-**Date:** 2026-09-18   
+**Status:** Accepted, amended by [ADR-011](ADR-011-guards-read-state-and-demand-evidence.md)  
+**Date:** 2026-09-18  
 **Affects:** Development View
 
 ## Context

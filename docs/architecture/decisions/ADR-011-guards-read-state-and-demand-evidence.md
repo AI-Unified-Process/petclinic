@@ -1,8 +1,8 @@
 # ADR-011: Guards read the repository's state and demand positive evidence
 
-**Status:** Accepted   
-**Date:** 2026-09-18   
-**Affects:** Development View   
+**Status:** Accepted  
+**Date:** 2026-09-18  
+**Affects:** Development View  
 **Amends:** [ADR-010](ADR-010-hooks-guard-the-session.md)
 
 ## Context

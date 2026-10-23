@@ -2,12 +2,12 @@
 
 ## Overview
 
-**Use Case ID:** UC-003   
-**Use Case Name:** Register New Owner   
-**Primary Actor:** Clinic User   
-**Goal:** Add a new pet owner to the clinic so that their pets and visits can subsequently be tracked.   
-**Trigger:** A new customer comes to the clinic and the Clinic User wants to record them as an owner.   
-**Status:** Approved   
+**Use Case ID:** UC-003  
+**Use Case Name:** Register New Owner  
+**Primary Actor:** Clinic User  
+**Goal:** Add a new pet owner to the clinic so that their pets and visits can subsequently be tracked.  
+**Trigger:** A new customer comes to the clinic and the Clinic User wants to record them as an owner.  
+**Status:** Done  
 **Requirements:** [FR-004, FR-005, FR-006, FR-022, FR-023](../requirements.md)
 
 ## Preconditions
@@ -31,7 +31,7 @@ _None — registering an owner relies on no prior state._
 ### A1: Validation Errors
 
 **Trigger:** One or more fields fail validation — a blank field, a value longer than its maximum length, or a telephone
-that is not exactly 10 digits (step 4).
+that is not exactly 10 digits (step 4).  
 **Flow:**
 
 1. System re-renders the owner creation form with an error message on each offending field and keeps every value the
@@ -42,7 +42,7 @@ that is not exactly 10 digits (step 4).
 
 ### A2: Registration Cancelled
 
-**Trigger:** Clinic User cancels instead of submitting the form (step 3).
+**Trigger:** Clinic User cancels instead of submitting the form (step 3).  
 **Flow:**
 
 1. System discards the entered values and returns to the Find Owners view.

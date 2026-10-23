@@ -2,13 +2,13 @@
 
 ## Overview
 
-**Use Case ID:** UC-005   
-**Use Case Name:** View Owner Details   
-**Primary Actor:** Clinic User   
-**Goal:** Inspect an owner's contact information together with the list of their pets and each pet's visit history.   
+**Use Case ID:** UC-005  
+**Use Case Name:** View Owner Details  
+**Primary Actor:** Clinic User  
+**Goal:** Inspect an owner's contact information together with the list of their pets and each pet's visit history.  
 **Trigger:** The Clinic User needs an owner's contact details, pets, or visit history, for example while answering a
-customer's call.   
-**Status:** Approved   
+customer's call.  
+**Status:** Done  
 **Requirements:** [FR-011, FR-012, NFR-003](../requirements.md)
 
 ## Preconditions
@@ -30,7 +30,7 @@ _None — the owner is resolved in step 2, and A1 handles a missing one._
 
 ### A1: Owner Not Found
 
-**Trigger:** No owner exists with the requested identifier (step 2).
+**Trigger:** No owner exists with the requested identifier (step 2).  
 **Flow:**
 
 1. System cannot resolve the owner and shows the application error view.

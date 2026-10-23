@@ -1,0 +1,94 @@
+package ai.unifiedprocess.petclinic.pet.ui;
+
+import ai.unifiedprocess.petclinic.core.ui.MainLayout;
+import ai.unifiedprocess.petclinic.core.ui.ResourceNotFoundException;
+import ai.unifiedprocess.petclinic.owner.domain.Owner;
+import ai.unifiedprocess.petclinic.owner.domain.OwnerRepository;
+import ai.unifiedprocess.petclinic.owner.ui.ViewOwnerDetailsView;
+import ai.unifiedprocess.petclinic.owner.ui.OwnerRouteParameters;
+import ai.unifiedprocess.petclinic.pet.domain.PetRepository;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+
+/**
+ * UC-007 Add Pet to Owner.
+ *
+ * <p>Route {@code /owners/:ownerId/pets/new}. Shows the owner's name for
+ * context and the shared {@link PetForm}. On successful submit, cascades
+ * the insert via {@link PetRepository#insert} and returns to the Owner Details
+ * view with the "New Pet has been Added" notification.
+ */
+@Route(value = "owners/:ownerId/pets/new", layout = MainLayout.class)
+@PageTitle("Add Pet")
+public class AddPetToOwnerView extends VerticalLayout implements BeforeEnterObserver {
+
+    static final String SUCCESS_MESSAGE = "New Pet has been Added";
+
+    private final Paragraph ownerPara;
+    private final PetForm petForm;
+
+    private final transient OwnerRepository ownerRepository;
+    private final transient PetRepository petRepository;
+    private Owner owner;
+
+    public AddPetToOwnerView(OwnerRepository ownerRepository, PetRepository petRepository) {
+        this.ownerRepository = ownerRepository;
+        this.petRepository = petRepository;
+
+        setSizeFull();
+
+        H2 heading = new H2("Add New Pet");
+        heading.addClassNames("page-heading");
+
+        ownerPara = new Paragraph();
+        ownerPara.addClassNames("secondary-text");
+
+        petForm = new PetForm(petRepository.findAllTypes());
+
+        Button saveButton = new Button("Add Pet", click -> save());
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        Button cancelButton = new Button("Cancel", click -> getUI().ifPresent(ui ->
+                ui.navigate(ViewOwnerDetailsView.class, OwnerRouteParameters.forOwner(owner.id()))));
+
+        add(heading, ownerPara, petForm, new HorizontalLayout(saveButton, cancelButton));
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Integer ownerId = event.getRouteParameters()
+                .getInteger(OwnerRouteParameters.OWNER_ID)
+                .orElseThrow(ResourceNotFoundException::owner);
+        // A5: owner not found → UC-010 A1
+        owner = ownerRepository.findById(ownerId)
+                .orElseThrow(ResourceNotFoundException::owner);
+        ownerPara.setText("Owner: " + owner.firstName() + " " + owner.lastName());
+    }
+
+    private void save() {
+        petForm.validateAndRead(null, owner.id()).ifPresent(pet -> {
+            // UC-007 BR-001: an owner cannot have two pets with the same name, compared case-insensitively.
+            if (petRepository.existsByOwnerAndName(owner.id(), pet.name(), null)) {
+                petForm.rejectName("already exists");
+                return;
+            }
+            // UC-007 A7: another Clinic User recorded that name since the check above.
+            if (petRepository.insert(pet).isEmpty()) {
+                petForm.rejectName("already exists");
+                return;
+            }
+            Notification.show(SUCCESS_MESSAGE);
+            getUI().ifPresent(ui -> ui.navigate(
+                    ViewOwnerDetailsView.class, OwnerRouteParameters.forOwner(owner.id())));
+        });
+    }
+}

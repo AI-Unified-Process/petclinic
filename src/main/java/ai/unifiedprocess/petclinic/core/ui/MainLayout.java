@@ -1,6 +1,8 @@
 package ai.unifiedprocess.petclinic.core.ui;
 
-import ai.unifiedprocess.petclinic.welcome.ui.WelcomeView;
+import ai.unifiedprocess.petclinic.owner.ui.FindOwnersByLastNameView;
+import ai.unifiedprocess.petclinic.vet.ui.ViewVeterinariansView;
+import ai.unifiedprocess.petclinic.welcome.ui.ViewWelcomePageView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -35,10 +37,10 @@ public class MainLayout extends AppLayout {
 
         addToNavbar(header);
 
-        SideNavItem homeLink = new SideNavItem("Home", WelcomeView.class);
-        SideNavItem findOwnersLink = new SideNavItem("Find Owners", "owners/find");
-        SideNavItem vetsLink = new SideNavItem("Veterinarians", "vets");
-        SideNavItem errorLink = new SideNavItem("Error", CrashView.class);
+        SideNavItem homeLink = new SideNavItem("Home", ViewWelcomePageView.class);
+        SideNavItem findOwnersLink = new SideNavItem("Find Owners", FindOwnersByLastNameView.class);
+        SideNavItem vetsLink = new SideNavItem("Veterinarians", ViewVeterinariansView.class);
+        SideNavItem errorLink = new SideNavItem("Error", ViewApplicationErrorView.class);
 
         SideNav sideNav = new SideNav();
         // The menu shows no visible heading, so the <nav> landmark would reach

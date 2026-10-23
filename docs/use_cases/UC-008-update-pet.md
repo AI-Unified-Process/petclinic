@@ -2,13 +2,13 @@
 
 ## Overview
 
-**Use Case ID:** UC-008   
-**Use Case Name:** Update Pet   
-**Primary Actor:** Clinic User   
-**Goal:** Modify the details of an existing pet (name, birth date, or type).   
+**Use Case ID:** UC-008  
+**Use Case Name:** Update Pet  
+**Primary Actor:** Clinic User  
+**Goal:** Modify the details of an existing pet (name, birth date, or type).  
 **Trigger:** The Clinic User learns that a pet's recorded name, birth date, or type is wrong, for example when the owner
-points out a mistake made at registration.   
-**Status:** Approved   
+points out a mistake made at registration.  
+**Status:** Done  
 **Requirements:** [FR-017, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
 
 ## Preconditions
@@ -30,7 +30,7 @@ points out a mistake made at registration.
 
 ### A1: Duplicate Pet Name
 
-**Trigger:** The submitted name matches a different pet already owned by this owner (step 4).
+**Trigger:** The submitted name matches a different pet already owned by this owner (step 4).  
 **Flow:**
 
 1. System rejects the name field with the error "already exists".
@@ -40,7 +40,7 @@ points out a mistake made at registration.
 
 ### A2: Birth Date in the Future
 
-**Trigger:** The submitted birth date is later than today (step 4).
+**Trigger:** The submitted birth date is later than today (step 4).  
 **Flow:**
 
 1. System rejects the birth date field with the error "invalid date".
@@ -50,7 +50,7 @@ points out a mistake made at registration.
 
 ### A3: Missing Required Field
 
-**Trigger:** Name or birth date is missing (step 4).
+**Trigger:** Name or birth date is missing (step 4).  
 **Flow:**
 
 1. System rejects the affected field with a "required" error.
@@ -60,7 +60,7 @@ points out a mistake made at registration.
 
 ### A4: Pet Edit Cancelled
 
-**Trigger:** Clinic User cancels instead of submitting the form (step 3).
+**Trigger:** Clinic User cancels instead of submitting the form (step 3).  
 **Flow:**
 
 1. System discards the amended values and returns to the Owner Details view.
@@ -69,7 +69,7 @@ points out a mistake made at registration.
 ### A5: Owner Not Found
 
 **Trigger:** No owner exists for the requested identifier, for example when the edit form is opened from an outdated
-bookmark (step 2).
+bookmark (step 2).  
 **Flow:**
 
 1. System cannot resolve the owner and shows the application error view (UC-010 A1).
@@ -77,7 +77,7 @@ bookmark (step 2).
 
 ### A6: Pet Not Found for Owner
 
-**Trigger:** The requested pet does not exist or does not belong to the owner (step 2).
+**Trigger:** The requested pet does not exist or does not belong to the owner (step 2).  
 **Flow:**
 
 1. System cannot resolve the pet for the given owner and shows the application error view (UC-010 A1).
@@ -85,7 +85,7 @@ bookmark (step 2).
 
 ### A7: Pet Name Too Long
 
-**Trigger:** The submitted name exceeds its maximum length (step 4).
+**Trigger:** The submitted name exceeds its maximum length (step 4).  
 **Flow:**
 
 1. System rejects the name field with an error stating the maximum length (BR-004).

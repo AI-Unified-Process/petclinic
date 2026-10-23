@@ -1,7 +1,7 @@
 # ADR-006: Two test layers — browserless `*Test` and Playwright `*IT`
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Development View
 
 ## Context

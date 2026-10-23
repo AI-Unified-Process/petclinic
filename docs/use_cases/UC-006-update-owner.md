@@ -2,12 +2,12 @@
 
 ## Overview
 
-**Use Case ID:** UC-006   
-**Use Case Name:** Update Owner   
-**Primary Actor:** Clinic User   
-**Goal:** Modify an existing owner's contact information.   
-**Trigger:** An owner reports changed contact details, for example after moving or getting a new telephone number.   
-**Status:** Approved   
+**Use Case ID:** UC-006  
+**Use Case Name:** Update Owner  
+**Primary Actor:** Clinic User  
+**Goal:** Modify an existing owner's contact information.  
+**Trigger:** An owner reports changed contact details, for example after moving or getting a new telephone number.  
+**Status:** Done  
 **Requirements:** [FR-013, FR-005, FR-006, FR-022, FR-023](../requirements.md)
 
 ## Preconditions
@@ -31,7 +31,7 @@ _None — the owner is resolved in step 2, and A3 handles a missing one._
 ### A1: Validation Errors
 
 **Trigger:** One or more fields fail validation — a blank field, a value longer than its maximum length, or a telephone
-that is not exactly 10 digits (step 4).
+that is not exactly 10 digits (step 4).  
 **Flow:**
 
 1. System re-renders the owner edit form with an error message on each offending field and keeps every value the
@@ -42,7 +42,7 @@ that is not exactly 10 digits (step 4).
 
 ### A2: Edit Cancelled
 
-**Trigger:** Clinic User cancels instead of submitting the form (step 3).
+**Trigger:** Clinic User cancels instead of submitting the form (step 3).  
 **Flow:**
 
 1. System discards the amended values and returns to the Owner Details view.
@@ -51,7 +51,7 @@ that is not exactly 10 digits (step 4).
 ### A3: Owner Not Found
 
 **Trigger:** No owner exists for the requested identifier, for example when the edit form is opened from an outdated
-bookmark (step 2).
+bookmark (step 2).  
 **Flow:**
 
 1. System cannot resolve the owner and shows the application error view (UC-010 A1).

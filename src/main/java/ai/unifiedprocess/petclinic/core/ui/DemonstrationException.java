@@ -1,7 +1,7 @@
 package ai.unifiedprocess.petclinic.core.ui;
 
 /**
- * Raised only by {@link CrashView}, so the deliberate failure behind the
+ * Raised only by {@link ViewApplicationErrorView}, so the deliberate failure behind the
  * {@code /oups} route is distinguishable from a real one — in a stack trace,
  * in a log, and to a reader.
  */

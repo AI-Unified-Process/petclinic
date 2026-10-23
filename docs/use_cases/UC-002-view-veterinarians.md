@@ -2,12 +2,12 @@
 
 ## Overview
 
-**Use Case ID:** UC-002   
-**Use Case Name:** View Veterinarians   
-**Primary Actor:** Visitor, Clinic User   
-**Goal:** Browse the list of veterinarians employed at the clinic along with their specialties.   
-**Trigger:** A Visitor or Clinic User wants to know which veterinarians work at the clinic and what they treat.   
-**Status:** Approved   
+**Use Case ID:** UC-002  
+**Use Case Name:** View Veterinarians  
+**Primary Actor:** Visitor, Clinic User  
+**Goal:** Browse the list of veterinarians employed at the clinic along with their specialties.  
+**Trigger:** A Visitor or Clinic User wants to know which veterinarians work at the clinic and what they treat.  
+**Status:** Done  
 **Requirements:** [FR-003, NFR-001, NFR-002, NFR-003, C-010, C-011](../requirements.md)
 
 ## Preconditions
@@ -27,7 +27,7 @@
 
 ### A1: No Veterinarians Registered
 
-**Trigger:** The clinic has no veterinarians recorded (step 2).
+**Trigger:** The clinic has no veterinarians recorded (step 2).  
 **Flow:**
 
 1. System renders the veterinarians grid with no rows.

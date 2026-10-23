@@ -1,7 +1,7 @@
 # ADR-008: No authentication; a trusted clinic network is assumed
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Use Case View, Physical View
 
 ## Context

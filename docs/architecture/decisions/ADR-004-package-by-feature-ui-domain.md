@@ -1,7 +1,7 @@
 # ADR-004: Package by feature with `ui` + `domain`, and no service layer
 
-**Status:** Accepted   
-**Date:** 2026-09-17   
+**Status:** Accepted  
+**Date:** 2026-09-17  
 **Affects:** Logical View, Development View
 
 ## Context

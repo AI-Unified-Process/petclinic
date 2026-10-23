@@ -2,12 +2,12 @@
 
 ## Overview
 
-**Use Case ID:** UC-010   
-**Use Case Name:** View Application Error   
-**Primary Actor:** Visitor, Clinic User   
-**Goal:** See a friendly error page with a way back whenever a failure occurs during navigation, so users are never shown a raw technical error or stranded on a blank page. The "Error" drawer link demonstrates this page on demand, mirroring the Spring PetClinic `/oups` demonstration page.   
-**Trigger:** A Visitor or Clinic User opens the error demonstration, or a failure occurs while the system prepares a view the user requested.   
-**Status:** Approved   
+**Use Case ID:** UC-010  
+**Use Case Name:** View Application Error  
+**Primary Actor:** Visitor, Clinic User  
+**Goal:** See a friendly error page with a way back whenever a failure occurs during navigation, so users are never shown a raw technical error or stranded on a blank page. The "Error" drawer link demonstrates this page on demand, mirroring the Spring PetClinic `/oups` demonstration page.  
+**Trigger:** A Visitor or Clinic User opens the error demonstration, or a failure occurs while the system prepares a view the user requested.  
+**Status:** Done  
 **Requirements:** [FR-024, FR-025, FR-002, NFR-004, NFR-005, C-010](../requirements.md)
 
 ## Preconditions
@@ -30,7 +30,7 @@ _None — the error view relies on no prior state._
 
 **Trigger:** Instead of the demonstration, a resource cannot be found while the system prepares a requested view
 (step 1) — for example an unknown owner id (UC-005 A1), an owner or pet that cannot be resolved (UC-006 A3, UC-007 A5,
-UC-008 A5 and A6, UC-009 A2 and A3), or a URL that does not match any view.
+UC-008 A5 and A6, UC-009 A2 and A3), or a URL that does not match any view.  
 **Flow:**
 
 1. System resolves the failure to the not-found variant of the error view.
@@ -40,7 +40,7 @@ UC-008 A5 and A6, UC-009 A2 and A3), or a URL that does not match any view.
 ### A2: Unexpected Error
 
 **Trigger:** Instead of the demonstration, any other failure occurs while the system prepares a requested view
-(step 1).
+(step 1).  
 **Flow:**
 
 1. System resolves the failure to the generic variant of the error view.
