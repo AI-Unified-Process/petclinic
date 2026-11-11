@@ -13,7 +13,7 @@ rectangle "Spring PetClinic" {
 
     package "General" {
         usecase "UC-001\nView Welcome Page" as UC001 <<Done>>
-        usecase "UC-002\nView Veterinarians" as UC002 #PaleTurquoise
+        usecase "UC-002\nView Veterinarians" as UC002 #Khaki
     }
 
     package "Owner Management" {
