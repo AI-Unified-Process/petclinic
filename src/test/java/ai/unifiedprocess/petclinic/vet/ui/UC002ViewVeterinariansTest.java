@@ -2,19 +2,27 @@ package ai.unifiedprocess.petclinic.vet.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 
 import ai.unifiedprocess.petclinic.PetClinicTestBase;
 import ai.unifiedprocess.petclinic.UseCase;
+import ai.unifiedprocess.petclinic.core.ui.ViewDataUnavailableErrorView;
+import ai.unifiedprocess.petclinic.vet.domain.VetRepository;
 import ai.unifiedprocess.petclinic.welcome.ui.WelcomeView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.sidenav.SideNav;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 /**
  * UC-002: View Veterinarians.
@@ -33,6 +41,10 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
 
     @Autowired
     private JdbcClient jdbcClient;
+
+    /** Real repository; only the failure test stubs it, and the stub is reset after each test. */
+    @MockitoSpyBean
+    private VetRepository vetRepository;
 
     @Test
     @UseCase(id = "UC-002")
@@ -162,6 +174,34 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
 
         Grid<?> grid = vetsGrid();
         assertThat(test(grid).size()).isZero();
+    }
+
+    @Test
+    @UseCase(id = "UC-002")
+    void failingVetFetchShowsTheGenericErrorAndModifiesNoData() {
+        List<String> vetsBefore = vetSnapshot();
+        List<String> specialtiesBefore = vetSpecialtySnapshot();
+        String technicalDetail = "simulated failure: connection to vets table refused";
+        doThrow(new DataRetrievalFailureException(technicalDetail)).when(vetRepository).count();
+        doThrow(new DataRetrievalFailureException(technicalDetail)).when(vetRepository).findPage(
+                anyInt(), anyInt());
+
+        // By location: the typed navigate() would assert the veterinarians view.
+        UI.getCurrent().navigate("vets");
+        roundTrip();
+
+        // The failure reaches the user as UC-010 A2: the generic error view, no technical details (UC-010 BR-003).
+        ViewDataUnavailableErrorView errorView = assertDoesNotThrow(
+                () -> find(ViewDataUnavailableErrorView.class).single(),
+                "Expected a failing vet fetch to show the error view");
+        assertThat(find(H2.class).from(errorView).single().getText()).isEqualTo("Something happened...");
+        assertThat(find(Paragraph.class).from(errorView).single().getText())
+                .isEqualTo("An unexpected error occurred. Please try again later.");
+        assertThat(find(Grid.class).all()).isEmpty();
+
+        // Failure postcondition: no data is modified.
+        assertThat(vetSnapshot()).isEqualTo(vetsBefore);
+        assertThat(vetSpecialtySnapshot()).isEqualTo(specialtiesBefore);
     }
 
     private Grid<?> vetsGrid() {
