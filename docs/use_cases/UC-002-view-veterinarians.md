@@ -2,12 +2,13 @@
 
 ## Overview
 
-**Use Case ID:** UC-002   
-**Use Case Name:** View Veterinarians   
-**Primary Actor:** Visitor, Clinic User   
-**Goal:** Browse the list of veterinarians employed at the clinic along with their specialties.   
-**Trigger:** A Visitor or Clinic User wants to know which veterinarians work at the clinic and what they treat.   
-**Status:** Tested   
+**Use Case ID:** UC-002  
+**Use Case Name:** View Veterinarians  
+**Primary Actor:** Visitor, Clinic User  
+**Goal:** Browse the list of veterinarians employed at the clinic along with their specialties.  
+**Trigger:** A Visitor or Clinic User wants to know which veterinarians work at the clinic and what they treat.  
+**Status:** Approved
+
 **Requirements:** [FR-003, NFR-001, NFR-002, NFR-003, C-010, C-011](../requirements.md)
 
 ## Preconditions
@@ -18,16 +19,14 @@
 
 1. Visitor clicks the "Veterinarians" link in the navigation bar.
 2. System retrieves the first set of veterinarians, sorted by name (BR-004).
-3. System renders the veterinarians grid showing, for each vet, the first name, last name, and a comma-separated list of
-   specialties (or "none" if no specialties are held).
-4. As the Visitor scrolls toward the end of the grid, the system fetches and appends the next chunk of veterinarians
-   until all entries have been loaded.
+3. System renders the veterinarians grid showing, for each vet, the first name, last name, and a comma-separated list of specialties (or "none" if no specialties are held).
+4. As the Visitor scrolls toward the end of the grid, the system fetches and appends the next chunk of veterinarians until all entries have been loaded.
 
 ## Alternative Flows
 
 ### A1: No Veterinarians Registered
 
-**Trigger:** The clinic has no veterinarians recorded (step 2).
+**Trigger:** The clinic has no veterinarians recorded (step 2).  
 **Flow:**
 
 1. System renders the veterinarians grid with no rows.

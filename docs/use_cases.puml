@@ -13,7 +13,7 @@ rectangle "Spring PetClinic" {
 
     package "General" {
         usecase "UC-001\nView Welcome Page" as UC001 <<Done>>
-        usecase "UC-002\nView Veterinarians" as UC002 #Khaki
+        usecase "UC-002\nView Veterinarians" as UC002 #PaleTurquoise
     }
 
     package "Owner Management" {
@@ -62,6 +62,7 @@ UC006 ..> UC005 : <<extend>>
 
 legend right
   |<#Khaki>| Status: Tested |
+  |<#PaleTurquoise>| Status: Approved |
 endlegend
 
 @enduml
