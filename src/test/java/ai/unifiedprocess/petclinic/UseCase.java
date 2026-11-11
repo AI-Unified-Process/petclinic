@@ -17,4 +17,6 @@ public @interface UseCase {
 
 	String[] businessRules() default {};
 
+	String[] requirements() default {};
+
 }
