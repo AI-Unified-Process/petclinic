@@ -37,7 +37,7 @@
         <jooq.version>3.21.9</jooq.version>
         <testcontainers-jooq-codegen-maven-plugin.version>1.0.0</testcontainers-jooq-codegen-maven-plugin.version>
         <archunit.version>1.5.1</archunit.version>
-        <dramafinder.version>1.2.3</dramafinder.version>
+        <dramafinder.version>2.0.1</dramafinder.version>
         <!-- Overrides the Playwright that Drama Finder brings in (1.59.0): only
              1.62.0+ install Chromium on ubuntu-26.04, which ubuntu-latest now is. -->
         <playwright.version>1.64.0</playwright.version>
