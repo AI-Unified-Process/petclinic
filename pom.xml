@@ -56,7 +56,7 @@
         <!-- The Spring Boot entry point: tests boot the context through
              @SpringBootTest, never through main(), so its body can only ever
              count as uncovered. Excluded from coverage, not from analysis. -->
-        <sonar.coverage.exclusions>**/AiupPetclinicApplication.java</sonar.coverage.exclusions>
+        <sonar.coverage.exclusions>**/PetclinicApplication.java</sonar.coverage.exclusions>
         <!-- Generated jOOQ sources are not hand-written code and are not tested
              directly. Note the extra "demo" segment: the application package is
              ai.unifiedprocess.petclinic, so this pattern cannot match it. -->

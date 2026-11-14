@@ -5,7 +5,7 @@
 **ID:** TC-007  
 **Goal:** A clinic user checks whether a caller who wants to register is already a customer, finds the owner and registers nobody — verifying no duplicate owner is created.  
 **Priority:** Medium  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-002 Register New Owner](../processes/BP-002-register-new-owner.bpmn) — New client wants to register → UC-004 Find Owners by Last Name → Owner already on record? yes → Owner already on record
 
 ## Roles

@@ -5,7 +5,7 @@
 **ID:** TC-002  
 **Goal:** A clinic user finds an existing owner who brings an animal the clinic has not seen before, adds that pet to the owner and books its first visit — verifying the new pet and its visit appear next to the owner's existing pet.  
 **Priority:** High  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-005 Book Visit](../processes/BP-005-book-visit.bpmn) — Owner requests a visit → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → Pet on record? no → UC-007 Add Pet to Owner → UC-009 Book Visit for Pet → Visit booked
 
 ## Roles
