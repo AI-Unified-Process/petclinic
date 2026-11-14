@@ -38,7 +38,3 @@
 .pet-name {
   margin: 0;
 }
-
-.welcome-link {
-  margin-top: var(--vaadin-gap-m);
-}

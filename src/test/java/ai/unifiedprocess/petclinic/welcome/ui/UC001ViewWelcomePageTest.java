@@ -3,7 +3,6 @@ package ai.unifiedprocess.petclinic.welcome.ui;
 import ai.unifiedprocess.petclinic.TestcontainersConfiguration;
 import ai.unifiedprocess.petclinic.UseCase;
 import com.vaadin.browserless.SpringBrowserlessTest;
-import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * UC-001: View Welcome Page.
@@ -48,18 +46,6 @@ class UC001ViewWelcomePageTest extends SpringBrowserlessTest {
                 .withPropertyValue(Image::getSrc, "images/petclinic-logo.svg")
                 .single(),
                 "Expected exactly one clinic logo image with src 'images/petclinic-logo.svg'");
-    }
-
-    @Test
-    @UseCase(id = "UC-001")
-    void unifiedProcessLinkIsRendered() {
-        navigate(ViewWelcomePageView.class);
-
-        Anchor link = assertDoesNotThrow(() -> find(Anchor.class)
-                .withPropertyValue(Anchor::getHref, "https://unifiedprocess.ai")
-                .single(),
-                "Expected a link to https://unifiedprocess.ai");
-        assertEquals("https://unifiedprocess.ai", link.getText());
     }
 
     @Test
