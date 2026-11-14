@@ -5,7 +5,7 @@
 **ID:** TC-003  
 **Goal:** A clinic user searches for a caller who turns out not to be a customer yet, registers the owner, adds the pet and books its first visit — verifying owner, pet and visit are linked on the Owner Details view.  
 **Priority:** Critical  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-002 Register New Owner](../processes/BP-002-register-new-owner.bpmn), then [BP-004 Add Pet](../processes/BP-004-add-pet.bpmn), then [BP-005 Book Visit](../processes/BP-005-book-visit.bpmn) — New client wants to register → UC-004 Find Owners by Last Name → Owner already on record? no → UC-003 Register New Owner → Owner registered; then UC-007 Add Pet to Owner → Animal on record; then UC-009 Book Visit for Pet → Visit booked
 
 ## Roles

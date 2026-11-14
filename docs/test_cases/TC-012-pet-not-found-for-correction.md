@@ -5,7 +5,7 @@
 **ID:** TC-012  
 **Goal:** A clinic user finds the owner who reports changed pet details but not the animal they name, and changes nothing — verifying the owner's pets are untouched.  
 **Priority:** Low  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-006 Update Pet](../processes/BP-006-update-pet.bpmn) — Owner reports changed pet details → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → Pet on record? no → Pet not on record
 
 ## Roles

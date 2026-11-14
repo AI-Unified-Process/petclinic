@@ -5,7 +5,7 @@
 **ID:** TC-010  
 **Goal:** A clinic user finds the owner who requests a visit but not the animal the visit is for, and books nothing — verifying no visit is recorded.  
 **Priority:** Low  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-005 Book Visit](../processes/BP-005-book-visit.bpmn) — Owner requests a visit → UC-004 Find Owners by Last Name → Owner on record? yes → UC-005 View Owner Details → Pet on record? no → Pet not on record
 
 ## Roles
