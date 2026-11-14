@@ -42,7 +42,7 @@ _None — the list relies on no prior state; a clinic without veterinarians is h
 
 ### Failure Postconditions
 
-- No data is modified.
+_None — the use case changes no data._
 
 ## Business Rules
 

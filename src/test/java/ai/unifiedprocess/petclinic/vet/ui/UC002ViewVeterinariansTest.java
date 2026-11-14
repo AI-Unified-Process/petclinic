@@ -46,7 +46,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     private DSLContext dsl;
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-003")
+    @UseCase(id = "UC-002", businessRules = "BR-003", requirements = "C-010")
     void vetsViewIsReachableWithoutAuthentication() {
         assertDoesNotThrow(() -> navigate(ViewVeterinariansView.class),
                 "Expected /vets to render without authentication");
@@ -66,7 +66,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-002")
+    @UseCase(id = "UC-002", businessRules = "BR-002", requirements = "NFR-003")
     void specialtiesAreListedAlphabeticallyWithinEachVet() {
         navigate(ViewVeterinariansView.class);
 
@@ -77,7 +77,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-004")
+    @UseCase(id = "UC-002", businessRules = "BR-004", requirements = "NFR-003")
     void vetsAreSortedByLastNameThenFirstName() {
         // Two more Carters around the seeded James Carter decide the tie by first name.
         dsl.insertInto(VETS, VETS.FIRST_NAME, VETS.LAST_NAME)
@@ -117,7 +117,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-001")
+    @UseCase(id = "UC-002", businessRules = "BR-001", requirements = "NFR-001")
     void vetsGridFetchesRowsLazily() {
         navigate(ViewVeterinariansView.class);
         Grid<Vet> grid = grid();
@@ -137,7 +137,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-001")
+    @UseCase(id = "UC-002", businessRules = "BR-001", requirements = "NFR-001")
     void nextChunkIsFetchedWhenScrollingPastTheFirst() {
         // They sort after the seeded "Stevens", so extra vet number i lands on
         // row SEEDED_VETS + i.
@@ -157,7 +157,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-001")
+    @UseCase(id = "UC-002", businessRules = "BR-001", requirements = "NFR-002")
     void eachFetchReturnsOnlyTheRequestedChunk() {
         insertExtraVets(EXTRA_VETS);
         navigate(ViewVeterinariansView.class);
@@ -180,7 +180,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002", businessRules = "BR-001")
+    @UseCase(id = "UC-002", businessRules = "BR-001", requirements = "NFR-001")
     void gridKnowsTheNumberOfVetsBeforeItIsScrolled() {
         insertExtraVets(EXTRA_VETS);
         navigate(ViewVeterinariansView.class);
@@ -195,7 +195,7 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002")
+    @UseCase(id = "UC-002", requirements = "C-011")
     void veterinariansCannotBeMaintainedFromTheList() {
         // C-011: vets and specialties are maintained outside the application,
         // so the list offers no action and no inline editing.
