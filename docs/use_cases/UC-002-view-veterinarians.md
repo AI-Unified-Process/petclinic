@@ -12,7 +12,7 @@
 
 ## Preconditions
 
-- Veterinarians and specialties are maintained directly in the database ([C-011](../requirements.md)).
+_None — the list relies on no prior state; a clinic without veterinarians is handled in A1._
 
 ## Main Success Scenario
 
