@@ -9,7 +9,7 @@
 **Trigger:** The Clinic User learns that a pet's recorded name, birth date, or type is wrong, for example when the owner
 points out a mistake made at registration.  
 **Status:** Done  
-**Requirements:** [FR-017, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
+**Requirements:** [FR-017, FR-015, FR-016, FR-022, FR-023, NFR-003, C-011](../requirements.md)
 
 ## Preconditions
 
@@ -23,7 +23,9 @@ points out a mistake made at registration.
 4. System removes leading and trailing spaces from the name (BR-006) and validates that the name is not blank and does
    not exceed its maximum length (BR-004), that the birth date is provided and not in the future, and that no other
    pet of the same owner already has the same name (BR-001).
-5. System stores the updated pet details (name, birth date, type).
+5. System stores the updated pet details (name, birth date, type). If another Clinic User changed the same pet since
+   step 2, the values submitted last replace theirs; no conflict is reported. A name another pet of the owner has
+   taken meanwhile is still rejected (A8).
 6. System returns to the Owner Details view and displays the notification "Pet details has been edited".
 
 ## Alternative Flows
@@ -128,8 +130,8 @@ UC-007 BR-002 applies on update as well ([FR-016](../requirements.md)).
 
 ### BR-003: Pet Type on Update
 
-A pet always keeps a type: the edit form offers only the available pet types, the current type stays selected unless
-the Clinic User chooses another one, and the type cannot be removed. UC-007 BR-003 therefore needs no separate check
+A pet always keeps a type: the edit form offers only the available pet types, in the order of UC-007 BR-007, the
+current type stays selected unless the Clinic User chooses another one, and the type cannot be removed. UC-007 BR-003 therefore needs no separate check
 on update ([FR-017](../requirements.md)).
 
 ### BR-004: Pet Name Length

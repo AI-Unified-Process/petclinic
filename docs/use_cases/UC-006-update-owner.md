@@ -23,7 +23,8 @@ _None — the owner is resolved in step 2, and A3 handles a missing one._
 4. System removes leading and trailing spaces from every field (BR-005) and validates that first name, last name,
    address, city, and telephone are not blank (BR-001), that none of them exceeds its maximum length (BR-003), and
    that telephone consists of exactly 10 digits.
-5. System stores the updated owner.
+5. System stores the updated owner with all submitted values. If another Clinic User changed the same owner since
+   step 2, the values submitted last replace theirs; no conflict is reported.
 6. System returns to the Owner Details view and displays the notification "Owner Values Updated".
 
 ## Alternative Flows

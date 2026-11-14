@@ -212,6 +212,17 @@ class UC004FindOwnersByLastNameTest extends PetClinicTestBase {
 
     @Test
     @UseCase(id = "UC-004", businessRules = "BR-004")
+    void eachOwnersPetsAreListedAlphabetically() {
+        searchAllOwners();
+        Grid<OwnerListing> grid = find(Grid.class).single();
+
+        // BR-004: Jean Coleman's pets are seeded Samantha first, then Max; the list shows them by name.
+        assertEquals("Jean Coleman", test(grid).getCellText(1, 0));
+        assertEquals("Max Samantha", test(grid).getCellText(1, 4));
+    }
+
+    @Test
+    @UseCase(id = "UC-004", businessRules = "BR-004")
     void ownersAreSortedByLastNameThenFirstName() {
         searchAllOwners();
         Grid<OwnerListing> grid = find(Grid.class).single();

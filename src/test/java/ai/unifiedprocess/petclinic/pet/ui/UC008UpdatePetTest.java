@@ -367,6 +367,19 @@ class UC008UpdatePetTest extends PetClinicTestBase {
         assertEquals(List.of("Max", "Sammy"), petNames);
     }
 
+    @Test
+    @UseCase(id = "UC-008", businessRules = "BR-003")
+    void petTypesAreOfferedInTheOrderOfUC007() {
+        navigate(UpdatePetView.class, Map.of(
+                OwnerRouteParameters.OWNER_ID, Integer.toString(OWNER_COLEMAN_ID),
+                OwnerRouteParameters.PET_ID, Integer.toString(PET_MAX_ID)));
+
+        // BR-003: the edit form offers the pet types in the order of UC-007 BR-007, alphabetically by name.
+        List<String> offered = petTypeField().getListDataView().getItems().map(PetType::name).toList();
+        assertEquals(List.of("bird", "cat", "dog", "hamster", "lizard", "snake"), offered,
+                "BR-003: expected the pet types alphabetically by name");
+    }
+
     @SuppressWarnings("unchecked")
     private ComboBox<PetType> petTypeField() {
         return (ComboBox<PetType>) find(ComboBox.class).withCaption("Type").single();

@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-09-17  
+**Requirements:** NFR-006, NFR-007  
 **Affects:** Development View
 
 ## Context

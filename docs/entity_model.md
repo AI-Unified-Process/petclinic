@@ -24,7 +24,8 @@ Represents a pet owner who is registered with the clinic and can bring pets in f
 | city       | City of residence                | String    | 80               | Not Null                 |
 | telephone  | Contact phone number (10 digits) | String    | 20               | Not Null                 |
 
-**Constraints:** Telephone must be exactly 10 digits (FR-006, UC-003 BR-002).
+**Constraints:** Telephone must be exactly 10 digits (FR-006, UC-003 BR-002) — a value rule the form enforces, not
+the schema (NFR-009, NFR-011).
 
 ### PET
 
@@ -40,7 +41,7 @@ Represents an animal belonging to an owner that can be the subject of veterinary
 
 **Constraints:** A pet's name must be unique within the scope of its owner, compared case-insensitively
 (FR-015, UC-007 BR-001). Birth date must not be in the future
-(FR-016, UC-007 BR-002).
+(FR-016, UC-007 BR-002) — a value rule the form enforces, not the schema (NFR-009, NFR-011).
 
 ### PET_TYPE
 
@@ -57,7 +58,7 @@ Represents a veterinary visit booked for a specific pet, documenting the reason 
 
 | Attribute   | Description                                           | Data Type | Length/Precision | Validation Rules                |
 |-------------|-------------------------------------------------------|-----------|------------------|---------------------------------|
-| id          | Unique identifier                                     | Integer   | 10               | Primary Key, Sequence           |
+| id          | Unique identifier, ascending in the order visits are recorded (UC-005 BR-001) | Integer   | 10               | Primary Key, Sequence           |
 | visit_date  | Date of the visit (UI defaults to today when booking) | Date      | -                | Not Null                        |
 | description | Description of the visit purpose                      | String    | 255              | Not Null                        |
 | pet_id      | Reference to the pet being visited                    | Integer   | 10               | Not Null, Foreign Key (PET.id) |

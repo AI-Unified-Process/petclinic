@@ -9,46 +9,60 @@ history.
 **Element:** UC-009 BR-004
 **Raised by:** /use-case-test, 2026-10-27
 **Blocking:** Yes
-**Status:** Open
+**Status:** Resolved
 
 BR-004 accepts any calendar date for a visit, and UC-007 BR-002 keeps the birth date on or before today, but no rule
 relates the two. Readings: (a) any date is accepted, as BR-004 says; (b) a date before the birth date is rejected on
 the date field. The tests for BR-004 cannot state their expectation until this is decided.
+
+**Answer:** (a) Any date is accepted; the visit date is not compared with the pet's birth date.
+**Answered by:** S. Martinelli, 2026-11-14
+**Resolved in:** UC-009 BR-004
 
 ## OQ-002: Do international telephone numbers have to be accepted?
 
 **Element:** UC-003 BR-002
 **Raised by:** /use-case-spec, 2026-10-27
 **Blocking:** Yes
-**Status:** Open
+**Status:** Resolved
 
 BR-002 requires exactly 10 digits, which only fits North American numbers. The clinic also registers owners from
 abroad. Readings: (a) keep 10 digits; (b) allow a leading + and 7 to 15 digits (E.164); (c) no format check, only
 not blank.
+
+**Answer:** (a) Keep exactly 10 digits, as in the original Spring PetClinic (C-009); a number from abroad that does
+not fit is rejected.
+**Answered by:** S. Martinelli, 2026-11-14
+**Resolved in:** UC-003 BR-002
 
 ## OQ-003: How many previous visits does the visit form show?
 
 **Element:** UC-009 step 2
 **Raised by:** /use-case-implement, 2026-10-28
 **Blocking:** No
-**Status:** Open
+**Status:** Resolved
 **Assumed:** All visits of the pet, newest first.
 
 Step 2 shows the pet's previous visits for context but sets no limit. A pet with a long history pushes the form far
 down. Readings: (a) all visits; (b) the last five, with a link to the Owner Details view for the rest.
+
+**Answer:** All visits of the pet, ascending by date in the order of UC-005 BR-001.
+**Answered by:** Simon Martinelli, 2026-11-14
+**Resolved in:** UC-009 step 2
 
 ## OQ-004: Does the owner search also match the first name?
 
 **Element:** UC-004 BR-001
 **Raised by:** S. Martinelli, 2026-10-28
 **Blocking:** No
-**Status:** Answered
+**Status:** Resolved
 
 BR-001 matches the start of the last name only. At the front desk owners are often known by their first name.
 
 **Answer:** No. The search stays on the last name; a search over first and last name is a separate requirement for
 the next release.
 **Answered by:** Head of Front Desk, 2026-10-30
+**Resolved in:** UC-004 BR-001
 
 ## OQ-005: May a pet's name be changed to the name of another pet of the same owner?
 

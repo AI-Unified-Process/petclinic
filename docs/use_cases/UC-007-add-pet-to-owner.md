@@ -9,7 +9,7 @@
 for it.  
 **Trigger:** An owner brings a pet to the clinic that is not yet recorded, or asks to have a new pet recorded.  
 **Status:** Done  
-**Requirements:** [FR-014, FR-015, FR-016, FR-022, FR-023, C-011](../requirements.md)
+**Requirements:** [FR-014, FR-015, FR-016, FR-022, FR-023, NFR-003, C-011](../requirements.md)
 
 ## Preconditions
 
@@ -18,7 +18,7 @@ for it.
 ## Main Success Scenario
 
 1. Clinic User clicks "Add New Pet" on the Owner Details view for the selected owner.
-2. System displays the pet creation form, showing the owner's name and offering a choice of the available pet types.
+2. System displays the pet creation form, showing the owner's name and offering a choice of the available pet types (BR-007).
 3. Clinic User enters the pet's name, birth date, and selects a type, then submits the form.
 4. System removes leading and trailing spaces from the name (BR-006) and validates that the name is not blank and does
    not exceed its maximum length (BR-004), that the birth date is provided and not in the future, that a type is
@@ -133,3 +133,7 @@ UC-003 BR-005 applies to the pet form as well ([FR-023](../requirements.md)).
 ### BR-006: Surrounding Spaces Removed
 
 UC-003 BR-006 applies to the pet name as well ([FR-015](../requirements.md)).
+
+### BR-007: Pet Type Ordering
+
+The pet types to choose from are offered alphabetically by name ([NFR-003](../requirements.md)).

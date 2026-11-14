@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-09-18  
+**Requirements:** NFR-013  
 **Affects:** Development View  
 **Amends:** [ADR-010](ADR-010-hooks-guard-the-session.md)
 

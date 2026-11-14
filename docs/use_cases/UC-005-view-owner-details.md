@@ -33,7 +33,7 @@ _None — the owner is resolved in step 2, and A1 handles a missing one._
 **Trigger:** No owner exists with the requested identifier (step 2).  
 **Flow:**
 
-1. System cannot resolve the owner and shows the application error view.
+1. System cannot resolve the owner and shows the application error view (UC-010 A1).
 2. Use case ends.
 
 ## Postconditions

@@ -2,6 +2,7 @@
 
 **Status:** Accepted, amended by [ADR-011](ADR-011-guards-read-state-and-demand-evidence.md)  
 **Date:** 2026-09-18  
+**Requirements:** NFR-013  
 **Affects:** Development View
 
 ## Context

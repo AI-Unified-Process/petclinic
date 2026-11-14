@@ -15,6 +15,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,12 +46,12 @@ class UC009BookVisitForPetTest extends PetClinicTestBase {
     void bookingVisitPersistsAndReturnsToOwnerDetails() {
         openVisitFormForMax();
 
-        // Step 2: the pet's name and previous visits, in the order of UC-005 BR-001, are shown for context
+        // Step 2: the pet's name and recorded visits, in the order of UC-005 BR-001, are shown for context
         assertDoesNotThrow(
                 () -> find(Paragraph.class).withText("Pet: Max").single(),
                 "Expected the visit form to name the pet");
         assertEquals(MAX_SEEDED_VISITS, renderedVisitLines(find(BookVisitForPetView.class).single()),
-                "Expected Max's seeded visits by ascending date in the previous visits list");
+                "Expected Max's seeded visits by ascending date in the recorded visits list");
 
         // BR-002: date pre-populated with today
         assertEquals(LocalDate.now(), find(DatePicker.class).withCaption("Date").single().getValue());
@@ -221,6 +222,23 @@ class UC009BookVisitForPetTest extends PetClinicTestBase {
     }
 
     @Test
+    @UseCase(id = "UC-009")
+    void visitFormShowsFutureDatedVisitsToo() {
+        LocalDate later = LocalDate.now().plusMonths(2);
+        openVisitFormForMax();
+        test(find(DatePicker.class).withCaption("Date").single()).setValue(later);
+        test(find(TextField.class).withCaption("Description").single()).setValue("Follow-up appointment");
+        test(find(Button.class).withText("Add Visit").single()).click();
+
+        // Step 2: every recorded visit is shown, those dated in the future included, by ascending date.
+        openVisitFormForMax();
+        List<String> expected = new ArrayList<>(MAX_SEEDED_VISITS);
+        expected.add(later + " \u2014 Follow-up appointment");
+        assertEquals(expected, renderedVisitLines(find(BookVisitForPetView.class).single()),
+                "Expected the future-dated visit after the seeded ones in the visit form");
+    }
+
+    @Test
     @UseCase(id = "UC-009", businessRules = {"BR-005", "BR-006"}, scenario = "A5: Description Too Long")
     void overLongDescriptionIsAFieldErrorAndKeepsEveryValue() {
         openVisitFormForMax();
@@ -239,6 +257,26 @@ class UC009BookVisitForPetTest extends PetClinicTestBase {
         assertEquals(overLong, description.getValue());
         assertEquals("owners/" + OWNER_COLEMAN_ID + "/pets/" + PET_MAX_ID + "/visits/new",
                 UI.getCurrent().getInternals().getActiveViewLocation().getPath());
+    }
+
+    @Test
+    @UseCase(id = "UC-009", businessRules = {"BR-005", "BR-007"})
+    void surroundingSpacesAreRemovedBeforeTheLengthIsChecked() {
+        openVisitFormForMax();
+        String fullLength = "D".repeat(VisitForm.DESCRIPTION_LENGTH);
+        // Past the tester, which would stop at maxLength like the browser does.
+        find(TextField.class).withCaption("Description").single().setValue("  " + fullLength + "  ");
+        test(find(Button.class).withText("Add Visit").single()).click();
+
+        // BR-007: the spaces are removed first, so the 255 remaining characters pass BR-005.
+        assertEquals("owners/" + OWNER_COLEMAN_ID,
+                UI.getCurrent().getInternals().getActiveViewLocation().getPath(),
+                "Expected the description to be accepted once its surrounding spaces are removed");
+        // ... and the description is recorded without them.
+        String expectedVisit = LocalDate.now() + " — " + fullLength;
+        List<String> visitLines = renderedVisitLines(find(ViewOwnerDetailsView.class).single());
+        assertTrue(visitLines.contains(expectedVisit),
+                "Expected the trimmed description in visits, got: " + visitLines);
     }
 
     @Test

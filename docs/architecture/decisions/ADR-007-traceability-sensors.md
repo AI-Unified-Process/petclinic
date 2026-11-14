@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-09-17  
+**Requirements:** NFR-008, C-008  
 **Affects:** Use Case View, Development View
 
 ## Context

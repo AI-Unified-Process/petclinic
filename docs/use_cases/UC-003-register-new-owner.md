@@ -67,7 +67,8 @@ First name, last name, address, city, and telephone are required; none of them m
 
 ### BR-002: Telephone Format
 
-An owner's telephone number is exactly 10 digits ([FR-006](../requirements.md)).
+An owner's telephone number is exactly 10 digits, with no country code, leading "+", spaces, or separators. A number
+from abroad that does not fit this format is rejected like any other invalid telephone ([FR-006](../requirements.md)).
 
 ### BR-003: System-Assigned Identifier
 

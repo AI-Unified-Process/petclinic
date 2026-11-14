@@ -87,6 +87,19 @@ class UC007AddPetToOwnerTest extends PetClinicTestBase {
     }
 
     @Test
+    @UseCase(id = "UC-007", businessRules = "BR-007")
+    void petTypesAreOfferedAlphabetically() {
+        openAddPetForm(OWNER_DAVIS_HAROLD_ID);
+
+        // BR-007: the seed inserts cat, dog, lizard, snake, bird, hamster; the form offers them by name.
+        List<String> offered = find(ComboBox.class).withCaption("Type").single().getListDataView().getItems()
+                .map(item -> ((PetType) item).name())
+                .toList();
+        assertEquals(List.of("bird", "cat", "dog", "hamster", "lizard", "snake"), offered,
+                "BR-007: expected the pet types alphabetically by name");
+    }
+
+    @Test
     @UseCase(id = "UC-007", businessRules = "BR-001")
     void petNameUsedByAnotherOwnerIsAccepted() {
         // Betty Davis owns Basil; BR-001 only forbids duplicates within one owner.

@@ -9,7 +9,7 @@
 **Trigger:** A customer calls or comes to the clinic, and the Clinic User needs to find the customer's record from their
 last name.  
 **Status:** Done  
-**Requirements:** [FR-007, FR-008, FR-009, FR-010, NFR-001, NFR-002](../requirements.md)
+**Requirements:** [FR-007, FR-008, FR-009, FR-010, NFR-001, NFR-002, NFR-003](../requirements.md)
 
 ## Preconditions
 
@@ -23,7 +23,7 @@ _None — the search relies on no prior state; an empty result is handled in A3.
 4. System searches for owners whose last name starts with the entered term (BR-001).
 5. System finds more than one matching owner and renders the Owners List, sorted by last name (BR-004) and loaded
    incrementally as the Clinic User scrolls (BR-002), showing, for each owner, their name, address, city, telephone,
-   and pets.
+   and pets (BR-004).
 6. Clinic User selects an owner from the list to navigate to the Owner Details view (UC-005).
 
 ## Alternative Flows
@@ -79,7 +79,7 @@ _None — the search relies on no prior state; an empty result is handled in A3.
 ### BR-001: Prefix Match
 
 Searches use a case-insensitive "starts with" match on last name, so "dav", "Dav", and "DAV" find the same owners;
-full-string matches are not required. Leading and trailing spaces in the search term are ignored, so "  Dav" finds
+full-string matches are not required. The search matches the last name only, never the first name. Leading and trailing spaces in the search term are ignored, so "  Dav" finds
 the same owners as "Dav". This deviates from the original Spring PetClinic, whose match is case-sensitive on
 PostgreSQL, because a caller's spelling of their name says nothing about its capitalisation
 ([FR-007](../requirements.md)).
@@ -97,4 +97,4 @@ Owner Details view for exactly one, and "not found" when no owner is recorded ([
 ### BR-004: Owners List Order
 
 The Owners List is sorted by last name, and owners with the same last name by first name, so the order stays the same
-while the user scrolls.
+while the user scrolls. Each owner's pets appear in the order of UC-005 BR-002 ([NFR-003](../requirements.md)).

@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-09-17  
+**Requirements:** C-010  
 **Affects:** Use Case View, Physical View
 
 ## Context

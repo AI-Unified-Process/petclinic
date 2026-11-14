@@ -8,7 +8,7 @@
 **Goal:** Record a veterinary visit for an existing pet, documenting the date and the reason for the appointment.  
 **Trigger:** An owner brings a pet in or asks for an appointment, and the Clinic User wants to record the visit.  
 **Status:** Done  
-**Requirements:** [FR-018, FR-019, FR-020, FR-021, FR-022, FR-023](../requirements.md)
+**Requirements:** [FR-018, FR-019, FR-020, FR-021, FR-022, FR-023, NFR-003](../requirements.md)
 
 ## Preconditions
 
@@ -18,10 +18,11 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 1. Clinic User clicks "Add Visit" next to the pet on the Owner Details view.
 2. System loads the owner and pet, then displays the visit form. The date field is pre-populated with today's date; the
-   pet's name and previous visits (in the order of UC-005 BR-001) are shown for context.
+   pet's name and all of its recorded visits, those dated in the future included (in the order of UC-005 BR-001), are
+   shown for context.
 3. Clinic User optionally adjusts the date, enters a description of the visit, and submits the form.
-4. System validates that a date is given and that the description is not blank and does not exceed its maximum length
-   (BR-005).
+4. System removes leading and trailing spaces from the description (BR-007) and validates that a date is given and that
+   the description is not blank (BR-001) and does not exceed its maximum length (BR-005).
 5. System records the visit for the pet.
 6. System returns to the Owner Details view and displays the notification "Your visit has been booked".
 
@@ -96,7 +97,8 @@ _None — the owner and pet are resolved in step 2, and A2 and A3 handle a missi
 
 ### BR-001: Description Required
 
-Every visit must have a non-blank description ([FR-020](../requirements.md)).
+Every visit must have a non-blank description; a description of only spaces counts as blank (BR-007)
+([FR-020](../requirements.md)).
 
 ### BR-002: Default Date
 
@@ -110,7 +112,8 @@ rejected.
 ### BR-004: Visit Date Required, Past or Future
 
 Every visit has a date. Any calendar date is accepted, so a walk-in can be recorded for today, a missed entry for an
-earlier day, and an appointment for a later day.
+earlier day, and an appointment for a later day. The visit date is not compared with the pet's birth date: a date
+before it is accepted as well.
 
 ### BR-005: Description Length
 
@@ -120,3 +123,8 @@ other validation error, never with the application error view ([FR-023](../requi
 ### BR-006: Entries Preserved on Rejection
 
 UC-003 BR-005 applies to the visit form as well ([FR-023](../requirements.md)).
+
+### BR-007: Surrounding Spaces Removed
+
+UC-003 BR-006 applies to the visit description as well: surrounding spaces are removed before the description is
+validated and recorded, so the length of BR-005 is counted without them ([FR-020](../requirements.md)).

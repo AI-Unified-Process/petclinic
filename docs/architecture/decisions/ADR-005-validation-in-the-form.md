@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-09-17  
+**Requirements:** NFR-011, FR-023  
 **Affects:** Logical View, Development View
 
 ## Context

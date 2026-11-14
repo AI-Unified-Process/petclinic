@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-09-17  
+**Requirements:** NFR-012  
 **Affects:** Process View, Development View  
 **Supersedes:** relying on auto-commit with no transaction declared anywhere
 
