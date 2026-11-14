@@ -5,7 +5,7 @@
 **ID:** TC-009  
 **Goal:** A clinic user searches for a caller who reports a new animal, finds no owner with that last name and stops — verifying the search reports the miss and nothing is recorded.  
 **Priority:** Low  
-**Status:** Approved  
+**Status:** Automated  
 **Process:** [BP-004 Add Pet](../processes/BP-004-add-pet.bpmn) — Owner reports a new animal → UC-004 Find Owners by Last Name → Owner on record? no → Owner not on record
 
 ## Roles
