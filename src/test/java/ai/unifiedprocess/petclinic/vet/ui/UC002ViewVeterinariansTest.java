@@ -233,9 +233,9 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     }
 
     @Test
-    @UseCase(id = "UC-002")
+    @UseCase(id = "UC-002", scenario = "A2: Veterinarians Cannot Be Retrieved")
     void dataAccessErrorShowsTheApplicationErrorViewInsteadOfTheList() {
-        // Failure postcondition. Renaming the table inside the test transaction
+        // A2 and the failure postcondition. Renaming the table inside the test transaction
         // makes the grid's real query fail; the rename is rolled back with it.
         dsl.alterTable(VETS).renameTo(name("vets_unavailable")).execute();
 
@@ -246,12 +246,12 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
         // The application error view is identified by what the user sees, not by
         // which of the UC-010 error view classes rendered it.
         assertDoesNotThrow(() -> find(H2.class).withText("Something happened...").single(),
-                "Failure postcondition: expected the application error view on a data-access error");
+                "A2: expected the application error view on a data-access error");
         Paragraph message = find(Paragraph.class).withClassName("secondary-text").single();
         assertFalse(message.getText().toLowerCase().contains("select"),
                 "Expected no SQL on the error view, got: " + message.getText());
         assertTrue(find(Grid.class).all().isEmpty(),
-                "Failure postcondition: expected no vet list to be displayed");
+                "Failure postcondition: expected no empty or incomplete vet list to be displayed");
     }
 
     @Test

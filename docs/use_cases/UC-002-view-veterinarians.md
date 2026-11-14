@@ -33,6 +33,14 @@ _None — the list relies on no prior state; a clinic without veterinarians is h
 1. System renders the veterinarians grid with no rows.
 2. Use case ends.
 
+### A2: Veterinarians Cannot Be Retrieved
+
+**Trigger:** The system fails to retrieve the veterinarians (step 2).  
+**Flow:**
+
+1. System shows the application error view instead of the veterinarians grid (UC-010 A2).
+2. Use case ends.
+
 ## Postconditions
 
 ### Success Postconditions
@@ -42,7 +50,7 @@ _None — the list relies on no prior state; a clinic without veterinarians is h
 
 ### Failure Postconditions
 
-_None — the use case changes no data._
+- An empty or incomplete list is never presented as the clinic's veterinarians.
 
 ## Business Rules
 
