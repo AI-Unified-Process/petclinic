@@ -62,7 +62,7 @@ The full table, with the decisions behind each choice, is in
 ## Commands
 
 ```bash
-# Run the app locally (Testcontainers-backed Postgres via TestAiupPetclinicApplication)
+# Run the app locally (Testcontainers-backed Postgres via TestPetclinicApplication)
 ./mvnw spring-boot:test-run
 
 # Regenerate jOOQ sources after changing a Flyway migration
