@@ -1,0 +1,42 @@
+/*
+ * PetClinic brand on top of Aura, mirroring the Aura variables in the Figma
+ * file "Petclinic": teal accent, a shell background tinted towards it, a
+ * white content area,
+ * Plus Jakarta Sans and softer corners. Only non-default Aura properties.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap');
+
+html {
+  --aura-accent-color-dark: #14B8A0;
+  --aura-accent-color-light: #0F9D8A;
+  --aura-accent-text-color-dark: #5FD8C4;
+  --aura-accent-text-color-light: #0B7366;
+  --aura-background-color-dark: #101716;
+  --aura-background-color-light: #EAF2F0;
+  --aura-font-family: 'Plus Jakarta Sans', var(--aura-font-family-system);
+  /* Set directly: --aura-base-radius caps radius-s at 0.25lh (5px). */
+  --vaadin-radius-l: 18px;
+  --vaadin-radius-m: 10px;
+  --vaadin-radius-s: 6px;
+}
+
+/*
+ * Content area: white in the light scheme, the tint stays on the shell. Aura
+ * recomputes its colors on this part, so borders and text follow; its
+ * semi-transparent surface layer is replaced, the dark scheme keeps it.
+ */
+vaadin-app-layout::part(content) {
+  --aura-background-color-light: #FFFFFF;
+  --_content-surface: light-dark(#FFFFFF, var(--aura-surface-color));
+  background-image: linear-gradient(var(--_content-surface), var(--_content-surface));
+}
+
+/* Side nav: accent icons, a quiet container for the current item. */
+vaadin-side-nav-item:not([current]) > vaadin-icon {
+  color: var(--aura-accent-text-color);
+}
+
+vaadin-side-nav-item[current]::part(content) {
+  --vaadin-side-nav-item-background: var(--vaadin-background-container);
+  --vaadin-side-nav-item-border-color: transparent;
+}
