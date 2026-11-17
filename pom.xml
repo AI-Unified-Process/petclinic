@@ -40,7 +40,7 @@
         <dramafinder.version>1.2.3</dramafinder.version>
         <!-- Overrides the Playwright that Drama Finder brings in (1.59.0): only
              1.62.0+ install Chromium on ubuntu-26.04, which ubuntu-latest now is. -->
-        <playwright.version>1.64.0</playwright.version>
+        <playwright.version>1.65.0</playwright.version>
         <jacoco.version>0.8.16</jacoco.version>
         <!-- Empty default for the Failsafe argLine: JaCoCo's prepare-agent-integration
              overrides it, but when JaCoCo is skipped (or an IDE runs an *IT) the
