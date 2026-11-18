@@ -92,8 +92,11 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
                 .containsEntry("telephone", "6085550123");
         assertThat(owner.get("id")).isNotNull();
 
-        // Step 6: Owner Details of the new owner and the notification "New Owner Created".
+        // Step 6 / success postcondition: the Owner Details view of the new owner is displayed,
+        // with the notification "New Owner Created".
         assertThat(activePath()).isEqualTo("owners/" + owner.get("id"));
+        assertDoesNotThrow(() -> find(OwnerDetailsView.class).single(),
+                "Expected the Owner Details view of the new owner, not an error view");
         assertThat(notificationText()).isEqualTo(CREATED_NOTIFICATION);
     }
 
@@ -128,6 +131,29 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
                 .containsEntry("last_name", UNIQUE_LAST_NAME)
                 .containsEntry("address", "12 Elm St.")
                 .containsEntry("city", "Madison")
+                .containsEntry("telephone", "6085550123");
+        assertThat(notificationText()).isEqualTo(CREATED_NOTIFICATION);
+    }
+
+    @Test
+    @UseCase(id = "UC-003", businessRules = {"BR-004", "BR-006"})
+    void valuesAtTheirMaximumLengthPaddedWithSpacesAreTrimmedAndRecorded() {
+        navigate(RegisterNewOwnerView.class);
+        String firstName = "f".repeat(30);
+        String lastName = UNIQUE_LAST_NAME + "x".repeat(30 - UNIQUE_LAST_NAME.length());
+        String address = "a".repeat(255);
+        String city = "c".repeat(80);
+
+        // BR-006: spaces are removed before BR-004 checks the length, so the padding does not count.
+        fill(" " + firstName + " ", "  " + lastName + " ", " " + address + "  ", " " + city + " ",
+                " 6085550123 ");
+        submit();
+
+        assertThat(singleOwner(lastName))
+                .containsEntry("first_name", firstName)
+                .containsEntry("last_name", lastName)
+                .containsEntry("address", address)
+                .containsEntry("city", city)
                 .containsEntry("telephone", "6085550123");
         assertThat(notificationText()).isEqualTo(CREATED_NOTIFICATION);
     }
