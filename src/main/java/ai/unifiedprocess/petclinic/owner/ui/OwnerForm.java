@@ -16,22 +16,19 @@ public class OwnerForm extends FormLayout {
     static final String BLANK_MESSAGE = "Must not be blank";
     static final String TELEPHONE_MESSAGE = "Telephone must be exactly 10 digits";
 
-    private final TextField firstName = textField("First Name", 30);
-    private final TextField lastName = textField("Last Name", 30);
-    private final TextField address = textField("Address", 255);
-    private final TextField city = textField("City", 80);
-    private final TextField telephone = new TextField("Telephone");
+    private final TextField firstName = textField("First Name");
+    private final TextField lastName = textField("Last Name");
+    private final TextField address = textField("Address");
+    private final TextField city = textField("City");
+    private final TextField telephone = textField("Telephone");
 
     private final Binder<Owner> binder = new Binder<>();
 
     public OwnerForm() {
-        telephone.setId("telephone");
-        telephone.setRequiredIndicatorVisible(true);
-
-        bindMandatory(firstName, Owner::firstName);
-        bindMandatory(lastName, Owner::lastName);
-        bindMandatory(address, Owner::address);
-        bindMandatory(city, Owner::city);
+        bindMandatory(firstName, Owner::firstName, 30);
+        bindMandatory(lastName, Owner::lastName, 30);
+        bindMandatory(address, Owner::address, 255);
+        bindMandatory(city, Owner::city, 80);
         binder.forField(telephone)
                 // UC-003 BR-001: telephone is required; only spaces count as blank.
                 .asRequired(BLANK_MESSAGE)
@@ -64,22 +61,21 @@ public class OwnerForm extends FormLayout {
         return field.getValue().strip();
     }
 
-    private static TextField textField(String label, int maxLength) {
+    private static TextField textField(String label) {
         TextField field = new TextField(label);
         field.setId(label.toLowerCase().replace(' ', '-'));
         field.setRequiredIndicatorVisible(true);
-        // UC-003 BR-004: maximum length, reported on the field like any other error.
-        field.setMaxLength(maxLength);
-        field.setI18n(new TextField.TextFieldI18n()
-                .setMaxLengthErrorMessage("Must be at most " + maxLength + " characters"));
         return field;
     }
 
-    private void bindMandatory(TextField field, ValueProvider<Owner, String> getter) {
+    private void bindMandatory(TextField field, ValueProvider<Owner, String> getter, int maxLength) {
         binder.forField(field)
                 // UC-003 BR-001: required; with BR-006 a value of only spaces is blank.
                 .asRequired(BLANK_MESSAGE)
                 .withValidator(value -> !value.strip().isEmpty(), BLANK_MESSAGE)
+                // UC-003 BR-004: maximum length, checked on the value BR-006 trimmed.
+                .withValidator(value -> value.strip().length() <= maxLength,
+                        "Must be at most " + maxLength + " characters")
                 .bind(getter, (owner, value) -> {
                 });
     }

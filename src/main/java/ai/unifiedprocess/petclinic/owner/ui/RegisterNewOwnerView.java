@@ -50,8 +50,8 @@ public class RegisterNewOwnerView extends VerticalLayout {
             return;
         }
         Integer id = ownerRepository.insert(owner.get());
-        // Owner Details (UC-005) is addressed by location until its view exists.
-        getUI().ifPresent(ui -> ui.navigate("owners/" + id));
+        getUI().ifPresent(ui -> ui.navigate(OwnerDetailsView.class,
+                OwnerRouteParameters.forOwner(id)));
         Notification.show(CREATED_MESSAGE);
     }
 
