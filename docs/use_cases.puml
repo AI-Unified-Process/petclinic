@@ -13,27 +13,27 @@ rectangle "Spring PetClinic" {
 
     package "General" {
         usecase "UC-001\nView Welcome Page" as UC001 <<Done>> [[use_cases/UC-001-view-welcome-page.md]]
-        usecase "UC-002\nView Veterinarians" as UC002 <<Done>> [[use_cases/UC-002-view-veterinarians.md]]
+        usecase "UC-002\nView Veterinarians" as UC002 [[use_cases/UC-002-view-veterinarians.md]]
     }
 
     package "Owner Management" {
-        usecase "UC-003\nRegister New Owner" as UC003 <<Done>> [[use_cases/UC-003-register-new-owner.md]]
-        usecase "UC-004\nFind Owners by Last Name" as UC004 <<Done>> [[use_cases/UC-004-find-owners-by-last-name.md]]
-        usecase "UC-005\nView Owner Details" as UC005 <<Done>> [[use_cases/UC-005-view-owner-details.md]]
-        usecase "UC-006\nUpdate Owner" as UC006 <<Done>> [[use_cases/UC-006-update-owner.md]]
+        usecase "UC-003\nRegister New Owner" as UC003 [[use_cases/UC-003-register-new-owner.md]]
+        usecase "UC-004\nFind Owners by Last Name" as UC004 [[use_cases/UC-004-find-owners-by-last-name.md]]
+        usecase "UC-005\nView Owner Details" as UC005 [[use_cases/UC-005-view-owner-details.md]]
+        usecase "UC-006\nUpdate Owner" as UC006 [[use_cases/UC-006-update-owner.md]]
     }
 
     package "Pet Management" {
-        usecase "UC-007\nAdd Pet to Owner" as UC007 <<Done>> [[use_cases/UC-007-add-pet-to-owner.md]]
-        usecase "UC-008\nUpdate Pet" as UC008 <<Done>> [[use_cases/UC-008-update-pet.md]]
+        usecase "UC-007\nAdd Pet to Owner" as UC007 [[use_cases/UC-007-add-pet-to-owner.md]]
+        usecase "UC-008\nUpdate Pet" as UC008 [[use_cases/UC-008-update-pet.md]]
     }
 
     package "Visit Management" {
-        usecase "UC-009\nBook Visit for Pet" as UC009 <<Done>> [[use_cases/UC-009-book-visit-for-pet.md]]
+        usecase "UC-009\nBook Visit for Pet" as UC009 [[use_cases/UC-009-book-visit-for-pet.md]]
     }
 
     package "Error Handling" {
-        usecase "UC-010\nView Application Error" as UC010 <<Done>> [[use_cases/UC-010-view-application-error.md]]
+        usecase "UC-010\nView Application Error" as UC010 [[use_cases/UC-010-view-application-error.md]]
     }
 }
 
