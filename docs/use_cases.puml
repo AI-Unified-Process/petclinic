@@ -17,7 +17,7 @@ rectangle "Spring PetClinic" {
     }
 
     package "Owner Management" {
-        usecase "UC-003\nRegister New Owner" as UC003
+        usecase "UC-003\nRegister New Owner" as UC003 #Khaki
         usecase "UC-004\nFind Owners by Last Name" as UC004
         usecase "UC-005\nView Owner Details" as UC005
         usecase "UC-006\nUpdate Owner" as UC006
