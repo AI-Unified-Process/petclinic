@@ -51,7 +51,7 @@ public class OwnerForm extends FormLayout {
                 .withConverter(String::strip, value -> value)
                 // UC-003 BR-002: an owner's telephone number is exactly 10 digits.
                 .withValidator(value -> TEN_DIGITS.matcher(value).matches(), TELEPHONE_MESSAGE)
-                .bind(Owner::telephone, null);
+                .bind(Owner::telephone, OwnerForm::keep);
 
         add(firstName, lastName, address, city, telephone);
     }
@@ -69,7 +69,16 @@ public class OwnerForm extends FormLayout {
                 .withConverter(String::strip, value -> value)
                 // UC-003 BR-004: longer input is rejected on the field.
                 .withValidator(value -> value.length() <= maxLength, tooLong)
-                .bind(getter, null);
+                .bind(getter, OwnerForm::keep);
+    }
+
+    /**
+     * Setter of every binding. {@link Owner} is immutable, so the binder never
+     * writes into it; {@link #validateAndRead()} builds the record instead. A
+     * {@code null} setter would make the binder set the field read only.
+     */
+    private static void keep(Owner owner, String value) {
+        // Nothing to write: the record is built from the validated fields.
     }
 
     private static Validator<String> notBlank(String message) {
