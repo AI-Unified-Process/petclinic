@@ -13,7 +13,9 @@ import java.util.regex.Pattern;
 /**
  * The owner form of UC-003: first name, last name, address, city, and
  * telephone, with the field-level rules of the use case. A rejected value is
- * reported on its field and every entered value stays in the form.
+ * reported on its field and every entered value stays in the form. The
+ * length limits are checked by the binder after the surrounding spaces are
+ * removed, never by the text field's own max length, which would count them.
  */
 public class OwnerForm extends FormLayout {
 
@@ -21,8 +23,6 @@ public class OwnerForm extends FormLayout {
     static final int LAST_NAME_MAX = 30;
     static final int ADDRESS_MAX = 255;
     static final int CITY_MAX = 80;
-    /** Column length of owners.telephone in the entity model. */
-    static final int TELEPHONE_MAX = 20;
 
     static final String TELEPHONE_MESSAGE = "Telephone must be exactly 10 digits";
 
@@ -42,8 +42,6 @@ public class OwnerForm extends FormLayout {
         bindText(address, "Address", ADDRESS_MAX, Owner::address);
         bindText(city, "City", CITY_MAX, Owner::city);
 
-        telephone.setMaxLength(TELEPHONE_MAX);
-        telephone.setI18n(new TextField.TextFieldI18n().setMaxLengthErrorMessage(TELEPHONE_MESSAGE));
         binder.forField(telephone)
                 // UC-003 BR-001: telephone is required; only spaces counts as blank.
                 .asRequired(notBlank("Telephone is required"))
@@ -59,9 +57,6 @@ public class OwnerForm extends FormLayout {
     private void bindText(TextField field, String name, int maxLength,
             ValueProvider<Owner, String> getter) {
         String tooLong = name + " may be at most " + maxLength + " characters";
-        // UC-003 BR-004: the field holds at most the length of the entity model.
-        field.setMaxLength(maxLength);
-        field.setI18n(new TextField.TextFieldI18n().setMaxLengthErrorMessage(tooLong));
         binder.forField(field)
                 // UC-003 BR-001: the field is required; only spaces counts as blank.
                 .asRequired(notBlank(name + " is required"))
