@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import ai.unifiedprocess.petclinic.PetClinicTestBase;
 import ai.unifiedprocess.petclinic.UseCase;
 import ai.unifiedprocess.petclinic.core.ui.ApplicationErrorView;
+import ai.unifiedprocess.petclinic.core.ui.NotFoundErrorView;
 import ai.unifiedprocess.petclinic.welcome.ui.WelcomeView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -105,8 +106,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
         assertThat(id).isGreaterThan(highestIdBefore);
 
         // Step 6: the Owner Details view of the new owner and "New Owner Created".
-        assertThat(UI.getCurrent().getInternals().getActiveViewLocation().getPath())
-                .isEqualTo("owners/" + id);
+        assertOwnerDetailsShown(id);
         assertThat(notificationTexts()).containsExactly(CREATED);
     }
 
@@ -126,6 +126,34 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
                 .containsEntry("address", "1 Main St.")
                 .containsEntry("city", "Madison")
                 .containsEntry("telephone", "6085551234");
+        assertThat(notificationTexts()).containsExactly(CREATED);
+    }
+
+    @Test
+    @UseCase(id = "UC-003", businessRules = {"BR-004", "BR-006"})
+    void maximumLengthIsCheckedAfterTheSurroundingSpacesAreRemoved() {
+        // Each value is longer than its maximum only because of the spaces around it:
+        // first and last name 30, address 255, city 80 (BR-004), telephone 20 (entity model).
+        String firstName = "F".repeat(30);
+        String lastName = "Zylstra" + "z".repeat(23);
+        String address = "A".repeat(255);
+        String city = "C".repeat(80);
+        String telephone = "6085551234";
+        navigate(RegisterNewOwnerView.class);
+
+        fill(" " + firstName + " ", "  " + lastName + "  ", " " + address + " ", " " + city + " ",
+                " ".repeat(6) + telephone + " ".repeat(6));
+        submit();
+
+        // BR-006: the spaces are removed before the length of BR-004 is checked and the value recorded.
+        assertThat(find(RegisterNewOwnerView.class).exists()).as("form accepted").isFalse();
+        List<Map<String, Object>> rows = ownersNamed(lastName);
+        assertThat(rows).hasSize(1);
+        assertThat(rows.getFirst()).containsEntry("first_name", firstName)
+                .containsEntry("last_name", lastName)
+                .containsEntry("address", address)
+                .containsEntry("city", city)
+                .containsEntry("telephone", telephone);
         assertThat(notificationTexts()).containsExactly(CREATED);
     }
 
@@ -285,8 +313,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
         assertThat(rows).hasSize(1);
         assertThat(rows.getFirst()).containsEntry("first_name", "Jane")
                 .containsEntry("telephone", "6085551234");
-        assertThat(UI.getCurrent().getInternals().getActiveViewLocation().getPath())
-                .isEqualTo("owners/" + rows.getFirst().get("id"));
+        assertOwnerDetailsShown((Integer) rows.getFirst().get("id"));
         assertThat(notificationTexts()).containsExactly(CREATED);
     }
 
@@ -310,6 +337,21 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
     }
 
     // ---- helpers ------------------------------------------------------------
+
+    /**
+     * Step 6 / success postcondition: the Owner Details view of the owner is shown. The
+     * route {@code owners/:ownerId} alone also matches when the not-found error view
+     * renders, so the error views must be absent as well.
+     */
+    private void assertOwnerDetailsShown(Integer ownerId) {
+        assertThat(UI.getCurrent().getInternals().getActiveViewLocation().getPath())
+                .isEqualTo("owners/" + ownerId);
+        assertThat(find(NotFoundErrorView.class).exists())
+                .as("Owner Details view shown, not the not-found error view").isFalse();
+        assertThat(find(ApplicationErrorView.class).exists())
+                .as("Owner Details view shown, not the application error view").isFalse();
+        assertThat(find(RegisterNewOwnerView.class).exists()).as("owner form left").isFalse();
+    }
 
     private TextField field(String caption) {
         return find(TextField.class).withCaption(caption).single();
