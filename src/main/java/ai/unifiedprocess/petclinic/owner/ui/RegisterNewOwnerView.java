@@ -31,8 +31,6 @@ public class RegisterNewOwnerView extends VerticalLayout {
 
     /** Route of the Find Owners view (UC-004), as the main menu names it. */
     private static final String FIND_OWNERS_ROUTE = "owners/find";
-    /** Route prefix of the Owner Details view (UC-005), {@code owners/:ownerId}. */
-    private static final String OWNER_DETAILS_ROUTE = "owners/";
 
     private final transient OwnerRepository ownerRepository;
     private final OwnerForm form = new OwnerForm();
@@ -58,7 +56,8 @@ public class RegisterNewOwnerView extends VerticalLayout {
         }
         Integer ownerId = ownerRepository.insert(owner.get());
         Notification.show(CREATED_MESSAGE).addThemeVariants(NotificationVariant.SUCCESS);
-        getUI().ifPresent(ui -> ui.navigate(OWNER_DETAILS_ROUTE + ownerId));
+        getUI().ifPresent(ui -> ui.navigate(OwnerDetailsView.class,
+                OwnerRouteParameters.forOwner(ownerId)));
     }
 
     private void cancel() {
