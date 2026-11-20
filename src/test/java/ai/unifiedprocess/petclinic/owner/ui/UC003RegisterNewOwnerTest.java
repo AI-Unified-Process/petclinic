@@ -33,7 +33,8 @@ import org.springframework.jdbc.core.simple.JdbcClient;
  * {@link PetClinicTestBase} rolls it back.
  *
  * <p>The field error texts are not asserted: the specification does not state
- * them (OQ-001), so the tests assert only that the offending field is invalid.
+ * them (OQ-001), so the tests assert that the offending field is invalid and
+ * shows an error message that is not blank (A1 step 1, BR-005).
  */
 class UC003RegisterNewOwnerTest extends PetClinicTestBase {
 
@@ -168,7 +169,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
 
         // A1 step 1: an error on each offending field; A1 step 2: the error notification.
         for (String caption : FIELDS) {
-            assertThat(field(caption).isInvalid()).as(caption + " invalid").isTrue();
+            assertRejected(caption);
         }
         assertThat(notificationTexts()).containsExactly(ERROR);
         assertThat(find(RegisterNewOwnerView.class).exists()).isTrue();
@@ -189,6 +190,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
                 assertThat(field(caption).isInvalid()).as(caption + " invalid when " + blankField + " is spaces")
                         .isEqualTo(caption.equals(blankField));
             }
+            assertRejected(blankField);
             assertThat(notificationTexts()).as(blankField).containsExactly(ERROR);
             // Failure postcondition: no owner is recorded.
             assertThat(ownersNamed("Zylstra")).as(blankField).isEmpty();
@@ -207,7 +209,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
 
             submit();
 
-            assertThat(field(TELEPHONE).isInvalid()).as("telephone " + telephone).isTrue();
+            assertRejected(TELEPHONE);
             for (String caption : List.of(FIRST_NAME, LAST_NAME, ADDRESS, CITY)) {
                 assertThat(field(caption).isInvalid()).as(caption + " with telephone " + telephone).isFalse();
             }
@@ -259,7 +261,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
             // BR-004: rejected on the offending field, never with the application error view.
             assertThat(find(ApplicationErrorView.class).exists()).as(caption).isFalse();
             assertThat(find(RegisterNewOwnerView.class).exists()).as(caption).isTrue();
-            assertThat(field(caption).isInvalid()).as(caption + " invalid").isTrue();
+            assertRejected(caption);
             // BR-005: the entered value stays in the form.
             assertThat(field(caption).getValue()).as(caption + " kept").isEqualTo(value);
             assertThat(notificationTexts()).as(caption).containsExactly(ERROR);
@@ -288,8 +290,8 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
         assertThat(field(FIRST_NAME).isInvalid()).isFalse();
         assertThat(field(LAST_NAME).isInvalid()).isFalse();
         assertThat(field(ADDRESS).isInvalid()).isFalse();
-        assertThat(field(CITY).isInvalid()).isTrue();
-        assertThat(field(TELEPHONE).isInvalid()).isTrue();
+        assertRejected(CITY);
+        assertRejected(TELEPHONE);
         // A1 step 2.
         assertThat(notificationTexts()).containsExactly(ERROR);
         // Failure postcondition: no owner is recorded.
@@ -302,7 +304,7 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
         navigate(RegisterNewOwnerView.class);
         fill("Jane", "Zylstra", "1 Main St.", "Madison", "60855");
         submit();
-        assertThat(field(TELEPHONE).isInvalid()).isTrue();
+        assertRejected(TELEPHONE);
         closeNotifications();
 
         // A1 steps 3–4: the Clinic User corrects the input and the use case continues at step 3.
@@ -351,6 +353,17 @@ class UC003RegisterNewOwnerTest extends PetClinicTestBase {
         assertThat(find(ApplicationErrorView.class).exists())
                 .as("Owner Details view shown, not the application error view").isFalse();
         assertThat(find(RegisterNewOwnerView.class).exists()).as("owner form left").isFalse();
+    }
+
+    /**
+     * A1 step 1 / BR-005: the error is reported on the offending field — the field is
+     * marked invalid and shows an error message. The text itself is not given by the
+     * specification (OQ-001), so only its presence is asserted.
+     */
+    private void assertRejected(String caption) {
+        TextField field = field(caption);
+        assertThat(field.isInvalid()).as(caption + " invalid").isTrue();
+        assertThat(field.getErrorMessage()).as(caption + " error message").isNotBlank();
     }
 
     private TextField field(String caption) {
