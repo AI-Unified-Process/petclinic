@@ -76,3 +76,12 @@ UC-007 BR-001 keeps pet names unique per owner on creation; UC-008 did not say w
 **Answer:** Yes, the rule holds on update as well.
 **Answered by:** Clinic Manager, 2026-10-25
 **Resolved in:** UC-008 BR-001
+
+## OQ-006: May the same pet get two visits on the same date?
+
+**Element:** UC-009 BR-004
+**Raised by:** Simon Martinelli, 2026-11-24
+**Blocking:** No
+**Status:** Open
+
+BR-004 accepts any calendar date but does not say whether a second visit for the same pet on the same date is allowed. Readings: (a) accepted, for example a follow-up later that day; (b) rejected as a probable double entry.
