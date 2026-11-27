@@ -54,7 +54,8 @@ git switch -c my-experiment start
 - **Vaadin 25.2** — UI
 - **jOOQ** — type-safe SQL
 - **Flyway** — database migrations
-- **PostgreSQL** (via Testcontainers for tests and for jOOQ code generation)
+- **H2** — embedded, in PostgreSQL mode, for the application, the tests and jOOQ code generation. This is the `h2`
+  workshop branch: no Docker needed ([ADR-012](docs/architecture/decisions/ADR-012-h2-for-the-workshop-branch.md))
 
 ## Specs
 
@@ -74,7 +75,7 @@ The link between specs and code is enforced by tests, the *sensors*: `UseCaseTra
 `@UseCase` annotation points at a use case, flow, and business rule that really exists, `TestCaseTraceabilityTest` does
 the same for the test cases, `BusinessRuleTraceabilityTest` keeps the shared business rules and the use cases that
 reference them in agreement, and `RequirementTraceabilityTest` does the same for the requirements. Together with the
-ArchUnit rules in `ArchitectureTest` and `TestLayerConventionsTest` they run in seconds, without Docker:
+ArchUnit rules in `ArchitectureTest` and `TestLayerConventionsTest` they run in seconds:
 `./mvnw -q test -Dgroups=sensor`. What each sensor checks is in
 [`docs/architecture/testing.md`](docs/architecture/testing.md#the-traceability-sensors), and how they fit into the
 harness is in [`docs/architecture/README.md`](docs/architecture/README.md#the-harness) and
@@ -86,10 +87,11 @@ The guardrails an AI coding agent works under are part of the repository too: th
 
 ## Running locally
 
-Docker must be running — Testcontainers provides PostgreSQL for the application, the tests, and jOOQ code generation.
+No Docker needed: the application, the tests, and jOOQ code generation use an embedded H2 database.
 
 ```bash
-./mvnw spring-boot:test-run
+./mvnw spring-boot:run        # empty database
+./mvnw spring-boot:test-run   # with the test seed data (owners, pets, vets)
 ```
 
 The application is then available at <http://localhost:8080>.

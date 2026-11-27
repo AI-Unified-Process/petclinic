@@ -49,9 +49,12 @@ otherwise.
 
 ## Stack
 
-**Java 25**, **Spring Boot 4.1.1**, **Vaadin Flow 25.2**, **jOOQ** on
-**PostgreSQL**, schema owned by **Flyway**, **Testcontainers** for tests and for
-jOOQ code generation. Application code lives under
+**Java 25**, **Spring Boot 4.1.1**, **Vaadin Flow 25.2**, **jOOQ** on an
+embedded **H2** database (PostgreSQL mode), schema owned by **Flyway**. This is
+the `h2` workshop branch: the application, the tests and jOOQ code generation
+all run without Docker
+([ADR-012](docs/architecture/decisions/ADR-012-h2-for-the-workshop-branch.md)).
+H2 does not roll DDL back, so a test that alters a table undoes it itself. Application code lives under
 `ai.unifiedprocess.petclinic`, package by feature; generated jOOQ sources under
 `ai.unifiedprocess.demo.petclinic.database` (the extra `demo` segment is
 deliberate).
@@ -62,7 +65,9 @@ The full table, with the decisions behind each choice, is in
 ## Commands
 
 ```bash
-# Run the app locally (Testcontainers-backed Postgres via TestPetclinicApplication)
+# Run the app locally on an in-memory H2 database (empty on every start)
+./mvnw spring-boot:run
+# ... or with the test seed data (TestPetclinicApplication on the test classpath)
 ./mvnw spring-boot:test-run
 
 # Regenerate jOOQ sources after changing a Flyway migration
@@ -74,7 +79,7 @@ The full table, with the decisions behind each choice, is in
 ./mvnw test
 
 # Only the sensors (ArchitectureTest, TestLayerConventionsTest and the four
-# traceability sensors): seconds, no Docker. The run the Stop hook asks for.
+# traceability sensors): seconds, no database. The run the Stop hook asks for.
 ./mvnw -q test -Dgroups=sensor
 
 # Run a single *Test class / method
@@ -97,10 +102,12 @@ Test class suffix decides the phase: `*Test` → `test` (Surefire),
 Playwright test `*Test` — `TestLayerConventionsTest` fails the build if you do,
 because the wrong suffix makes a test silently never run.
 
-Docker must be running for `test`, `verify`, and `generate-sources` — but not
-for `test -Dgroups=sensor`, once the generated sources exist. **If
-you add or change a migration, jOOQ classes won't update until you re-run
-`generate-sources` (or any later phase).**
+No Docker is needed for anything: `generate-sources` migrates a file-based H2
+database under `target/` with the Flyway Maven plugin and generates the jOOQ
+classes from it. `test -Dgroups=sensor` skips that step, so it needs the
+generated sources from an earlier build. **If you add or change a migration,
+jOOQ classes won't update until you re-run `generate-sources` (or any later
+phase).**
 
 ## Coverage
 

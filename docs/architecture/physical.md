@@ -4,7 +4,7 @@
 **Artifacts:** this document (deployment diagram, environments, constraints)  
 **Notation:** Mermaid deployment diagram, Markdown  
 **For the agent:** the boundary conditions. An agent that knows the database is
-PostgreSQL, that the session state lives in the server, and that the app runs on
+an embedded H2 (on this workshop branch, ADR-012), that the session state lives in the server, and that the app runs on
 a trusted network inside the clinic decides differently from one that does not.
 
 ## Deployment
@@ -15,24 +15,24 @@ flowchart LR
         B["Browser<br/>front desk workstation"]
         subgraph host["Application host"]
             APP["aiup-petclinic.jar<br/>Spring Boot · embedded Tomcat :8080<br/>Vaadin UI state in the HTTP session"]
+            DB[("H2, in memory, PostgreSQL mode<br/>schema owned by Flyway")]
         end
-        DB[("PostgreSQL 17<br/>schema owned by Flyway")]
     end
     B <-->|" HTTP · Vaadin Flow protocol "| APP
-    APP -->|JDBC| DB
+    APP -->|JDBC, in process| DB
 ```
 
-Two nodes, one process each. No reverse proxy, no cache, no message broker, no
-second service — the Logical and Process views have nothing that would need one.
+One node, one process: the database is embedded in it. No reverse proxy, no
+cache, no message broker, no second service — the Logical and Process views have nothing that would need one.
 
 ## Environments
 
 | Environment      | How it starts                                                            | Database                                                                   | Notes                                                                                                           |
 |------------------|--------------------------------------------------------------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| **Local dev**    | `./mvnw spring-boot:test-run` (`TestPetclinicApplication`)           | `postgres:17-alpine` started by Testcontainers                             | Needs Docker. Opens the browser (`vaadin.launch-browser=true`), Spring DevTools and Vaadin dev tools are active |
-| **Build / test** | `./mvnw test` · `./mvnw verify`                                          | Testcontainers, one container per run; jOOQ code generation starts its own | Needs Docker (C-007); `./mvnw test -Dgroups=sensor` alone does not                                                    |
-| **CI**           | GitHub Actions, `ubuntu-latest`, JDK 25, `mvn -B verify` + Sonar scanner | Testcontainers on the runner                                               | `.github/workflows/build.yml`; caches `~/.m2` and the Playwright browsers                                       |
-| **Production**   | `java -jar aiup-petclinic.jar` (fat JAR from `./mvnw package`)           | an external PostgreSQL 17, credentials from the environment                | Target state — **nothing is deployed today**; see *Not there yet*                                               |
+| **Local dev**    | `./mvnw spring-boot:run` (empty) · `./mvnw spring-boot:test-run` (`TestPetclinicApplication`, seeded) | in-memory H2, emptied on every restart                     | No Docker (C-007). Spring DevTools and Vaadin dev tools are active                                              |
+| **Build / test** | `./mvnw test` · `./mvnw verify`                                          | in-memory H2 per test JVM; jOOQ code generation migrates a file-based H2 under `target/` | No Docker (C-007)                                                                                               |
+| **CI**           | GitHub Actions, `ubuntu-latest`, JDK 25, `mvn -B verify` + Sonar scanner | in-memory H2, as in Build / test                                           | `.github/workflows/build.yml`; caches `~/.m2` and the Playwright browsers                                       |
+| **Production**   | `java -jar aiup-petclinic.jar` (fat JAR from `./mvnw package`)           | none on this branch — `main` targets an external PostgreSQL 17             | Target state — **nothing is deployed today**; see *Not there yet*                                               |
 
 Flyway runs at startup and brings the schema to the current version. The
 test-only `V2__seed_reference_data.sql` lives on the test classpath and never
@@ -47,9 +47,10 @@ reaches a production database.
   open form is gone. Scale vertically first; a second instance is an
   architecture change, not a configuration change.
 - **One database, no read replicas.** Every query goes to the primary.
-- **PostgreSQL only** (C-005). The migrations use PostgreSQL sequences and the
-  code is generated from a PostgreSQL schema — the SQL is not portable, and it
-  is not meant to be.
+- **H2 only on this branch** (C-005, ADR-012). The migrations are PostgreSQL
+  SQL that H2 accepts in PostgreSQL mode, and the code is generated from the H2
+  schema. A query that works here is not proven on PostgreSQL; `main` is the
+  PostgreSQL reference.
 - **Port 8080** by default. Nothing but the Vaadin UI is served: Spring Boot
   Actuator is deliberately not on the classpath, because no requirement asks
   for a health or metrics endpoint and an unsecured one would be the first thing
@@ -78,8 +79,8 @@ repository today, so an agent should not pretend to change it:
 
 - no container image (`./mvnw spring-boot:build-image` would produce one),
 - no infrastructure as code, no deployment pipeline beyond the CI build,
-- no externalized production configuration (`spring.datasource.*` is supplied by
-  Testcontainers in every environment that exists today),
+- no externalized production configuration (`spring.datasource.*` points at
+  the in-memory H2 in every environment that exists today),
 - no monitoring, log aggregation, or alerting,
 - no backup or restore procedure,
 - no availability target, and no measured response-time budget to hold the

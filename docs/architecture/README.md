@@ -103,6 +103,7 @@ that could have gone the other way gets its ADR when it is made.
 | [ADR-009](decisions/ADR-009-repository-is-the-transaction-boundary.md) | The repository is the transaction boundary                      |
 | [ADR-010](decisions/ADR-010-hooks-guard-the-session.md)                | Hooks guard the session; tests guard the repository             |
 | [ADR-011](decisions/ADR-011-guards-read-state-and-demand-evidence.md)  | Guards read the repository's state and demand positive evidence |
+| [ADR-012](decisions/ADR-012-h2-for-the-workshop-branch.md)             | H2 instead of PostgreSQL on the workshop branch                 |
 
 ## Traceability
 
@@ -245,7 +246,7 @@ Implementing a use case, say UC-007 *Add Pet to Owner*, goes through every layer
 - **Guards fail open.** A hook that cannot read its input exits quietly. A
   guardrail that breaks the session costs more than the drift it catches.
 - **Cheap enough to run every turn.** A sensor nobody runs senses nothing. That
-  is why the sensor tier runs apart from the Testcontainers suite.
+  is why the sensor tier runs apart from the full suite.
 
 ### What the harness does not do
 

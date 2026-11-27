@@ -3,7 +3,8 @@
 **Status:** Accepted  
 **Date:** 2026-09-17  
 **Requirements:** C-006, NFR-009  
-**Affects:** Logical View, Development View, Physical View
+**Affects:** Logical View, Development View, Physical View  
+**Amended by:** [ADR-012](ADR-012-h2-for-the-workshop-branch.md) — on the `h2` branch code generation runs against H2, without Docker
 
 ## Context
 

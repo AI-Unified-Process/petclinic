@@ -23,8 +23,8 @@ anything that genuinely needs a browser (client-side rendering, keyboard focus, 
   browser, no servlet container.
   Reference: https://vaadin.com/docs/latest/flow/testing/browserless/getting-started
 - View tests extend `PetClinicTestBase` (or `SpringBrowserlessTest` directly for tests that don't touch the DB, in
-  which case add `@SpringBootTest` and `@Import(TestcontainersConfiguration.class)` yourself).
-  They run inside a Spring context and use the same Testcontainers Postgres as the rest of the tests.
+  which case add `@SpringBootTest` yourself).
+  They run inside a Spring context and use the same embedded H2 database as the rest of the tests.
 - **Use the `aiup-vaadin:vaadin-flow-ui-test` skill** to scaffold a browserless test for a use case. Prefer it over
   hand-rolling — it knows the conventions in this file (locators, `@UseCase`, naming, etc.).
 - **Karibu is gone.** Any `com.github.mvysny.kaributesting.*` import is a mistake — the project is all
@@ -76,7 +76,6 @@ the annotation is `@Target(TYPE)`), because a test case has exactly one coverage
 ```java
 @TestCase(id = "TC-003", useCases = {"UC-003", "UC-004", "UC-007", "UC-009"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Import(TestcontainersConfiguration.class)
 class TC003VisitBookedForNewCustomerIT extends AbstractBasePlaywrightIT { ... }
 ```
 
@@ -105,7 +104,7 @@ The shared markdown handling (the `**Status:**` pattern, the file scan, the viol
 `SpecDocuments`, so the document format is described in one place.
 
 All six sensor classes — these four and the two ArchUnit classes, `ArchitectureTest` and `TestLayerConventionsTest` —
-carry the JUnit tag `sensor`. `./mvnw -q test -Dgroups=sensor` runs them alone, in seconds and without Docker: the
+carry the JUnit tag `sensor`. `./mvnw -q test -Dgroups=sensor` runs them alone, in seconds and without a database: the
 `sensors` profile in the POM skips jOOQ code generation and JaCoCo for that run. It is the run the Stop hook asks for
 (ADR-011); the full suite remains the definition of done.
 
@@ -197,7 +196,7 @@ this project writes the test case before the test.
 
 Extend `ai.unifiedprocess.petclinic.PetClinicTestBase`:
 
-- Extends `SpringBrowserlessTest`, carries `@SpringBootTest`, `@Import(TestcontainersConfiguration.class)` and
+- Extends `SpringBrowserlessTest`, carries `@SpringBootTest` and
   `@Transactional` for per-test rollback — subclasses declare none of these; the base class is the one place.
 - Exposes canonical seed-data IDs as constants (`OWNER_FRANKLIN_ID`, `OWNER_COLEMAN_ID`, `PET_SAMANTHA_ID`,
   `PET_MAX_ID`, …) that match
@@ -306,9 +305,11 @@ Do **not** add public getters to view classes so tests can reach private fields 
 
 ## Integration test configuration
 
-`TestcontainersConfiguration` (under `src/test/java/ai/unifiedprocess/petclinic/`) provides the Postgres 17-alpine
-container via `@ServiceConnection`. `PetClinicTestBase` composes this automatically — you don't need to import it
-yourself. `TestPetclinicApplication` reuses it for `./mvnw spring-boot:test-run`.
+There is none to import: every Spring test uses the in-memory H2 database that `application.properties` configures
+(PostgreSQL mode, [ADR-012](decisions/ADR-012-h2-for-the-workshop-branch.md)), migrated by Flyway with the seed data
+of the test classpath. H2 does not roll DDL back, so a test that renames or alters a table must undo it in a
+`finally` block; the test transaction's rollback covers data only. `TestPetclinicApplication` runs the application
+with the test classpath for `./mvnw spring-boot:test-run`.
 
 ## Playwright `*IT` tests
 
@@ -319,7 +320,7 @@ Browser tests are the second layer, not a replacement for browserless tests. Rul
   `ai.unifiedprocess.petclinic.e2e`. `UseCaseTraceabilityTest` accepts `@UseCase` on either suffix, so a use case
   test that needs a browser carries the same annotations as a browserless one.
 - Extend `org.vaadin.addons.dramafinder.AbstractBasePlaywrightIT`, annotate
-  `@SpringBootTest(webEnvironment = RANDOM_PORT)` + `@Import(TestcontainersConfiguration.class)`, inject
+  `@SpringBootTest(webEnvironment = RANDOM_PORT)`, inject
   `@LocalServerPort`. Drama Finder (`org.vaadin.addons:dramafinder`, test scope) is already in `pom.xml`;
   `TestLayerConventionsTest` depends on its base class, so it stays even on a branch with no `*IT` yet.
 - Locate elements through Drama Finder element wrappers (`ButtonElement.getByText`, `TextFieldElement.getByLabel`, …)

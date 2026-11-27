@@ -31,7 +31,7 @@ traceability sensors take towards a use case that is not `Done` yet.
 | UI                    | Vaadin Flow (server-side Java views)                 | 25.2         | [ADR-002](decisions/ADR-002-vaadin-flow-server-side-ui.md)      |
 | Database access       | jOOQ, generated from the schema                      | 3.21         | [ADR-001](decisions/ADR-001-jooq-instead-of-jpa.md)             |
 | Schema migration      | Flyway                                               | Boot-managed | [ADR-003](decisions/ADR-003-flyway-owns-the-schema.md)          |
-| Database              | PostgreSQL (`postgres:17-alpine` for build and test) | 17           | C-005                                                           |
+| Database              | H2, embedded, PostgreSQL mode (run, test, codegen)   | Boot-managed | C-005, [ADR-012](decisions/ADR-012-h2-for-the-workshop-branch.md) |
 | Build                 | Maven (wrapper), single module                       | —            | —                                                               |
 | View tests            | Vaadin Browserless Testing                           | Vaadin BOM   | [ADR-006](decisions/ADR-006-two-test-layers-merged-coverage.md) |
 | Browser tests         | Playwright + Drama Finder                            | 1.1          | [ADR-006](decisions/ADR-006-two-test-layers-merged-coverage.md) |
@@ -329,18 +329,20 @@ public class PetRepository {
 ## Build
 
 ```bash
-./mvnw spring-boot:test-run     # run locally, Testcontainers supplies PostgreSQL
+./mvnw spring-boot:run          # run locally on an empty in-memory H2 database
+./mvnw spring-boot:test-run     # the same, with the test seed data
 ./mvnw generate-sources         # regenerate jOOQ after a migration change
 ./mvnw test                     # *Test: browserless views, ArchUnit, traceability sensors
-./mvnw test -Dgroups=sensor     # only ArchUnit and the traceability sensors, no Docker
+./mvnw test -Dgroups=sensor     # only ArchUnit and the traceability sensors, seconds
 ./mvnw verify                   # additionally *IT: Playwright, and the merged coverage report
 ```
 
 What `verify` does, in order:
 
-1. **`generate-sources`** — the `testcontainers-jooq-codegen` plugin starts
-   `postgres:17-alpine`, runs the Flyway migrations against it, and generates
-   jOOQ classes from the resulting schema. A migration change that is not
+1. **`generate-sources`** — the Flyway Maven plugin cleans and migrates a
+   file-based H2 database under `target/jooq-codegen-db`, and
+   `jooq-codegen-maven` generates jOOQ classes from the resulting schema
+   ([ADR-012](decisions/ADR-012-h2-for-the-workshop-branch.md)). A migration change that is not
    followed by a code generation leaves stale classes behind.
 2. **`build-frontend`** — the Vaadin production bundle.
 3. **`test`** (Surefire) — every `*Test`, JaCoCo writing `jacoco-ut.exec`.
@@ -348,10 +350,10 @@ What `verify` does, in order:
 5. **`post-integration-test`** — the two exec files are merged into
    `target/site/jacoco-merged/jacoco.xml`, the report Sonar reads.
 
-**Docker must be running** for `generate-sources`, `test` and `verify` (C-007).
-The exception is `test -Dgroups=sensor`: the `sensors` profile it activates skips
-code generation and JaCoCo and runs only the six classes tagged `sensor`, so it
-needs no container once the generated sources exist.
+**No Docker is needed** for any of these (C-007): the application, the tests
+and code generation all use embedded H2. `test -Dgroups=sensor` is the fast
+path: the `sensors` profile it activates skips code generation and JaCoCo and
+runs only the six classes tagged `sensor`, once the generated sources exist.
 
 CI is `.github/workflows/build.yml`: the hook smoke test, then `mvn -B verify`
 plus the Sonar scanner, on every push to `main` and every pull request. `.github/workflows/aiup-generate.yml`
@@ -387,7 +389,7 @@ with `-Dtest=`, or skipped leaves no marker. An audit counts because the
 The run the Stop hook asks for is `./mvnw -q test -Dgroups=sensor`: the five
 sensor classes carry the JUnit tag `sensor`, and the `sensors` profile that
 `-Dgroups=sensor` activates skips jOOQ code generation and JaCoCo, so it takes
-seconds and needs no Docker (the generated sources must exist, so build once in
+seconds and needs no database (the generated sources must exist, so build once in
 full after a clone). A full `./mvnw test` or `verify` counts too.
 
 `.claude/hooks/smoke.sh` exercises all of them against a throwaway repository,

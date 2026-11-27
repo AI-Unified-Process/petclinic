@@ -13,7 +13,7 @@ be right here, but for reasons worth knowing.
 
 One process. The UI is server-side: a browser event travels over the Vaadin
 Flow protocol into the JVM, a view method runs, jOOQ statements go to
-PostgreSQL, and the resulting UI change travels back. There is no REST layer,
+the embedded H2 database, and the resulting UI change travels back. There is no REST layer,
 no client-side state to keep in sync, and no second runtime.
 
 - **One view instance per navigation.** Route targets are Spring beans created
@@ -33,7 +33,7 @@ sequenceDiagram
     participant OR as Owner queries
     participant PR as Pet queries
     participant VR as Visit queries
-    participant DB as PostgreSQL
+    participant DB as H2
 
     U->>V: navigate /owners/{id}
     V->>OR: owner by id
@@ -62,7 +62,7 @@ sequenceDiagram
     actor U as Clinic User
     participant V as Find owners view
     participant R as Owner queries
-    participant DB as PostgreSQL
+    participant DB as H2
 
     U->>V: Find Owner ("Dav")
     V->>R: count owners with prefix
@@ -88,7 +88,7 @@ sequenceDiagram
     participant V as Add pet view
     participant F as Pet form
     participant R as Pet queries
-    participant DB as PostgreSQL
+    participant DB as H2
 
     U->>V: Add Pet
     V->>F: validate and read
@@ -147,8 +147,9 @@ matter what the view does between them.
   UC-007 BR-001 (cited by UC-008 BR-001): the lookup and the `INSERT` are two transactions with a user's
   click between them, so two clerks writing the same value for the same owner at
   the same moment can both pass the check. The database is the backstop —
-  `pets_owner_name_unique` is a unique index on `(owner_id, lower(name))`, which
-  compares the way the rule says it must, so the loser's write fails. The
+  `pets_owner_name_unique` is a unique constraint on `(owner_id, name_lower)`,
+  where `name_lower` is the generated column `LOWER(name)` (H2 has no functional
+  index, ADR-012), which compares the way the rule says it must, so the loser's write fails. The
   repository runs the write in a savepoint (jOOQ's `transactionResult`, nested
   in the Spring transaction), catches the `DuplicateKeyException` and returns
   "name taken" — an empty id from `insert`, `false` from `update` — and the view
