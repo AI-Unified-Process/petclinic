@@ -1,6 +1,5 @@
 package ai.unifiedprocess.petclinic.e2e;
 
-import ai.unifiedprocess.petclinic.TestcontainersConfiguration;
 import ai.unifiedprocess.petclinic.TestCase;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.vaadin.addons.dramafinder.AbstractBasePlaywrightIT;
 import org.vaadin.addons.dramafinder.element.ButtonElement;
 import org.vaadin.addons.dramafinder.element.ComboBoxElement;
@@ -50,7 +48,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @TestCase(id = "TC-002", useCases = {"UC-004", "UC-005", "UC-007", "UC-009"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Import(TestcontainersConfiguration.class)
 class TC002VisitBookedForNewPetIT extends AbstractBasePlaywrightIT {
 
     // Test Data column of the Flow table and the seeded owner it resolves to.

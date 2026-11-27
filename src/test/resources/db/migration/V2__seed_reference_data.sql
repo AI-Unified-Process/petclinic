@@ -9,11 +9,11 @@ INSERT INTO specialties (name) SELECT 'radiology' WHERE NOT EXISTS (SELECT * FRO
 INSERT INTO specialties (name) SELECT 'surgery' WHERE NOT EXISTS (SELECT * FROM specialties WHERE name='surgery');
 INSERT INTO specialties (name) SELECT 'dentistry' WHERE NOT EXISTS (SELECT * FROM specialties WHERE name='dentistry');
 
-INSERT INTO vet_specialties VALUES (2, 1) ON CONFLICT (vet_id, specialty_id) DO NOTHING;
-INSERT INTO vet_specialties VALUES (3, 2) ON CONFLICT (vet_id, specialty_id) DO NOTHING;
-INSERT INTO vet_specialties VALUES (3, 3) ON CONFLICT (vet_id, specialty_id) DO NOTHING;
-INSERT INTO vet_specialties VALUES (4, 2) ON CONFLICT (vet_id, specialty_id) DO NOTHING;
-INSERT INTO vet_specialties VALUES (5, 1) ON CONFLICT (vet_id, specialty_id) DO NOTHING;
+INSERT INTO vet_specialties VALUES (2, 1) ON CONFLICT DO NOTHING;
+INSERT INTO vet_specialties VALUES (3, 2) ON CONFLICT DO NOTHING;
+INSERT INTO vet_specialties VALUES (3, 3) ON CONFLICT DO NOTHING;
+INSERT INTO vet_specialties VALUES (4, 2) ON CONFLICT DO NOTHING;
+INSERT INTO vet_specialties VALUES (5, 1) ON CONFLICT DO NOTHING;
 
 INSERT INTO types (name) SELECT 'cat' WHERE NOT EXISTS (SELECT * FROM types WHERE name='cat');
 INSERT INTO types (name) SELECT 'dog' WHERE NOT EXISTS (SELECT * FROM types WHERE name='dog');

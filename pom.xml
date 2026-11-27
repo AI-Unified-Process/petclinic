@@ -35,7 +35,6 @@
         <java.version>25</java.version>
         <vaadin.version>25.3.5</vaadin.version>
         <jooq.version>3.21.9</jooq.version>
-        <testcontainers-jooq-codegen-maven-plugin.version>1.0.0</testcontainers-jooq-codegen-maven-plugin.version>
         <archunit.version>1.5.1</archunit.version>
         <dramafinder.version>1.2.3</dramafinder.version>
         <!-- Overrides the Playwright that Drama Finder brings in (1.59.0): only
@@ -49,6 +48,11 @@
         <!-- The sensors profile below flips this: the traceability sensors and
              the ArchUnit rules read files and class files, not a database. -->
         <jooq.codegen.skip>false</jooq.codegen.skip>
+        <!-- jOOQ code generation reads the schema from a file-based H2 database
+             that the Flyway Maven plugin migrates under target/ (ADR-012). The
+             URL options must match spring.datasource.url in application.properties,
+             or the generated (quoted) names would not match the runtime schema. -->
+        <jooq.codegen.db.url>jdbc:h2:${project.build.directory}/jooq-codegen-db;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH</jooq.codegen.db.url>
         <sonar.organization>aiup</sonar.organization>
         <!-- Coverage is measured across both test layers (Surefire *Test and
              Failsafe *IT) and merged into one report; point Sonar at it. -->
@@ -77,11 +81,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-database-postgresql</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-dev</artifactId>
             <optional>true</optional>
@@ -94,8 +93,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-h2console</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -107,21 +111,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jooq-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-testcontainers</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers-postgresql</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- Vaadin Browserless Testing: the server-side view test layer (*Test,
@@ -256,37 +245,46 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- jOOQ code generation without Docker (ADR-012): the Flyway Maven
+                 plugin migrates a file-based H2 database under target/, then the
+                 jOOQ generator reads the schema from it. Both run in
+                 generate-sources, in this order. Only the main migrations are
+                 applied; the test seed data never reaches the generator. -->
             <plugin>
-                <groupId>dev.sivalabs</groupId>
-                <artifactId>testcontainers-jooq-codegen-maven-plugin</artifactId>
-                <version>${testcontainers-jooq-codegen-maven-plugin.version}</version>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>migrate-jooq-codegen-db</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>clean</goal>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${jooq.codegen.skip}</skip>
+                    <url>${jooq.codegen.db.url}</url>
+                    <locations>
+                        <location>filesystem:src/main/resources/db/migration</location>
+                    </locations>
+                    <!-- clean before migrate: the database is throwaway and rebuilt on
+                         every build, so an edited migration never fails validation
+                         against an old checksum or leaves stale generated classes. -->
+                    <cleanDisabled>false</cleanDisabled>
+                </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>org.jooq</groupId>
-                        <artifactId>jooq</artifactId>
-                        <version>${jooq.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jooq</groupId>
-                        <artifactId>jooq-meta</artifactId>
-                        <version>${jooq.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jooq</groupId>
-                        <artifactId>jooq-codegen</artifactId>
-                        <version>${jooq.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.testcontainers</groupId>
-                        <artifactId>testcontainers-postgresql</artifactId>
-                        <version>${testcontainers.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.version}</version>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
                 <executions>
                     <execution>
                         <id>generate-jooq-sources</id>
@@ -294,33 +292,33 @@
                         <goals>
                             <goal>generate</goal>
                         </goals>
-                        <configuration>
-                            <skip>${jooq.codegen.skip}</skip>
-                            <database>
-                                <type>POSTGRES</type>
-                                <containerImage>postgres:17-alpine</containerImage>
-                            </database>
-                            <flyway>
-                                <locations>
-                                    <location>filesystem:src/main/resources/db/migration</location>
-                                </locations>
-                            </flyway>
-                            <jooq>
-                                <generator>
-                                    <database>
-                                        <includes>.*</includes>
-                                        <excludes>flyway_schema_history</excludes>
-                                        <inputSchema>public</inputSchema>
-                                    </database>
-                                    <target>
-                                        <packageName>ai.unifiedprocess.demo.petclinic.database</packageName>
-                                        <directory>target/generated-sources/jooq</directory>
-                                    </target>
-                                </generator>
-                            </jooq>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <skip>${jooq.codegen.skip}</skip>
+                    <jdbc>
+                        <url>${jooq.codegen.db.url}</url>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.h2.H2Database</name>
+                            <includes>.*</includes>
+                            <excludes>flyway_schema_history</excludes>
+                            <inputSchema>public</inputSchema>
+                        </database>
+                        <target>
+                            <packageName>ai.unifiedprocess.demo.petclinic.database</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <!-- Registers the generated jOOQ sources as a source root on every
                  build, so IDEs that import the Maven model (VS Code, Eclipse) find
@@ -351,8 +349,8 @@
         <!-- `./mvnw test -Dgroups=sensor` runs only the classes tagged "sensor":
              ArchitectureTest, TestLayerConventionsTest and the four traceability
              sensors. They need neither a database nor coverage, so the profile
-             that -Dgroups=sensor activates skips jOOQ code generation (Docker)
-             and the JaCoCo agent. Seconds instead of minutes; the Stop hook in
+             that -Dgroups=sensor activates skips the Flyway migration of the
+             code generation database, jOOQ code generation and the JaCoCo agent. Seconds instead of minutes; the Stop hook in
              .claude/hooks asks for exactly this run (ADR-011). The generated
              jOOQ sources must exist, so run a full build once after a clone. -->
         <profile>

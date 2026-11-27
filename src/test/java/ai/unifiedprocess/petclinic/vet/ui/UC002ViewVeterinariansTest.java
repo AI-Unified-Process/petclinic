@@ -235,23 +235,28 @@ class UC002ViewVeterinariansTest extends PetClinicTestBase {
     @Test
     @UseCase(id = "UC-002", scenario = "A2: Veterinarians Cannot Be Retrieved")
     void dataAccessErrorShowsTheApplicationErrorViewInsteadOfTheList() {
-        // A2 and the failure postcondition. Renaming the table inside the test transaction
-        // makes the grid's real query fail; the rename is rolled back with it.
+        // A2 and the failure postcondition. Renaming the table makes the grid's real
+        // query fail; the finally block renames it back.
         dsl.alterTable(VETS).renameTo(name("vets_unavailable")).execute();
+        try {
+            // Navigate by location: the router is expected to reroute to the error view.
+            UI.getCurrent().navigate("vets");
+            roundTrip();
 
-        // Navigate by location: the router is expected to reroute to the error view.
-        UI.getCurrent().navigate("vets");
-        roundTrip();
-
-        // The application error view is identified by what the user sees, not by
-        // which of the UC-010 error view classes rendered it.
-        assertDoesNotThrow(() -> find(H2.class).withText("Something happened...").single(),
-                "A2: expected the application error view on a data-access error");
-        Paragraph message = find(Paragraph.class).withClassName("secondary-text").single();
-        assertFalse(message.getText().toLowerCase().contains("select"),
-                "Expected no SQL on the error view, got: " + message.getText());
-        assertTrue(find(Grid.class).all().isEmpty(),
-                "Failure postcondition: expected no empty or incomplete vet list to be displayed");
+            // The application error view is identified by what the user sees, not by
+            // which of the UC-010 error view classes rendered it.
+            assertDoesNotThrow(() -> find(H2.class).withText("Something happened...").single(),
+                    "A2: expected the application error view on a data-access error");
+            Paragraph message = find(Paragraph.class).withClassName("secondary-text").single();
+            assertFalse(message.getText().toLowerCase().contains("select"),
+                    "Expected no SQL on the error view, got: " + message.getText());
+            assertTrue(find(Grid.class).all().isEmpty(),
+                    "Failure postcondition: expected no empty or incomplete vet list to be displayed");
+        } finally {
+            // H2 commits DDL at once (ADR-012), so the rename does not roll back with
+            // the test transaction; without this every later test would miss the table.
+            dsl.alterTable(name("vets_unavailable")).renameTo(VETS.getUnqualifiedName()).execute();
+        }
     }
 
     @Test

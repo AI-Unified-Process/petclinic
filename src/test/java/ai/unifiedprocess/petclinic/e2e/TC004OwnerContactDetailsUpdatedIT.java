@@ -1,6 +1,5 @@
 package ai.unifiedprocess.petclinic.e2e;
 
-import ai.unifiedprocess.petclinic.TestcontainersConfiguration;
 import ai.unifiedprocess.petclinic.TestCase;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.vaadin.addons.dramafinder.AbstractBasePlaywrightIT;
 import org.vaadin.addons.dramafinder.element.ButtonElement;
 import org.vaadin.addons.dramafinder.element.GridElement;
@@ -41,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @TestCase(id = "TC-004", useCases = {"UC-004", "UC-005", "UC-006"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Import(TestcontainersConfiguration.class)
 class TC004OwnerContactDetailsUpdatedIT extends AbstractBasePlaywrightIT {
 
     // The seeded owner as V2__seed_reference_data.sql defines him.

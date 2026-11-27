@@ -1,6 +1,5 @@
 package ai.unifiedprocess.petclinic.e2e;
 
-import ai.unifiedprocess.petclinic.TestcontainersConfiguration;
 import ai.unifiedprocess.petclinic.TestCase;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.vaadin.addons.dramafinder.AbstractBasePlaywrightIT;
 import org.vaadin.addons.dramafinder.element.ButtonElement;
 import org.vaadin.addons.dramafinder.element.ComboBoxElement;
@@ -55,7 +53,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @TestCase(id = "TC-003", useCases = {"UC-003", "UC-004", "UC-007", "UC-009"})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Import(TestcontainersConfiguration.class)
 class TC003VisitBookedForNewCustomerIT extends AbstractBasePlaywrightIT {
 
     // Test Data column of the Flow table.

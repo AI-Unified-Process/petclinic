@@ -1,13 +1,11 @@
 package ai.unifiedprocess.petclinic.welcome.ui;
 
-import ai.unifiedprocess.petclinic.TestcontainersConfiguration;
 import ai.unifiedprocess.petclinic.UseCase;
 import com.vaadin.browserless.SpringBrowserlessTest;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -15,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * UC-001: View Welcome Page.
  */
 @SpringBootTest
-@Import(TestcontainersConfiguration.class)
 class UC001ViewWelcomePageTest extends SpringBrowserlessTest {
 
     @Test

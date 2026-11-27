@@ -45,8 +45,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * demonstration (BR-004) — the two alternative flows — A1 (unknown owner, pet
  * of another owner, unknown URL → not-found variant) and A2 (a genuinely
  * unexpected failure → generic variant) — and the shell around the variants.
- * The unexpected failure is a real one: a table is renamed inside the test
- * transaction, which is rolled back.
+ * The unexpected failure is a real one: a table is renamed for the test and
+ * renamed back in a finally block, because H2 does not roll DDL back.
  */
 class UC010ViewApplicationErrorTest extends PetClinicTestBase {
 
@@ -166,18 +166,23 @@ class UC010ViewApplicationErrorTest extends PetClinicTestBase {
         // The owner details query now fails with a database error whose own
         // message names the missing relation — exactly what BR-003 keeps away.
         dsl.alterTable(OWNERS).renameTo(name("owners_unavailable")).execute();
+        try {
+            UI.getCurrent().navigate(ViewOwnerDetailsView.class,
+                    OwnerRouteParameters.forOwner(OWNER_COLEMAN_ID));
 
-        UI.getCurrent().navigate(ViewOwnerDetailsView.class,
-                OwnerRouteParameters.forOwner(OWNER_COLEMAN_ID));
-
-        ApplicationErrorView errorView = find(ApplicationErrorView.class).single();
-        String message = find(Paragraph.class).from(errorView).single().getText();
-        assertEquals(GENERIC_MESSAGE, message,
-                "Expected the generic message for a failure the application did not describe");
-        assertFalse(message.toLowerCase().contains("owners"),
-                "Expected none of the database error on the error view, got: " + message);
-        assertFalse(message.toLowerCase().contains("relation"),
-                "Expected none of the database error on the error view, got: " + message);
+            ApplicationErrorView errorView = find(ApplicationErrorView.class).single();
+            String message = find(Paragraph.class).from(errorView).single().getText();
+            assertEquals(GENERIC_MESSAGE, message,
+                    "Expected the generic message for a failure the application did not describe");
+            assertFalse(message.toLowerCase().contains("owners"),
+                    "Expected none of the database error on the error view, got: " + message);
+            assertFalse(message.toLowerCase().contains("relation"),
+                    "Expected none of the database error on the error view, got: " + message);
+        } finally {
+            // H2 commits DDL at once (ADR-012), so the rename does not roll back with
+            // the test transaction; without this every later test would miss the table.
+            dsl.alterTable(name("owners_unavailable")).renameTo(OWNERS.getUnqualifiedName()).execute();
+        }
     }
 
     @Test
@@ -186,18 +191,23 @@ class UC010ViewApplicationErrorTest extends PetClinicTestBase {
         // The vets grid reads after navigation has finished, so its database
         // error reaches the error view by a redirect rather than by routing.
         dsl.alterTable(VETS).renameTo(name("vets_unavailable")).execute();
+        try {
+            UI.getCurrent().navigate("vets");
+            roundTrip();
 
-        UI.getCurrent().navigate("vets");
-        roundTrip();
-
-        ViewDataUnavailableErrorView errorView = find(ViewDataUnavailableErrorView.class).single();
-        String message = find(Paragraph.class).from(errorView).single().getText();
-        assertEquals(GENERIC_MESSAGE, message,
-                "Expected the generic message for a failure the application did not describe");
-        assertFalse(message.toLowerCase().contains("select"),
-                "Expected none of the database error on the error view, got: " + message);
-        assertFalse(message.toLowerCase().contains("vets"),
-                "Expected none of the database error on the error view, got: " + message);
+            ViewDataUnavailableErrorView errorView = find(ViewDataUnavailableErrorView.class).single();
+            String message = find(Paragraph.class).from(errorView).single().getText();
+            assertEquals(GENERIC_MESSAGE, message,
+                    "Expected the generic message for a failure the application did not describe");
+            assertFalse(message.toLowerCase().contains("select"),
+                    "Expected none of the database error on the error view, got: " + message);
+            assertFalse(message.toLowerCase().contains("vets"),
+                    "Expected none of the database error on the error view, got: " + message);
+        } finally {
+            // H2 commits DDL at once (ADR-012), so the rename does not roll back with
+            // the test transaction; without this every later test would miss the table.
+            dsl.alterTable(name("vets_unavailable")).renameTo(VETS.getUnqualifiedName()).execute();
+        }
     }
 
     @Test
